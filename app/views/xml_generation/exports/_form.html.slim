@@ -1,0 +1,9 @@
+= simple_form_for :export, url: xml_generation_exports_path, html: {class: 'footnote-form', method: :get} do |f|
+
+  .row
+    .col-sm-2
+      = f.input :date, as: :string, label: 'Select date',  input_html: { name: :export_date, class: 'form-control', 'data-behaviour' => 'datepicker' }
+
+  .form-actions
+    = f.button :submit, 'Schedule Export', class: 'btn btn-warning', data: { 'disable-with' => 'Searching' }
+br
