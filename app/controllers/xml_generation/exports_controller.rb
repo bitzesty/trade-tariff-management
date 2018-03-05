@@ -9,12 +9,16 @@ module XmlGeneration
     end
 
     def create
-      ::XmlGeneration::ExportWorker.perform_async(
-        params[:export_date].try(:to_date) || Date.today
-      )
+      ::XmlGeneration::ExportWorker.perform_async(date_for_export)
 
       redirect_to xml_generation_exports_path,
                   notice: "XML Export was successfully scheduled. Please wait!"
     end
+
+    private
+
+      def date_for_export
+        (params[:export_date].try(:to_date) || Date.today).to_s
+      end
   end
 end
