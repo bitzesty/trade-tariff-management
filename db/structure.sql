@@ -6358,12 +6358,12 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 CREATE TABLE xml_export_files (
     id integer NOT NULL,
-    filename character varying(30),
     state character varying(1),
-    issue_date date,
     updated_at timestamp without time zone,
     created_at timestamp without time zone,
-    xml_data text
+    xml_data text,
+    relevant_date date,
+    issue_date timestamp without time zone
 );
 
 
@@ -10121,4 +10121,7 @@ CREATE EVENT TRIGGER reassign_owned ON ddl_command_end
 SET search_path TO "$user", public;
 INSERT INTO "schema_migrations" ("filename") VALUES ('20180228181242_create_xml_exports.rb');
 INSERT INTO "schema_migrations" ("filename") VALUES ('20180301160928_add_xml_data_to_xml_export_files.rb');
+INSERT INTO "schema_migrations" ("filename") VALUES ('20180305221434_remove_filename_from_xml_export_files.rb');
+INSERT INTO "schema_migrations" ("filename") VALUES ('20180305224610_add_relevant_date_to_xml_export_files.rb');
+INSERT INTO "schema_migrations" ("filename") VALUES ('20180305224900_add_issue_date_in_xml_export_files.rb');
 INSERT INTO "schema_migrations" ("filename") VALUES ('20180212145253_create_initial_schema.rb');

@@ -3,6 +3,10 @@ module XmlExport
 
     include XmlDataUploader::Attachment.new(:xml)
 
+    def after_create
+      ::XmlGeneration::ExportWorker.perform_async(id) unless Rails.env.test?
+    end
+
     class << self
       def max_per_page
         15
