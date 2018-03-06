@@ -11,6 +11,7 @@ module XmlGeneration
     end
 
     def run
+      mark_export_process_as_started!
       fetch_relevant_data
       generate_xml
       put_xml_data_into_tempfile!
@@ -26,6 +27,11 @@ module XmlGeneration
 
     private
 
+      def mark_export_process_as_started!
+        record.state = "G"
+        record.save
+      end
+
       def fetch_relevant_data
         @data = ::XmlGeneration::Search.new(
           record.relevant_date
@@ -37,7 +43,7 @@ module XmlGeneration
       end
 
       def put_xml_data_into_tempfile!
-        @tmp_file = Tempfile.new("#{Time.now.to_i}_xml_export.xml")
+        @tmp_file = Tempfile.new(["#{Time.now.to_i}_xml_export", ".xml"])
         tmp_file.binmode
         tmp_file.write(data_in_xml)
         tmp_file.rewind
@@ -45,6 +51,7 @@ module XmlGeneration
 
       def save_xml!
         record.xml = File.open(tmp_file)
+        record.state = "C"
         record.save
       end
 

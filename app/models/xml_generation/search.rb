@@ -2,17 +2,17 @@ module XmlGeneration
   class Search
 
     SEQUENCE_OF_DATA_FETCH = [
-      MeasureType,
-      MeasureTypeDescription,
+      # MeasureType,
+      # MeasureTypeDescription,
       Measure,
-      DutyExpression,
-      DutyExpressionDescription,
-      MeasureComponent,
-      MeasureConditionCode,
-      MeasureConditionCodeDescription,
-      MeasureCondition,
-      MeasureConditionComponent,
-      TransmissionComment
+      # DutyExpression,
+      # DutyExpressionDescription,
+      # MeasureComponent,
+      # MeasureConditionCode,
+      # MeasureConditionCodeDescription,
+      # MeasureCondition,
+      # MeasureConditionComponent,
+      # TransmissionComment
     ]
 
     attr_accessor :date
