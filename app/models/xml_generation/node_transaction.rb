@@ -14,7 +14,6 @@ module XmlGeneration
       #
       # Emulation:
       #
-      sleep 1
       Time.now.to_i - 1515111000
     end
   end
