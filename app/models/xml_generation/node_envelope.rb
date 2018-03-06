@@ -13,7 +13,11 @@ module XmlGeneration
 
     def id
       # TODO
-      rand(10000..19999)
+      #
+      # Emulation:
+      #
+      sleep 1
+      Time.now.to_i - 1519999000
     end
   end
 end

@@ -31,6 +31,10 @@ xml.tag!("oub:measure") do |measure|
     xml_data_item(measure, self.goods_nomenclature_sid)
   end
 
+  measure.tag!("oub:additional.code.sid") do measure
+    xml_data_item(measure, self.additional_code_sid)
+  end
+
   measure.tag!("oub:additional.code") do measure
     xml_data_item(measure, self.additional_code_id)
   end
@@ -53,6 +57,18 @@ xml.tag!("oub:measure") do |measure|
 
   measure.tag!("oub:justification.regulation.id") do measure
     xml_data_item(measure, self.justification_regulation_id)
+  end
+
+  measure.tag!("oub:export.refund.nomenclature.sid") do measure
+    xml_data_item(measure, self.export_refund_nomenclature_sid)
+  end
+
+  measure.tag!("oub:ordernumber") do measure
+    xml_data_item(measure, self.ordernumber)
+  end
+
+  measure.tag!("oub:reduction.indicator") do measure
+    xml_data_item(measure, self.reduction_indicator)
   end
 
   measure.tag!("oub:stopped.flag") do measure
