@@ -8,11 +8,11 @@ xml.tag!("oub:measure") do |measure|
   end
 
   measure.tag!("oub:validity.start.date") do measure
-    xml_data_item(measure, self.validity_start_date.strftime("%Y-%m-%d") || '')
+    xml_data_item(measure, self.validity_start_date.strftime("%Y-%m-%d"))
   end
 
   measure.tag!("oub:validity.end.date") do measure
-    xml_data_item(measure, self.validity_end_date.try(:strftime, "%Y-%m-%d") || '')
+    xml_data_item(measure, self.validity_end_date.try(:strftime, "%Y-%m-%d"))
   end
 
   measure.tag!("oub:geographical.area") do measure
