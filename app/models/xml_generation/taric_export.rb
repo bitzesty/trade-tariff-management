@@ -18,6 +18,12 @@ module XmlGeneration
       clean_up_tmp_file!
     end
 
+    class << self
+      def base_partial_path
+        "#{Rails.root}/app/views/xml_generation/templates"
+      end
+    end
+
     private
 
       def fetch_relevant_data
@@ -52,11 +58,7 @@ module XmlGeneration
       end
 
       def renderer
-        Tilt.new("#{base_partial_path}/main.builder")
-      end
-
-      def base_partial_path
-        "#{Rails.root}/app/views/xml_generation/templates"
+        Tilt.new("#{self.class.base_partial_path}/main.builder")
       end
   end
 end

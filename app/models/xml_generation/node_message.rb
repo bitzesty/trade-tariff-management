@@ -63,7 +63,12 @@ module XmlGeneration
     private
 
       def record_class
-        record.class.name.downcase
+        record.class
+              .name
+              .titleize
+              .split()
+              .map(&:downcase)
+              .join("_")
       end
 
       def base_partial_path
@@ -71,9 +76,9 @@ module XmlGeneration
       end
 
       def partial_folder_name
-        if MEASURE_RELATED.inlude?(record_class)
+        if MEASURE_RELATED.include?(record.class)
           :measures
-        elsif SYSTEM.include?(record_class)
+        elsif SYSTEM.include?(record.class)
           :system
         else
           # TODO: add more types

@@ -1,6 +1,8 @@
 module XmlGeneration
   class NodeEnvelope
 
+    include ::XmlGeneration::BaseHelper
+
     attr_accessor :transactions
 
     def initialize(records)
