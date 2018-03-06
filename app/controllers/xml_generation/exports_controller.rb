@@ -8,6 +8,10 @@ module XmlGeneration
       )
     end
 
+    expose(:mode) do
+      params[:mode]
+    end
+
     def create
       record = ::XmlExport::File.new(
         relevant_date: date_for_export,
@@ -16,15 +20,7 @@ module XmlGeneration
       )
 
       if record.save
-        Rails.logger.info ""
-        Rails.logger.info "-" * 10
-        Rails.logger.info ""
-        Rails.logger.info "[record ID] #{record.id}"
-        Rails.logger.info ""
-        Rails.logger.info "-" * 10
-        Rails.logger.info ""
-
-        ::XmlGeneration::ExportWorker.perform_async(record.id) unless Rails.env.test?
+        ::XmlGeneration::ExportWorker.perform_async(record.id, mode) unless Rails.env.test?
 
         redirect_to xml_generation_exports_path,
                     notice: "XML Export was successfully scheduled. Please wait!"

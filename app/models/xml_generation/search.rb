@@ -15,18 +15,35 @@ module XmlGeneration
       TransmissionComment
     ]
 
-    attr_accessor :date
+    attr_accessor :date, :mode
 
-    def initialize(date)
+    def initialize(date, mode)
+      @mode = mode
       @date = date.strftime("%Y-%m-%d")
     end
 
     def result
-      ::XmlGeneration::NodeEnvelope.new(
-        SEQUENCE_OF_DATA_FETCH.map do |record_class|
-          record_class.where("operation_date = ?", date).all
-        end.flatten
-      )
+      ::XmlGeneration::NodeEnvelope.new(data)
     end
+
+    private
+
+      def data
+        SEQUENCE_OF_DATA_FETCH.map do |record_class|
+          if mode == "samples"
+            generate_samples(record_class)
+          else
+            fetch_relevant_data(record_class)
+          end
+        end.flatten
+      end
+
+      def generate_samples(record_class)
+        [record_class.last]
+      end
+
+      def fetch_relevant_data(record_class)
+        record_class.where("operation_date = ?", date).all
+      end
   end
 end

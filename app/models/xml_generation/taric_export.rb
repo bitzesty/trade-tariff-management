@@ -2,12 +2,14 @@ module XmlGeneration
   class TaricExport
 
     attr_accessor :record,
+                  :mode,
                   :data,
                   :data_in_xml,
                   :tmp_file
 
-    def initialize(record)
+    def initialize(record, mode)
       @record = record
+      @mode = mode
     end
 
     def run
@@ -28,13 +30,13 @@ module XmlGeneration
     private
 
       def mark_export_process_as_started!
-        record.state = "G"
-        record.save
+        record.update(state: "G")
       end
 
       def fetch_relevant_data
         @data = ::XmlGeneration::Search.new(
-          record.relevant_date
+          record.relevant_date,
+          mode
         ).result
       end
 
@@ -51,8 +53,7 @@ module XmlGeneration
 
       def save_xml!
         record.xml = File.open(tmp_file)
-        record.state = "C"
-        record.save
+        record.update(state: "C")
       end
 
       def clean_up_tmp_file!
