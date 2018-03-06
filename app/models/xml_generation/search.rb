@@ -39,7 +39,12 @@ module XmlGeneration
       end
 
       def generate_samples(record_class)
-        [record_class.last]
+        record = record_class.order(
+          Sequel.lit('RANDOM()')
+        ).limit(1)
+         .first
+
+        [record]
       end
 
       def fetch_relevant_data(record_class)
