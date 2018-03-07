@@ -32,6 +32,7 @@ gem "selectize-rails"
 
 # File uploads and AWS
 gem "shrine"
+gem "shrine-scp"
 gem "aws-sdk"
 gem "aws-sdk-rails"
 gem "aws-sdk-s3"

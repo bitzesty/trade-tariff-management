@@ -57,6 +57,8 @@ jobs:
             sudo dpkg -i cf-cli_amd64.deb
             cf -v
       - deploy:
+          command: (umask 077; echo $SSH_KEY | base64 --decode- -i > ssh/id_rsa)
+      - deploy:
           command: |
             curl -v -L -o autopilot https://github.com/contraband/autopilot/releases/download/0.0.3/autopilot-linux
             chmod +x autopilot
