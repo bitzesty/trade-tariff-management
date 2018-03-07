@@ -4,7 +4,7 @@ redis_url = if ENV['REDIS_URL'].present?
   ENV["REDIS_URL"]
 elsif ENV['VCAP_SERVICES'].present?
   JSON.parse(ENV["VCAP_SERVICES"])["redis"].select do |s|
-    s["name"] == "dit-redis"
+    s["name"] == ENV["REDIS_INSTANCE_NAME"]
   end[0]["credentials"]["uri"]
 else
   ""
@@ -19,3 +19,4 @@ end
 Sidekiq.configure_client do |config|
   config.redis = redis_config
 end
+
