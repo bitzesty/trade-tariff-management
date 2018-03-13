@@ -874,6 +874,7 @@ GEM
       sequel (>= 3.28, < 5.0)
     shrine (2.9.0)
       down (~> 4.1)
+    shrine-ftp (0.1.1)
     sidekiq (4.1.4)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
@@ -992,6 +993,7 @@ DEPENDENCIES
   sequel (~> 4.32)
   sequel-rails (~> 0.9, >= 0.9.12)
   shrine
+  shrine-ftp
   sidekiq (~> 4.1.4)
   sidekiq-scheduler (~> 2.1.8)
   simple_form (~> 3.5)
