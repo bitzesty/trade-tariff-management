@@ -27,7 +27,7 @@ gem "bootstrap-datepicker-rails", "~> 1.4"
 
 # File uploads and AWS
 gem "shrine"
-gem "shrine-ftp"
+gem "shrine-scp"
 gem "aws-sdk"
 gem "aws-sdk-rails"
 gem "aws-sdk-s3"

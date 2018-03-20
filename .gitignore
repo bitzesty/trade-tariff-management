@@ -33,4 +33,5 @@ REVISION
 public/assets/*
 public/uploads/*
 
-ssh/*
+/ssh/*
+!/ssh/.keep
