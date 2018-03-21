@@ -8,6 +8,7 @@ end
 ruby "~> 2.5.0"
 
 gem "rails", "5.1.3"
+gem 'actionpack-action_caching'
 
 # DB
 gem "pg", "0.18.4"
