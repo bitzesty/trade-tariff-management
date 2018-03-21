@@ -52,4 +52,8 @@ Rails.application.configure do
   config.log_level = :info
   file_logger = Logger.new(Rails.root.join("log", "development.log"))
   config.logger = file_logger.extend(ActiveSupport::Logger.broadcast(Logger.new(STDOUT)))
+
+  if ENV['GOVUK_APP_DOMAIN'].blank?
+    ENV['GOVUK_APP_DOMAIN'] = 'development'
+  end
 end
