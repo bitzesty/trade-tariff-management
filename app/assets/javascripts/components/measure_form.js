@@ -178,8 +178,8 @@ $(document).ready(function() {
     data: function() {
       return {
         condition: {},
-        start_date: null,
-        end_date: null,
+        start_date: window.measure_start_date,
+        end_date: window.measure_end_date,
       }
     },
     template: "#selectize-template",
@@ -202,6 +202,7 @@ $(document).ready(function() {
       if (this.options) {
         options["options"] = this.options;
       }
+
 
       if (this.url && !this.minLength) {
         options["onInitialize"] = function() {
@@ -229,7 +230,7 @@ $(document).ready(function() {
           vm.$el.selectize.renderCache['item'] = {};
 
           if (vm.minLength && query.length < vm.minLength) return callback();
-          if (vm.drilldownRequired && !vm.drilldownValue) return callback();
+          if (vm.drilldownRequired === "true" && !vm.drilldownValue) return callback();
 
           var data = {
             q: query,
@@ -1041,9 +1042,11 @@ $(document).ready(function() {
         this.fetchNomenclatureCode("/goods_nomenclatures", 10, "goods_nomenclature_code", "goods_nomenclature_code_description");
       },
       "measure.validity_start_date": function() {
+        window.measure_start_date = this.measure.validity_start_date;
         $(".measure-form").trigger("dates:changed", [this.measure.validity_start_date, this.measure.validity_end_date]);
       },
       "measure.validity_end_date": function() {
+        window.measure_end_date = this.measure.validity_end_date;
         $(".measure-form").trigger("dates:changed", [this.measure.validity_start_date, this.measure.validity_end_date]);
       },
       "measure.additional_code_type_id": function(newVal, oldVal) {

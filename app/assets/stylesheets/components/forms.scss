@@ -50,12 +50,13 @@ input.datepicker {
 .condition {
   padding: 15px 0 15px;
 
-  &:first-child {
+  &:first-of-type {
     padding-top: 0;
   }
 
-  &:last-child {
+  &:last-of-type {
     padding-bottom: 0;
+    margin-bottom: -20px;
   }
 
   & + .condition {
@@ -87,10 +88,6 @@ input.datepicker {
 
 .form-actions {
   margin: 1em 0 3em;
-}
-
-.measure-condition-components {
-  margin-top: 20px;
 }
 
 .measure-condition-component {
