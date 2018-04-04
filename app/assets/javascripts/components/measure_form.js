@@ -40,9 +40,7 @@ Origin.prototype.init = function () {
     create: false,
     valueField: 'geographical_area_id',
     labelField: 'description',
-    searchField: ["description", "text"],
-    onType: function(str) { str || this.$dropdown_content.removeHighlight(); },
-    onChange: function(){ this.$dropdown_content.removeHighlight(); }
+    searchField: ["description", "text"]
   });
 };
 
@@ -129,20 +127,8 @@ Origin.prototype.addExclusion = function () {
     create: false,
     valueField: 'geographical_area_id',
     labelField: 'description',
-    searchField: ["geographical_area_id", "description", "text"],
-    onType: function(str) { str || this.$dropdown_content.removeHighlight(); },
-    onChange: function(){ this.$dropdown_content.removeHighlight(); }
+    searchField: ["geographical_area_id", "description", "text"]
   });
-
-  var selectize = html.find("select")[0].selectize;
-  var checkMinLength = function() {
-    if (selectize.$control_input.val().length < 2) {
-      selectize.close();
-    }
-  };
-
-  selectize.on('dropdown_open', checkMinLength);
-  selectize.$control_input.on('input', checkMinLength);
 
   this.target.find(".exclusions-target").append(html);
 };
@@ -206,12 +192,7 @@ $(document).ready(function() {
         placeholder: this.placeholder,
         valueField: this.valueField,
         labelField: this.labelField,
-        searchField: [this.valueField, this.codeField, this.labelField],
-
-        onType: function(str) { str || this.$dropdown_content.removeHighlight(); },
-        onChange: function(){
-          this.$dropdown_content.removeHighlight();
-        }
+        searchField: [this.valueField, this.codeField, this.labelField]
       };
 
       if (this.codeField) {
@@ -1109,9 +1090,6 @@ $(document).ready(function() {
     valueField: 'measure_type_series_id',
     labelField: 'description',
     searchField: ["measure_type_series_id", "description"],
-    onType: function(str) { str || this.$dropdown_content.removeHighlight(); },
-    onChange: function(){
-      this.$dropdown_content.removeHighlight(); },
     render: {
       option: function(data) {
         return "<span class='selection" + (data.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + data.measure_type_series_id + "</span> " + data.description + "</span>";
@@ -1128,8 +1106,6 @@ $(document).ready(function() {
     valueField: 'measure_type_id',
     labelField: 'description',
     searchField: ["measure_type_id", "description"],
-    onType: function(str) { str || this.$dropdown_content.removeHighlight(); },
-    onChange: function(){ this.$dropdown_content.removeHighlight(); },
     render: {
       option: function(data) {
         return "<span class='selection" + (data.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--type'>" + data.measure_type_id + "</span> " + data.description + "</span>";
