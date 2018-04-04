@@ -40,7 +40,15 @@ Origin.prototype.init = function () {
     create: false,
     valueField: 'geographical_area_id',
     labelField: 'description',
-    searchField: ["description", "text"]
+    searchField: ["geographical_area_id", "description", "text"],
+    render: {
+      option: function(data) {
+        return "<span class='selection'>" + data.description + " (" + data.geographical_area_id + ")</span>";
+      },
+      item: function(data) {
+        return "<div class='item'>" + data.description + " (" + data.geographical_area_id + ")</div>";
+      }
+    }
   });
 };
 
@@ -127,7 +135,15 @@ Origin.prototype.addExclusion = function () {
     create: false,
     valueField: 'geographical_area_id',
     labelField: 'description',
-    searchField: ["geographical_area_id", "description", "text"]
+    searchField: ["geographical_area_id", "description", "text"],
+    render: {
+      option: function(data) {
+        return "<span class='selection'>" + data.description + " (" + data.geographical_area_id + ")</span>";
+      },
+      item: function(data) {
+        return "<div class='item'>" + data.description + " (" + data.geographical_area_id + ")</div>";
+      }
+    }
   });
 
   this.target.find(".exclusions-target").append(html);
