@@ -35,19 +35,23 @@ function Origin(el) {
 }
 
 Origin.prototype.init = function () {
-  this.select.selectize({
-    placeholder: this.select.data("placeholder"),
-    create: false,
-    valueField: 'geographical_area_id',
-    labelField: 'description',
-    searchField: ["geographical_area_id", "description", "text"],
-    render: {
-      option: function(data) {
-        return "<span class='selection'>" + data.description + " (" + data.geographical_area_id + ")</span>";
-      },
-      item: function(data) {
-        return "<div class='item'>" + data.description + " (" + data.geographical_area_id + ")</div>";
+  this.select.select2({
+    placeholder: "― start typing ―",
+    theme: "bootstrap",
+    allowClear: true,
+    templateSelection: function(state) {
+      if (!state.id) {
+        return state.text;
       }
+
+      return $("<div class='item'>" + state.id + " - " + state.text + "(" + state.id + ")</div>");
+    },
+    templateResult: function(state) {
+      if (!state.id) {
+        return state.text;
+      }
+
+      return $("<span class='selection" + (state.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + state.id + "</span> " + state.text + "(" + state.id + ")</span>");
     }
   });
 };
@@ -119,7 +123,7 @@ Origin.prototype.deselect = function () {
   this.closeExclusions();
 
   if (this.select.length > 0) {
-    this.select[0].selectize.clear(true);
+    this.select.val(null).trigger("change");
   }
 
   this.geographical_area_id = null;
@@ -127,26 +131,49 @@ Origin.prototype.deselect = function () {
 };
 
 Origin.prototype.addExclusion = function () {
-  var html = $("<p><select class='exclusion-select'></select></p>");
+  var self = this;
+  var first = this.target.find(".exclusions-target .row").length === 0;
 
-  html.find("select").selectize({
-    options: window.geographical_areas_json[this.geographical_area_id],
-    placeholder: "― start typing ―",
-    create: false,
-    valueField: 'geographical_area_id',
-    labelField: 'description',
-    searchField: ["geographical_area_id", "description", "text"],
-    render: {
-      option: function(data) {
-        return "<span class='selection'>" + data.description + " (" + data.geographical_area_id + ")</span>";
-      },
-      item: function(data) {
-        return "<div class='item'>" + data.description + " (" + data.geographical_area_id + ")</div>";
-      }
-    }
+  var html = $("<div class='row exclusion'><div class='col-md-4'><select class='exclusion-select'><option value></option></select></div>" + (first ? "" : "<div class='col-md-2'><a href='#' class='text-danger'>Remove</a></div>") + "</div>");
+
+  var options = window.geographical_areas_json[this.geographical_area_id].map(function(option) {
+    option.id = option.geographical_area_id;
+    option.text = option.description;
+
+    return option;
   });
 
   this.target.find(".exclusions-target").append(html);
+
+  html.find("select").select2({
+    data: options,
+    theme: "bootstrap",
+    placeholder: "― start typing ―",
+    allowClear: true,
+    templateSelection: function(state) {
+      if (!state.id) {
+        return state.text;
+      }
+
+      return $("<div class='item'>" + state.geographical_area_id + " - " + state.description + "(" + state.geographical_area_id + ")</div>");
+    },
+    templateResult: function(state) {
+      if (!state.id) {
+        return state.text;
+      }
+
+      return $("<span class='selection" + (state.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + state.geographical_area_id + "</span> " + state.description + "(" + state.geographical_area_id + ")</span>");
+    }
+  });
+
+  html.find("a.text-danger").one("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    html.remove();
+
+    self.updateSelectedValues();
+  });
 };
 
 Origin.prototype.updateSelectedValues = function () {
@@ -203,20 +230,31 @@ $(document).ready(function() {
       var vm = this;
 
       var options = {
-        create: false,
+        allowClear: true,
         items: [this.value],
+        theme: "bootstrap",
         placeholder: this.placeholder,
         valueField: this.valueField,
         labelField: this.labelField,
-        searchField: [this.valueField, this.codeField, this.labelField]
+        searchField: [this.valueField, this.codeField, this.labelField],
+        width: "100%"
       };
+
+      if (this.minLength) {
+        options.minimumInputLength = this.minLength;
+      }
 
       if (this.codeField) {
         options.sortField = this.codeField;
       }
 
       if (this.options) {
-        options["options"] = this.options;
+        options.data = this.options.map(function(option) {
+          option.id = option[vm.valueField];
+          option.text = option[vm.labelField];
+
+          return option;
+        });
       }
 
 
@@ -238,54 +276,90 @@ $(document).ready(function() {
       }
 
       if (this.url) {
-        options["load"] = function(query, callback) {
-          vm.$el.selectize.clearOptions();
-          vm.$el.selectize.clearCache();
-          vm.$el.selectize.refreshOptions();
-          vm.$el.selectize.renderCache['option'] = {};
-          vm.$el.selectize.renderCache['item'] = {};
+        options.ajax = {
+          url: vm.url,
+          data: function (params) {
+            var query = {
+              q: params.term,
+              start_date: vm.start_date,
+              end_date: vm.end_date
+            };
 
-          if (vm.minLength && query.length < vm.minLength) return callback();
-          if (vm.drilldownRequired === "true" && !vm.drilldownValue) return callback();
-
-          var data = {
-            q: query,
-            start_date: vm.start_date,
-            end_date: vm.end_date
-          };
-
-          if (vm.drilldownName && vm.drilldownValue) {
-            data[vm.drilldownName] = vm.drilldownValue;
-          }
-
-          $.ajax({
-            url: vm.url,
-            data: data,
-            type: 'GET',
-            error: function() {
-              callback();
-            },
-            success: function(res) {
-              callback(res);
+            if (vm.drilldownName && vm.drilldownValue) {
+              query[vm.drilldownName] = vm.drilldownValue;
             }
-          });
-        }
+
+            return query;
+          },
+          dataType: 'json',
+          processResults: function (data, params) {
+            return {
+              results: data.map(function(item) {
+                item.id = item[vm.valueField];
+                item.text = item[vm.labelField];
+
+                return item;
+              })
+            };
+          },
+          cache: false
+        };
+
+        // options["load"] = function(query, callback) {
+        //   vm.$el.selectize.clearOptions();
+        //   vm.$el.selectize.clearCache();
+        //   vm.$el.selectize.refreshOptions();
+        //   vm.$el.selectize.renderCache['option'] = {};
+        //   vm.$el.selectize.renderCache['item'] = {};
+
+        //   if (vm.drilldownRequired === "true" && !vm.drilldownValue) return callback();
+
+        //   var data = {
+        //     q: query,
+        //     start_date: vm.start_date,
+        //     end_date: vm.end_date
+        //   };
+
+        //   if (vm.drilldownName && vm.drilldownValue) {
+        //     data[vm.drilldownName] = vm.drilldownValue;
+        //   }
+
+        //   $.ajax({
+        //     url: vm.url,
+        //     data: data,
+        //     type: 'GET',
+        //     error: function() {
+        //       callback();
+        //     },
+        //     success: function(res) {
+        //       callback(res);
+        //     }
+        //   });
+        // }
       }
 
       var codeField = this.codeField;
 
       if (codeField) {
-        options["render"] = {
-          option: function(data) {
-            return "<span class='selection" + (data.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + data[codeField] + "</span> " + data[options.labelField] + "</span>";
-          },
-          item: function(data) {
-            return "<div class='item'>" + data[codeField] + " - " + data[options.labelField] + "</div>";
+        options.templateSelection = function(state) {
+          if (!state.id) {
+            return state.text;
           }
+
+          return $("<div class='item'>" + state[codeField] + " - " + state[options.labelField] + "</div>");
+        };
+
+        options.templateResult = function(state) {
+          if (!state.id) {
+            return state.text;
+          }
+
+          return $("<span class='selection" + (state.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + state[codeField] + "</span> " + state[options.labelField] + "</span>");
         };
       }
 
-      $(this.$el).selectize(options).val(this.value).trigger('change').on('change', function () {
+      $(this.$el).select2(options).val(this.value).trigger('change').on('change', function () {
+        console.log(this.value);
         vm.$emit('input', this.value);
       });
 
@@ -294,38 +368,9 @@ $(document).ready(function() {
           vm.start_date = start_date;
           vm.end_date = end_date;
 
-          var data = {
-            q: vm.$el.selectize.query,
-            start_date: start_date,
-            end_date: end_date
-          };
+          $(vm.$el).empty();
 
-          if (vm.drilldownName && vm.drilldownValue) {
-            data[vm.drilldownName] = vm.drilldownValue;
-          }
-
-          vm.$el.selectize.clear(true);
-          vm.$el.selectize.clearOptions();
-          vm.$el.selectize.clearCache();
-          vm.$el.selectize.refreshOptions();
-          vm.$el.selectize.renderCache['option'] = {};
-          vm.$el.selectize.renderCache['item'] = {};
-
-          if (!vm.minLength) {
-            vm.$el.selectize.load(function(callback) {
-              $.ajax({
-                url: vm.url,
-                data: data,
-                type: 'GET',
-                error: function() {
-                  callback();
-                },
-                success: function(res) {
-                  callback(res);
-                }
-              });
-            });
-          }
+          $(vm.$el).val(null).trigger('change.select2');
         };
 
         $(".measure-form").on("dates:changed", this.handleDateSentitivity);
@@ -333,12 +378,21 @@ $(document).ready(function() {
     },
     watch: {
       value: function (value) {
-        $(this.$el)[0].selectize.setValue(value, false);
+        $(this.$el).val(value);
+        $(this.$el).trigger("change");
       },
       options: function (options) {
-        $(this.$el)[0].selectize.clearOptions();
-        $(this.$el)[0].selectize.addOption(options);
-        $(this.$el)[0].selectize.refreshOptions(false);
+        var self = this;
+        $(this.$el).empty();
+
+        options.forEach(function(option) {
+          option.id = option[self.valueField];
+          option.text = option[self.labelField];
+
+          return option;
+        });
+
+        $(this.$el).select2({ data: options });
       },
       drilldownValue: function(newVal, oldVal) {
         if (newVal == oldVal) {
@@ -349,7 +403,7 @@ $(document).ready(function() {
       }
     },
     destroyed: function () {
-      $(this.$el).off()[0].selectize.destroy();
+      $(this.$el).select2("destroy");
 
       if (this.dateSensitive) {
         $(".measure-form").off("dates:changed", this.handleDateSentitivity);
@@ -401,72 +455,25 @@ $(document).ready(function() {
     props: ["value", "minYear"],
     data: function() {
       return {
-        day: "",
-        month: "",
-        year: ""
+        vproxy: this.value
       }
     },
-    computed: {
-      days: function() {
-        var days = [];
-        for (var i = 1; i <= 31; i++) {
-          var v = this.leftPad(i + "", 2, "0");
+    mounted: function() {
+      var self = this;
 
-          days.push({ value: v, label: v });
-        }
+      new Pikaday({
+        field: $(this.$el)[0],
+        format: "DD/MM/YYYY",
+        blurFieldOnSelect: true
+      });
 
-        return days;
-      },
-      months: function() {
-        return [
-          { value: "01", label: "January" },
-          { value: "02", label: "February" },
-          { value: "03", label: "March" },
-          { value: "04", label: "April" },
-          { value: "05", label: "May" },
-          { value: "06", label: "June" },
-          { value: "07", label: "July" },
-          { value: "08", label: "August" },
-          { value: "09", label: "September" },
-          { value: "10", label: "October" },
-          { value: "11", label: "November" },
-          { value: "12", label: "December" }
-        ];
-      },
-      years: function() {
-        var minYear = this.minYear || (new Date()).getFullYear();
-        var years = [];
-
-        for (var i = 0; i < 80; i++) {
-          years.push({ value: minYear + i, label: minYear + i });
-        }
-
-        return years;
-      }
-    },
-    methods: {
-      leftPad: function(val, length, pad) {
-        while (val.length < length) {
-          val = pad + val;
-        }
-
-        return val;
-      },
-      updateValue: function() {
-        if (this.day && this.month && this.year) {
-          this.$emit("update:value", this.day + "/" + this.month + "/" + this.year);
-        }
-      }
+      $(this.$el).on("change", function() {
+        self.vproxy = $(self.$el).val();
+      });
     },
     watch: {
-      year: function() {
-        this.updateValue();
-      },
-      day: function() {
-        this.updateValue();
-      },
-      month: function() {
-        this.updateValue();
+      vproxy: function() {
+        this.$emit("update:value", this.vproxy);
       }
     }
   });
@@ -653,7 +660,7 @@ $(document).ready(function() {
         return codes.indexOf(this.condition.condition_code) > -1;
       },
       canRemoveComponent: function() {
-        return this.measure_condition_components.length > 1;
+        return this.condition.measure_condition_components.length > 1;
       }
     },
     watch: {
@@ -1163,47 +1170,84 @@ $(document).ready(function() {
     return null;
   }
 
-  var measureTypeSeries = $("#measure_form_measure_type_series_id").selectize({
-    create: false,
-    placeholder: "― optionally filter by measure series ―",
-    valueField: 'measure_type_series_id',
-    labelField: 'description',
-    searchField: ["measure_type_series_id", "description"],
-    render: {
-      option: function(data) {
-        return "<span class='selection" + (data.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + data.measure_type_series_id + "</span> " + data.description + "</span>";
-      },
-      item: function(data) {
-        return "<div class='item'>" + data.measure_type_series_id + " - " + data.description + "</div>";
-      }
-    }
-  });
+  var measureTypeSeries = null;
 
-  var measureType = $("#measure_form_measure_type_id").selectize({
-    placeholder: "― select measure type ―",
-    create: false,
-    valueField: 'measure_type_id',
-    labelField: 'description',
-    searchField: ["measure_type_id", "description"],
-    render: {
-      option: function(data) {
-        return "<span class='selection" + (data.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--type'>" + data.measure_type_id + "</span> " + data.description + "</span>";
+  function initializeMeasureTypeSeries(options) {
+    var config = {
+      theme: "bootstrap",
+      placeholder: "― optionally filter by measure series ―",
+      allowClear: true,
+      templateSelection: function(state) {
+        if (!state.id) {
+          return state.text;
+        }
+
+        return $("<div class='item'>" + state.id + " - " + state.text + "(" + state.id + ")</div>");
       },
-      item: function(data) {
-        return "<div class='item'>" + data.measure_type_id + " - " + data.description + "</div>";
+      templateResult: function(state) {
+        if (!state.id) {
+          return state.text;
+        }
+
+        return $("<span class='selection" + (state.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + state.id + "</span> " + state.text + "(" + state.id + ")</span>");
       }
+    };
+
+    if (options) {
+      config.data = options;
+      $("#measure_form_measure_type_series_id").empty();
+      $("#measure_form_measure_type_series_id").append("<option value></option>");
     }
-  });
+
+    measureTypeSeries = $("#measure_form_measure_type_series_id").select2(config);
+  }
+
+  var measureType = null;
+
+  function initializeMeasureType(options) {
+    var config = {
+      theme: "bootstrap",
+      placeholder: "― optionally filter by measure series ―",
+      allowClear: true,
+      templateSelection: function(state) {
+        if (!state.id) {
+          return state.text;
+        }
+
+        return $("<div class='item'>" + state.id + " - " + state.text + "(" + state.id + ")</div>");
+      },
+      templateResult: function(state) {
+        if (!state.id) {
+          return state.text;
+        }
+
+        return $("<span class='selection" + (state.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + state.id + "</span> " + state.text + "(" + state.id + ")</span>");
+      }
+    };
+
+    if (options) {
+      config.data = options;
+      $("#measure_form_measure_type_id").empty();
+      $("#measure_form_measure_type_id").append("<option value></option>");
+    }
+
+    measureType = $("#measure_form_measure_type_id").select2(config);
+  }
+
+  initializeMeasureTypeSeries();
+  initializeMeasureType();
 
   $("#measure_form_measure_type_series_id").on("change", function() {
     var v = $("#measure_form_measure_type_series_id").val();
 
-    $("#measure_form_measure_type_id").val("");
-    measureType[0].selectize.clearOptions();
-    measureType[0].selectize.addOption(window.measure_types_json.filter(function(d) {
+    initializeMeasureType(window.measure_types_json.filter(function(d) {
       return !v || (v && d.measure_type_series_id == v);
+    }).map(function(option) {
+      option.id = option.measure_type_id;
+      option.text = option.description;
+
+      return option;
     }));
-    measureType[0].selectize.refreshOptions(false);
   });
 
   $(".measure-form").on("dates:changed", function(event, start_date, end_date) {
@@ -1221,9 +1265,13 @@ $(document).ready(function() {
       },
       success: function(data) {
         window.measure_types_json = data;
-        measureType[0].selectize.clearOptions();
-        measureType[0].selectize.addOption(data);
-        measureType[0].selectize.refreshOptions(false);
+        measureType.empty();
+        initializeMeasureType(data.map(function(option) {
+          option.id = option.measure_type_id;
+          option.text = option.description;
+
+          return option;
+        }));
       }
     });
 
@@ -1235,9 +1283,12 @@ $(document).ready(function() {
       },
       success: function(data) {
         window.measure_types_series_json = data;
-        measureTypeSeries[0].selectize.clearOptions();
-        measureTypeSeries[0].selectize.addOption(data);
-        measureTypeSeries[0].selectize.refreshOptions(false);
+        initializeMeasureTypeSeries(data.map(function(option) {
+          option.id = option.measure_type_series_id;
+          option.text = option.description;
+
+          return option;
+        }));
       }
     });
   });

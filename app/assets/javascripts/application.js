@@ -2,6 +2,6 @@
 //= require jquery_ujs
 //= require moment
 //= require pikaday
-//= require ./vendors/selectize
+//= require select2
 //= require_tree .
 

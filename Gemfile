@@ -30,7 +30,7 @@ gem 'bootstrap-sass', '~> 3.3.7'
 gem "bootstrap-datepicker-rails", "~> 1.7.1.1"
 gem 'momentjs-rails'
 gem "pikaday-gem"
-gem "selectize-rails"
+gem "select2-rails"
 
 # File uploads and AWS
 gem "shrine"

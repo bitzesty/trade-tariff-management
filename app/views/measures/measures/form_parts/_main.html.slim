@@ -8,9 +8,7 @@ fieldset
       span.form-hint
         | The measure will take effect (once approved) from this date.
 
-    .row
-      .col-md-6
-        = content_tag "date-select", "", ":value.sync" => "measure.validity_start_date"
+    = content_tag "date-select", "", ":value.sync" => "measure.validity_start_date"
 
   .form-group
     label.form-label
@@ -18,6 +16,4 @@ fieldset
       span.form-hint
         | By default this is set to the end date of the regulation giving force to this measure. You can optionally bring it forward, but it cannot be later than the regulation's end date.
 
-    .row
-      .col-md-6
-        = content_tag "date-select", "", ":value.sync" => "measure.validity_end_date"
+    = content_tag "date-select", "", ":value.sync" => "measure.validity_end_date"
