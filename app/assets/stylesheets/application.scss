@@ -37,8 +37,7 @@
 // @import "bootstrap-sprockets";
 // @import "bootstrap";
 @import 'bootstrap_overrides';
-@import 'selectize';
-@import 'selectize.bootstrap3';
+@import 'vendors/select2.min';
 @import "pikaday";
 @import "simple-grid";
 @import "variables";

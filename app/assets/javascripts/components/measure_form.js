@@ -130,25 +130,30 @@ $(document).ready(function() {
       var vm = this;
 
       var options = {
-        create: false,
+        allowClear: true,
         items: [this.value],
         placeholder: this.placeholder,
         valueField: this.valueField,
         labelField: this.labelField,
         searchField: [this.valueField, this.codeField, this.labelField],
-
-        onType: function(str) { str || this.$dropdown_content.removeHighlight(); },
-        onChange: function(){
-          this.$dropdown_content.removeHighlight();
-        }
+        width: "100%"
       };
+
+      if (this.minLength) {
+        options.minimumInputLength = this.minLength;
+      }
 
       if (this.codeField) {
         options.sortField = this.codeField;
       }
 
       if (this.options) {
-        options["options"] = this.options;
+        options.data = this.options.map(function(option) {
+          option.id = option[vm.valueField];
+          option.text = option[vm.labelField];
+
+          return option;
+        });
       }
 
       if (this.url && !this.minLength) {
@@ -169,54 +174,58 @@ $(document).ready(function() {
       }
 
       if (this.url) {
-        options["load"] = function(query, callback) {
-          vm.$el.selectize.clearOptions();
-          vm.$el.selectize.clearCache();
-          vm.$el.selectize.refreshOptions();
-          vm.$el.selectize.renderCache['option'] = {};
-          vm.$el.selectize.renderCache['item'] = {};
+        options.ajax = {
+          url: vm.url,
+          data: function (params) {
+            var query = {
+              q: params.term,
+              start_date: vm.start_date,
+              end_date: vm.end_date
+            };
 
-          if (vm.minLength && query.length < vm.minLength) return callback();
-          if (vm.drilldownRequired === "true" && !vm.drilldownValue) return callback();
-
-          var data = {
-            q: query,
-            start_date: vm.start_date,
-            end_date: vm.end_date
-          };
-
-          if (vm.drilldownName && vm.drilldownValue) {
-            data[vm.drilldownName] = vm.drilldownValue;
-          }
-
-          $.ajax({
-            url: vm.url,
-            data: data,
-            type: 'GET',
-            error: function() {
-              callback();
-            },
-            success: function(res) {
-              callback(res);
+            if (vm.drilldownName && vm.drilldownValue) {
+              query[vm.drilldownName] = vm.drilldownValue;
             }
-          });
-        }
+
+            return query;
+          },
+          dataType: 'json',
+          processResults: function (data, params) {
+            return {
+              results: data.map(function(item) {
+                item.id = item[vm.valueField];
+                item.text = item[vm.labelField];
+
+                return item;
+              })
+            };
+          },
+          cache: false
+        };
       }
 
       var codeField = this.codeField;
 
       if (codeField) {
-        options["render"] = {
-          option: function(data) {
-            return "<span class='selection" + (data.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + data[codeField] + "</span> " + data[options.labelField] + "</span>";
-          },
-          item: function(data) {
-            return "<div class='item'>" + data[codeField] + " - " + data[options.labelField] + "</div>";
+        options.templateSelection = function(state) {
+          if (!state.id) {
+            return state.text;
+           }
+
+          return $("<div class='item'>" + state[codeField] + " - " + state[options.labelField] + "</div>");
+        };
+
+        options.templateResult = function(state) {
+          if (!state.id) {
+            return state.text;
           }
+
+          return $("<span class='selection" + (state.disabled ? ' selection--strikethrough' : '') + "'><span class='option-prefix option-prefix--series'>" + state[codeField] + "</span> " + state[options.labelField] + "</span>");
         };
       }
 
-      $(this.$el).selectize(options).val(this.value).trigger('change').on('change', function () {
+      $(this.$el).select2(options).val(this.value).trigger('change').on('change', function () {
+        console.log(this.value);
         vm.$emit('input', this.value);
       });
 
@@ -537,7 +546,7 @@ $(document).ready(function() {
         return codes.indexOf(this.condition.condition_code) > -1;
       },
       canRemoveComponent: function() {
-        return this.measure_condition_components.length > 1;
+        return this.condition.measure_condition_components.length > 1;
       }
     },
     watch: {

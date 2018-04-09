@@ -1,20 +1,13 @@
-.selection {
+.select2-dropdown .selection {
   display: block;
   padding: 0.5em 0.2em !important;
   padding-left: 3em !important;
   position: relative !important;
 }
 
-.selection--strikethrough {
+.select2-dropdown .selection--strikethrough {
   text-decoration: line-through;
 
-}
-
-.selectize-input .item {
-  white-space: nowrap !important;
-  max-width: 90% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
 }
 
 .option-prefix {
@@ -39,34 +32,39 @@
   }
 }
 
-.option-prefix--type {
-
-}
-
 .origin-select {
   width: 400px;
   max-width: 100%;
   top: -5px;
 }
 
-.selectize-control {
-  font-size: 1.6rem;
-}
-
-.selectize-input {
+.select2-container--bootstrap .select2-selection {
   border-radius: 0 !important;
   border: 2px solid #000 !important;
+}
 
-  &.focus {
-    box-shadow: none !important;
-    outline: 3px solid $focus-colour;
-  }
+.select2-container--bootstrap .select2-selection--single .select2-selection__arrow b {
+  border-top-color: #000;
+}
 
-  input {
-    line-height: 1 !important;
-    height: auto !important;
-    opacity: 1;
-    position: relative;
-    vertical-align: top;
-  }
+.select2-container--bootstrap.select2-container--focus .select2-selection,
+.select2-container--bootstrap.select2-container--open .select2-selection {
+  border-color: #000 !important;
+  box-shadow: none !important;
+  outline: 3px solid $yellow !important;
+}
+
+.select2-container--bootstrap .select2-dropdown  {
+  border-color: #000 !important;
+}
+
+.select2-search__field {
+  border: 2px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.select2-container--bootstrap .select2-selection--single {
+  height: 38px;
+  padding: 8px 24px 8px 12px;
 }
