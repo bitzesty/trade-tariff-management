@@ -63,7 +63,7 @@ Vue.component('custom-select', {
 
       options.onLoad = function(data) {
         if (vm.url && !vm.minLength && vm.value && !vm.firstLoadSelected) {
-          $(vm.$el).find("select").selectize.setValue(vm.value.toString());
+          $(vm.$el).find("select")[0].selectize.setValue(vm.value.toString());
           vm.firstLoadSelected = true;
         }
       };

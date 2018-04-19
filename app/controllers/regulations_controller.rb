@@ -13,7 +13,7 @@ class RegulationsController < ::BaseController
   def create
     puts params
 
-    @form = RegulationForm.new params.require(:regulation_form)
+    @form = RegulationForm.new(nil, params.require(:regulation_form))
 
     render :new
   end

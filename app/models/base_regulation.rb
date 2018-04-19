@@ -59,4 +59,28 @@ class BaseRegulation < Sequel::Model
       description: description
     }
   end
+
+  def normalize
+    {
+      id: base_regulation_id,
+      role: base_regulation_role,
+      information_text: information_text,
+      replacement_indicator: replacement_indicator,
+      validity_start_date: validity_start_date.try(:strftime, "%d/%m/%Y"),
+      validity_end_date: validity_end_date.try(:strftime, "%d/%m/%Y"),
+      effective_end_date: effective_end_date.try(:strftime, "%d/%m/%Y"),
+      regulation_group_id: regulation_group_id,
+      community_code: community_code,
+      officialjournal_number: officialjournal_number,
+      officialjournal_page: officialjournal_page,
+      complete_abrogation_regulation_role: complete_abrogation_regulation_role,
+      complete_abrogation_regulation_id: complete_abrogation_regulation_id,
+      explicit_abrogation_regulation_role: explicit_abrogation_regulation_role,
+      explicit_abrogation_regulation_id: explicit_abrogation_regulation_id,
+      antidumping_regulation_role: antidumping_regulation_role,
+      related_antidumping_regulation_id: related_antidumping_regulation_id,
+      national: national,
+      errors: errors.to_json
+    }
+  end
 end
