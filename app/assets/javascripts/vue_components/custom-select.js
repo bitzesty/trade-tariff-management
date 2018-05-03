@@ -37,7 +37,8 @@ Vue.component('custom-select', {
       valueField: this.valueField,
       labelField: this.labelField,
       allowClear: this.allowClear || false,
-      searchField: [this.valueField, this.codeField, "abbreviation", this.labelField]
+      searchField: [this.valueField, this.codeField, "abbreviation", this.labelField],
+      closeAfterSelect: true
     };
 
     if (this.onChange) {

@@ -1267,7 +1267,7 @@
       $dropdown_parent  = $(settings.dropdownParent || $wrapper);
       $dropdown         = $('<div>').addClass(settings.dropdownClass).addClass(inputMode).hide().appendTo($dropdown_parent);
       $dropdown_content = $('<div>').addClass(settings.dropdownContentClass).appendTo($dropdown);
-      $remove           = $("<span class='clear-selection' title='Clear selection' style='display: none'>&times;</span>");
+      $remove           = $("<span class='clear-selection' title='Clear selection' style='display: none' role='button' tabindex='0'>&times;</span>");
 
       if(inputId = $input.attr('id')) {
         $control_input.attr('id', inputId + '-selectized');
@@ -1848,6 +1848,7 @@
             self.setActiveOption(self.getOption(value));
           }
         // }
+
       }
     },
 
@@ -2927,6 +2928,8 @@
         // See #1164
         if (self.ignoreFocus) {
           self.$control_input.blur(); // close keyboard on iOS
+        } else {
+          self.$remove.focus();
         }
       }
 
