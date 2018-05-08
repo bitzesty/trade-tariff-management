@@ -117,4 +117,5 @@ group :test do
   gem "database_cleaner", github: "theharq/database_cleaner", branch: "sequel-updates"
   gem "rspec_junit_formatter"
   gem 'capybara'
+  gem 'codeclimate-test-reporter', require: nil
 end
