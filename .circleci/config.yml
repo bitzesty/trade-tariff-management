@@ -51,9 +51,9 @@ jobs:
                               --out test_results/rspec.xml \
                               --format progress \
                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
-      # - run:
-      #     name: Run Code Climate Test Coverage Reporter
-      #     command: RAILS_ENV=test CODECLIMATE_REPO_TOKEN=FAKE_TOKEN bundle exec codeclimate-test-reporter
+      - run:
+          name: Run Code Climate Test Coverage Reporter
+          command: "RAILS_ENV=test CODECLIMATE_REPO_TOKEN=${CODECLIMATE_REPO_TOKEN} bundle exec codeclimate-test-reporter"
 
       - deploy:
           command: |
