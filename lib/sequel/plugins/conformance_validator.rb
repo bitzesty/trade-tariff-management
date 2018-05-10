@@ -2,6 +2,7 @@ module Sequel
   module Plugins
     module ConformanceValidator
       def self.configure(model, options = {})
+        puts model
         # Delegations
         model.delegate :conformance_validator, to: model
       end

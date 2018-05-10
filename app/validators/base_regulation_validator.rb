@@ -20,9 +20,41 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
                         allow_blank: true
   end
 
-  # TODO: ROIMB5
-  # TODO: ROIMB6
-  # TODO: ROIMB7
+  validation :ROIMB5, 'If the regulation is replaced, completely or partially, modification is allowed only on the fields "Publication Date", "Official journal Number", "Official journal Page" and "Regulation Group Id".', on: [:update] do |record|
+    if record.replacement_indicator > 0
+      allowed_fields_to_change = [
+        :publication_date,
+        :officialjournal_page,
+        :officialjournal_number,
+        :regulation_group_id,
+        :replacement_indicator
+      ]
+
+      record.changed.all? { |f| allowed_fields_to_change.include?(f) }
+    end
+  end
+
+  validation :ROIMB6, 'If the regulation is abrogated, completely or explicitly, modification is allowed only on the fields "Publication Date", "Official journal Number", "Official journal Page" and "Regulation Group Id".', on: [:update] do
+    if record.complete_abrogation_regulation.present? || record.explicit_abrogation_regulation.present?
+      allowed_fields_to_change = [
+        :publication_date,
+        :officialjournal_page,
+        :officialjournal_number,
+        :regulation_group_id,
+        :complete_abrogation_regulation_id,
+        :complete_abrogation_regulation_role,
+        :explicit_abrogation_regulation_id,
+        :explicit_abrogation_regulation_role
+      ]
+
+      record.changed.all? { |f| allowed_fields_to_change.include?(f) }
+    end
+  end
+
+  validation :ROIMB7, 'If the regulation is prorogated, modification is allowed only on the fields "Publication Date", "Official journal Number", "Official journal Page" and "Regulation Group Id".', on: [:update] do |record|
+
+  end
+
   # TODO: ROIMB48
   # TODO: ROIMB44
   # TODO: ROIMB46

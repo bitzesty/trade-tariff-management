@@ -17,7 +17,7 @@ class MeasureType < Sequel::Model
   one_to_one :measure_type_description, key: :measure_type_id,
                                         foreign_key: :measure_type_id
 
-  one_to_many :measures, key: :measure_type,
+  one_to_many :measures, key: :measure_type_id,
                          foreign_key: :measure_type_id
 
   many_to_one :measure_type_series
@@ -83,6 +83,10 @@ class MeasureType < Sequel::Model
 
   def subrecord_code
     "00".freeze
+  end
+
+  def validate!
+    model.validate(self)
   end
 
   def json_mapping

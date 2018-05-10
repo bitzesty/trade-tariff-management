@@ -8,6 +8,11 @@ class MeasurementUnitQualifier < Sequel::Model
 
   set_primary_key [:measurement_unit_qualifier_code]
 
+  one_to_many :measure_components
+  one_to_many :measure_conditions
+  one_to_many :measure_condition_components
+  one_to_many :quota_definitions
+
   one_to_one :measurement_unit_qualifier_description, key: :measurement_unit_qualifier_code,
                                                       primary_key: :measurement_unit_qualifier_code
 

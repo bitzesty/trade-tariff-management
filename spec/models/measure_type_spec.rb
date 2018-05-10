@@ -8,7 +8,32 @@ describe MeasureType do
     it { should validate_validity_dates }
     # MT4 The referenced measure type series must exist.
     it { should validate_presence.of(:measure_type_series) }
+
+    describe "MT3" do
+      let(:measure_type) { create :measure_type, measure_type_id: "091", validity_start_date: Date.today, validity_end_date: Date.tomorrow }
+      let(:measure) { create :measure, validity_start_date: Date.today, validity_end_date: (Date.today + 10.days), measure_type: measure_type, measure_type_id: measure_type.measure_type_id }
+
+      it "shouldn't allow to use a measure type that doesn't span the validity period of a measure" do
+        puts measure_type.inspect
+        puts measure_type.exists?
+        puts measure.measure_type.inspect
+        expect(measure_type.measures.first).to be(measure)
+        expect(measure_type.valid?).to eq(false)
+      end
+    end
+
+    describe "MT7" do
+      let(:measure_type) { build :measure_type, measure_type_id: "091" }
+      let(:measure) { build :measure, measure_type: measure_type, measure_type_id: measure_type.measure_type_id }
+
+      it "shouldn't allow a measure type to be deleted if it's used by a measure" do
+        measure_type.destroy
+        measure_type.validate
+        expect(measure_type.valid?).to eq(false)
+      end
+    end
   end
+
 
   describe '#excise?' do
     let(:measure_type) { build :measure_type, measure_type_id: measure_type_description.measure_type_id, measure_type_description: measure_type_description }

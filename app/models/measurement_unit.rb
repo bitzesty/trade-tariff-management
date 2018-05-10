@@ -11,6 +11,11 @@ class MeasurementUnit < Sequel::Model
   one_to_one :measurement_unit_description, primary_key: :measurement_unit_code,
                                             key: :measurement_unit_code
 
+  one_to_many :measure_components
+  one_to_many :measure_conditions
+  one_to_many :measure_condition_components
+  one_to_many :quota_definitions
+
   delegate :description, to: :measurement_unit_description
 
   dataset_module do
