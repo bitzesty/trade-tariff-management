@@ -2,7 +2,6 @@ module Sequel
   module Plugins
     module ConformanceValidator
       def self.configure(model, options = {})
-        puts model
         # Delegations
         model.delegate :conformance_validator, to: model
       end
@@ -22,6 +21,25 @@ module Sequel
           conformance_validator.validate_for_operations(self, *operations)
 
           conformant?
+        end
+
+        def valid?
+          super() && conformant?
+        end
+
+        def errors
+          e = super()
+          e.merge!(conformance_errors)
+
+          e
+        end
+
+        def before_destroy
+          puts "BEFORE DESTROY"
+          c = conformant_for?(:destroy)
+          puts c
+
+          c
         end
       end
 

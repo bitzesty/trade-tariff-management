@@ -11,6 +11,7 @@ class MeasureType < Sequel::Model
                         period_end_column:   :measure_types__validity_end_date
   plugin :oplog, primary_key: :measure_type_id
   plugin :conformance_validator
+  plugin :dirty
 
   set_primary_key [:measure_type_id]
 
