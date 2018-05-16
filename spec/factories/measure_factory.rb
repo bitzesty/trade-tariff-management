@@ -12,8 +12,6 @@ FactoryGirl.define do
     end
 
     f.measure_sid  { generate(:measure_sid) }
-    f.measure_generating_regulation_id { generate(:base_regulation_sid) }
-    f.measure_generating_regulation_role { 1 }
     f.additional_code_type_id { Forgery(:basic).text(exactly: 1) }
     f.goods_nomenclature_sid { generate(:goods_nomenclature_sid) }
     f.goods_nomenclature_item_id { 10.times.map{ Random.rand(9) }.join }
@@ -21,6 +19,8 @@ FactoryGirl.define do
     f.geographical_area_id { generate(:geographical_area_id) }
     f.validity_start_date { Date.today.ago(3.years) }
     f.validity_end_date   { nil }
+
+    f.generating_measure { create :base_regulation }
 
     # mandatory valid associations
     f.goods_nomenclature { create :goods_nomenclature, validity_start_date: validity_start_date - 1.day,

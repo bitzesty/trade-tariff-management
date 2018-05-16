@@ -34,12 +34,14 @@ module Sequel
           e
         end
 
-        def before_destroy
-          puts "BEFORE DESTROY"
-          c = conformant_for?(:destroy)
-          puts c
+        def before_save
+          cancel_action unless conformant?
 
-          c
+          super
+        end
+
+        def before_destroy
+          cancel_action unless conformant_for?(:destroy)
         end
       end
 
@@ -54,6 +56,10 @@ module Sequel
 
         def conformance_validator=(conformance_validator)
           @_conformance_validator = conformance_validator
+        end
+
+        def raise_on_save_failure
+          false
         end
       end
     end

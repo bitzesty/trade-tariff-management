@@ -10,11 +10,11 @@ describe MeasureType do
     it { should validate_presence.of(:measure_type_series) }
 
     describe "MT3" do
-      let(:measure_type) { create :measure_type, measure_type_id: "091", validity_start_date: Date.today, validity_end_date: Date.tomorrow }
-      let(:measure) { create :measure, validity_start_date: Date.today, validity_end_date: (Date.today + 10.days), measure_type: measure_type, measure_type_id: measure_type.measure_type_id }
+      let!(:measure_type) { create :measure_type, measure_type_id: "091", validity_start_date: Date.today, validity_end_date: Date.tomorrow }
+      let!(:measure) { create :measure, validity_start_date: Date.today, validity_end_date: (Date.today + 10.days), measure_type: measure_type, measure_type_id: measure_type.measure_type_id }
 
       it "shouldn't allow to use a measure type that doesn't span the validity period of a measure" do
-        measure_type.reload
+        puts measure.inspect
         expect(measure_type.measures.first).to eq(measure)
         expect(measure_type.valid?).to eq(false)
         puts measure_type.errors.full_messages
@@ -26,8 +26,7 @@ describe MeasureType do
       let(:measure) { create :measure, measure_type: measure_type, measure_type_id: measure_type.measure_type_id }
 
       it "shouldn't allow a measure type to be deleted if it's used by a measure" do
-        expect(measure_type.destroy).to eq(false)
-        expect(measure_type.valid?).to eq(false)
+        expect(measure_type.destroy).to be_falsey
         puts measure_type.errors
       end
     end
