@@ -39,8 +39,11 @@ describe MeasureType do
       let(:measure) { create :measure, measure_type: measure_type, measure_type_id: measure_type.measure_type_id }
 
       it "shouldn't allow a measure type to be deleted if it's used by a measure" do
-        expect(measure_type.destroy).to be_falsey
-        puts measure_type.errors
+        measure
+        expect {
+          measure_type.reload.destroy
+        }.to raise_error(Sequel::HookFailed)
+        expect(measure_type.errors).to have_key(:MT7)
       end
     end
   end
