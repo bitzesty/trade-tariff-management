@@ -61,6 +61,9 @@ module Sequel
         def raise_on_save_failure
           false
         end
+        # def raise_on_save_failure
+        #   false
+        # end
       end
     end
   end

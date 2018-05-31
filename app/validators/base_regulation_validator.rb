@@ -63,7 +63,7 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
     end
   end
 
-  validation :ROIMB44, 'The "Regulation Approved Flag" indicates for a draft regulation whether the draft is approved, i.e. the regulation is definitive apart from its publication (only the definitive regulation id and the O.J. reference are not yet known). A draft regulation (regulation id starts with a \'C\') can have its "Regulation Approved Flag" set to 0=\'Not Approved\' or 1=\'Approved\'. Its flag can only change from 0=\'Not Approved\' to 1=\'Approved\'. Any other regulation must have its "Regulation Approved Flag" set to 1=\'Approved\'.', do |record|
+  validation :ROIMB44, 'The "Regulation Approved Flag" indicates for a draft regulation whether the draft is approved, i.e. the regulation is definitive apart from its publication (only the definitive regulation id and the O.J. reference are not yet known). A draft regulation (regulation id starts with a \'C\') can have its "Regulation Approved Flag" set to 0=\'Not Approved\' or 1=\'Approved\'. Its flag can only change from 0=\'Not Approved\' to 1=\'Approved\'. Any other regulation must have its "Regulation Approved Flag" set to 1=\'Approved\'.' do |record|
     if record.base_regulation_id.starts_with?("C")
       !record.column_changed?(:approved_flag) || (record.column_changes["approved_flag"][0] == false && record.column_changes["approved_flag"][1] == true)
     else
@@ -258,10 +258,10 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
   end
 
   validation :ROIMB40, 'A base regulation cannot be deleted if it is used in a relationship provisional anti-dumping or definitive anti-dumping.', on: [:destroy] do |record|
-    return false record.related_antidumping_regulation.present?
+    return false if record.related_antidumping_regulation.present?
   end
 
-  validation :ROIMB41, 'A base regulation cannot be deleted if the regulation is not a draft one (regulation id starts with a 'C') and has related measures.', on: [:destroy] do |record|
+  validation :ROIMB41, 'A base regulation cannot be deleted if the regulation is not a draft one (regulation id starts with a \'C\') and has related measures.', on: [:destroy] do |record|
     !record.base_regulation_id.starts_with?("C") && record.generating_measures.any?
   end
 
@@ -273,7 +273,7 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
     record.complete_abrogation_regulation.blank || record.complete_abrogation_regulation.replacement_indicator == 0
   end
 
-  validation :ROAC6, 'The base regulation may not be a draft regulation (regulation id starts with 'C')' do |record|
+  validation :ROAC6, 'The base regulation may not be a draft regulation (regulation id starts with \'C\')' do |record|
     return false if record.base_regulation_id.starts_with?("C") && record.complete_abrogation_regulation.present?
   end
 
@@ -293,7 +293,7 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
 
   end
 
-  validation :ROAE6, 'The base regulation may not be a draft regulation (regulation id starts with 'C') Rules when a base regulation is explicitly abrogated.' do |record|
+  validation :ROAE6, 'The base regulation may not be a draft regulation (regulation id starts with \'C\') Rules when a base regulation is explicitly abrogated.' do |record|
     return false if record.base_regulation_id.starts_with?("C") && record.explicit_abrogation_regulation.present?
   end
 

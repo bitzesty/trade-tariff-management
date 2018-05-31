@@ -14,7 +14,7 @@ class ModificationRegulationValidator < TradeTariffBackend::Validator
                         allow_blank: true
   end
 
-  validation :ROIMM3, ' A modification regulation must be related with a base regulation, which may not be a draft one (regulation id starts with a 'C')' do |record|
+  validation :ROIMM3, 'A modification regulation must be related with a base regulation, which may not be a draft one (regulation id starts with a \'C\')' do |record|
     return false if record.base_regulation.blank?
 
     !record.base_regulation_id.starts_with?("C")
@@ -187,7 +187,7 @@ class ModificationRegulationValidator < TradeTariffBackend::Validator
 
   end
 
-  validation :ROIMM29, 'A modification regulation cannot be deleted if the regulation is not a draft one (regulation id starts with a 'C') and has related measures.', on: [:destroy] do |record|
+  validation :ROIMM29, 'A modification regulation cannot be deleted if the regulation is not a draft one (regulation id starts with a \'C\') and has related measures.', on: [:destroy] do |record|
     return false if !record.modification_regulation_id.starts_with?("C") &&
                       ( record.justification_measures.any? || record.generating_measures.any? )
   end

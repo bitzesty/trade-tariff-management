@@ -12,6 +12,8 @@ FactoryGirl.define do
     end
 
     f.measure_sid  { generate(:measure_sid) }
+    f.measure_generating_regulation_id { generate(:base_regulation_sid) }
+    f.measure_generating_regulation_role { 1 }
     f.additional_code_type_id { Forgery(:basic).text(exactly: 1) }
     f.goods_nomenclature_sid { generate(:goods_nomenclature_sid) }
     f.goods_nomenclature_item_id { 10.times.map{ Random.rand(9) }.join }
@@ -58,6 +60,11 @@ FactoryGirl.define do
 
     trait :with_measure_type do
       # noop
+    end
+
+    trait :with_justification_regulation do
+      justification_regulation_role  { generate(:sid) }
+      justification_regulation_id    { 2 }
     end
 
     trait :with_modification_regulation do

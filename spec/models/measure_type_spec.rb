@@ -10,14 +10,27 @@ describe MeasureType do
     it { should validate_presence.of(:measure_type_series) }
 
     describe "MT3" do
-      let!(:measure_type) { create :measure_type, measure_type_id: "091", validity_start_date: Date.today, validity_end_date: Date.tomorrow }
-      let!(:measure) { create :measure, validity_start_date: Date.today, validity_end_date: (Date.today + 10.days), measure_type: measure_type, measure_type_id: measure_type.measure_type_id }
+      let(:measure_type) do
+        create :measure_type,
+               measure_type_id: "091",
+               validity_start_date: Date.today,
+               validity_end_date: (Date.today + 10.days)
+      end
+      let(:measure) do
+        create :measure,
+               :with_justification_regulation,
+               validity_start_date: Date.today,
+               validity_end_date: (Date.today + 10.days),
+               measure_type: measure_type,
+               measure_type_id: measure_type.measure_type_id
+      end
 
       it "shouldn't allow to use a measure type that doesn't span the validity period of a measure" do
-        puts measure.inspect
-        expect(measure_type.measures.first).to eq(measure)
+        measure
+        measure_type.reload
+        measure_type.validity_end_date = Date.tomorrow
         expect(measure_type.valid?).to eq(false)
-        puts measure_type.errors.full_messages
+        expect(measure_type.errors).to have_key(:MT3)
       end
     end
 
