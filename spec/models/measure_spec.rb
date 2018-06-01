@@ -11,7 +11,7 @@ describe Measure do
 
   describe '#generating_regulation' do
     let(:measure_of_base_regulation) { create :measure }
-    let(:measure_of_modification_regulation) { create :measure, :with_modification_regulation }
+    let(:measure_of_modification_regulation) { create :measure, :with_abrogated_modification_regulation }
 
     it 'returns relevant regulation that is generating the measure' do
       expect(measure_of_base_regulation.generating_regulation).to eq measure_of_base_regulation.base_regulation
