@@ -43,6 +43,24 @@ describe MeasureType do
         expect(measure_type.conformance_errors).to have_key(:MT7)
       end
     end
+
+    describe "MT10" do
+      let(:measure_type) do
+        create :measure_type,
+               validity_end_date: Date.today + 10.days
+      end
+      let(:measure_type_series) do
+        create :measure_type_series,
+               measure_type_series_id: measure_type.measure_type_series_id,
+               validity_end_date: Date.today + 11.days
+      end
+
+      it "measure type series spans validity period of measure" do
+        measure_type.measure_type_series.validity_end_date = Date.today + 3.days
+        expect(measure_type.conformant?).to be_falsey
+        expect(measure_type.conformance_errors).to have_key(:MT10)
+      end
+    end
   end
 
   describe '#excise?' do
