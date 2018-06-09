@@ -30,6 +30,19 @@ describe MeasureType do
         expect(measure_type.conformance_errors).to have_key(:MT3)
       end
     end
+
+    describe "MT7" do
+      let(:measure_type) { create :measure_type }
+      let(:measure) { create :measure, measure_type_id: measure_type.measure_type_id }
+
+      it "shouldn't allow a measure type to be deleted if it's used by a measure" do
+        measure
+        expect(
+          measure_type.reload.conformant_for?(:destroy)
+        ).to be_falsey
+        expect(measure_type.conformance_errors).to have_key(:MT7)
+      end
+    end
   end
 
   describe '#excise?' do

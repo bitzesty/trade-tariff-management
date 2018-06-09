@@ -23,4 +23,10 @@ class MeasureTypeValidator < TradeTariffBackend::Validator
   validation :MT4, 'The referenced measure type series must exist.', on: [:create, :update] do
     validates :presence, of: :measure_type_series
   end
+
+  validation :MT7,
+             'A measure type can not be deleted if it is used in a measure.',
+             on: [:destroy] do |record|
+    record.measures.none?
+  end
 end
