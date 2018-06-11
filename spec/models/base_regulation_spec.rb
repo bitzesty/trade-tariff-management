@@ -26,5 +26,26 @@ describe BaseRegulation do
         }
       end
     end
+
+    context "ROIMB5" do
+      describe "allows specific fields to be modified" do
+        it "valid" do
+          base_regulation = create :base_regulation
+          base_regulation.officialjournal_page = 12
+          expect(
+            base_regulation.conformant_for?(:update)
+          ).to be_truthy
+        end
+
+        it "invalid" do
+          base_regulation = create :base_regulation,
+                                   complete_abrogation_regulation_role: 8
+          base_regulation.complete_abrogation_regulation_role = 9
+          expect(
+            base_regulation.conformant_for?(:update)
+          ).to be_falsey
+        end
+      end
+    end
   end
 end
