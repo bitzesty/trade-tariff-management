@@ -72,5 +72,25 @@ describe BaseRegulation do
         end
       end
     end
+
+    context "ROIMB48" do
+      it "valid" do
+        base_regulation = create :base_regulation,
+                                 effective_end_date: Date.today + 10.days
+        base_regulation.validity_end_date = Date.today + 5.days
+        expect(
+          base_regulation.conformant_for?(:create)
+        ).to be_truthy
+      end
+
+      it "invalid" do
+        base_regulation = create :base_regulation,
+                                 effective_end_date: Date.today + 10.days
+        base_regulation.validity_end_date = Date.today + 15.days
+        expect(
+          base_regulation.conformant_for?(:create)
+        ).to be_falsey
+      end
+    end
   end
 end
