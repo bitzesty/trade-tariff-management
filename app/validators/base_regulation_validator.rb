@@ -38,7 +38,27 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
     end
   end
 
-  # TODO: ROIMB6
+  validation :ROIMB6,
+             'If the regulation is abrogated, completely or explicitly, modification is allowed only on the fields "Publication Date", "Official journal Number", "Official journal Page" and "Regulation Group Id".',
+             on: [:update] do |record|
+    if record.complete_abrogation_regulation.present? || record.explicit_abrogation_regulation.present?
+      allowed_fields_to_change = [
+        :publication_date,
+        :officialjournal_page,
+        :officialjournal_number,
+        :regulation_group_id,
+        :complete_abrogation_regulation_id,
+        :complete_abrogation_regulation_role,
+        :explicit_abrogation_regulation_id,
+        :explicit_abrogation_regulation_role
+      ]
+
+      record.column_changes.keys.all? do |key|
+        allowed_fields_to_change.include?(key)
+      end
+    end
+  end
+
   # TODO: ROIMB7
   # TODO: ROIMB48
   # TODO: ROIMB44
