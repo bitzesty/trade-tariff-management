@@ -60,7 +60,17 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
   end
 
   # TODO: ROIMB7
-  # TODO: ROIMB48
+
+  validation :ROIMB48,
+             'If the regulation has not been abrogated, the effective end date must be greater than or equal to the base regulation end date if it is explicit.',
+             on: [:create, :update] do |record|
+    return true if record.complete_abrogation_regulation.present? && record.explicit_abrogation_regulation.present?
+
+    if record.effective_end_date.present? && record.validity_end_date.present?
+      record.effective_end_date >= record.validity_end_date
+    end
+  end
+
   # TODO: ROIMB44
   # TODO: ROIMB46
   # TODO: ROIMB47
