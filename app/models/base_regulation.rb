@@ -14,13 +14,9 @@ class BaseRegulation < Sequel::Model
   include ::FormApiHelpers::RegulationSearch
 
   one_to_one :complete_abrogation_regulation,
-             primary_key: [ :complete_abrogation_regulation_id,
-                    :complete_abrogation_regulation_role ],
              key: [ :complete_abrogation_regulation_id,
                     :complete_abrogation_regulation_role ]
   one_to_one :explicit_abrogation_regulation,
-             primary_key: [ :explicit_abrogation_regulation_id,
-                    :explicit_abrogation_regulation_role ],
              key: [ :explicit_abrogation_regulation_id,
                     :explicit_abrogation_regulation_role ]
 
