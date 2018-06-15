@@ -11,8 +11,8 @@ FactoryGirl.define do
       order_number_capture_code { 2 }
     end
 
-    f.measure_sid  { generate(:measure_sid) }
     f.measure_type_id { generate(:measure_type_id) }
+    f.measure_sid  { generate(:measure_sid) }
     f.measure_generating_regulation_id { generate(:base_regulation_sid) }
     f.measure_generating_regulation_role { 1 }
     f.additional_code_type_id { Forgery(:basic).text(exactly: 1) }
@@ -23,16 +23,21 @@ FactoryGirl.define do
     f.validity_start_date { Date.today.ago(3.years) }
     f.validity_end_date   { nil }
 
+    f.generating_measure { create :base_regulation }
+
     # mandatory valid associations
     f.goods_nomenclature { create :goods_nomenclature, validity_start_date: validity_start_date - 1.day,
                                                        goods_nomenclature_item_id: goods_nomenclature_item_id,
                                                        goods_nomenclature_sid: goods_nomenclature_sid,
                                                        producline_suffix: gono_producline_suffix,
                                                        indents: gono_number_indents }
-    f.measure_type { create :measure_type, measure_type_id: measure_type_id,
-                                   validity_start_date: validity_start_date - 1.day,
-                                   measure_explosion_level: type_explosion_level,
-                                   order_number_capture_code: order_number_capture_code }
+    f.measure_type do
+      create :measure_type,
+             measure_type_id: measure_type_id,
+             validity_start_date: validity_start_date - 1.day,
+             measure_explosion_level: type_explosion_level,
+             order_number_capture_code: order_number_capture_code
+    end
     f.geographical_area {
       create(:geographical_area, geographical_area_sid: geographical_area_sid,
                                  geographical_area_id: geographical_area_id,
@@ -59,6 +64,11 @@ FactoryGirl.define do
 
     trait :with_measure_type do
       # noop
+    end
+
+    trait :with_justification_regulation do
+      justification_regulation_role  { generate(:sid) }
+      justification_regulation_id    { 2 }
     end
 
     trait :with_modification_regulation do

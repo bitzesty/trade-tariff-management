@@ -22,6 +22,27 @@ module Sequel
 
           conformant?
         end
+
+        def valid?
+          super() && conformant?
+        end
+
+        def errors
+          e = super()
+          e.merge!(conformance_errors)
+
+          e
+        end
+
+        def before_save
+          cancel_action unless conformant?
+
+          super
+        end
+
+        def before_destroy
+          cancel_action unless conformant_for?(:destroy)
+        end
       end
 
       module ClassMethods
@@ -36,6 +57,13 @@ module Sequel
         def conformance_validator=(conformance_validator)
           @_conformance_validator = conformance_validator
         end
+
+        def raise_on_save_failure
+          false
+        end
+        # def raise_on_save_failure
+        #   false
+        # end
       end
     end
   end

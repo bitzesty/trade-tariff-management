@@ -8,7 +8,46 @@ describe MeasureType do
     it { should validate_validity_dates }
     # MT4 The referenced measure type series must exist.
     it { should validate_presence.of(:measure_type_series) }
+
+    describe "MT3" do
+      let(:measure_type) do
+        create :measure_type,
+               measure_type_id: "091",
+               validity_start_date: Date.today,
+               validity_end_date: (Date.today + 10.days)
+      end
+      let(:measure) do
+        create :measure,
+               :with_justification_regulation,
+               validity_start_date: Date.today,
+               validity_end_date: (Date.today + 10.days),
+               measure_type: measure_type,
+               measure_type_id: measure_type.measure_type_id
+      end
+
+      it "shouldn't allow to use a measure type that doesn't span the validity period of a measure" do
+        measure
+        measure_type.reload
+        measure_type.validity_end_date = Date.tomorrow
+        expect(measure_type.valid?).to eq(false)
+        expect(measure_type.errors).to have_key(:MT3)
+      end
+    end
+
+    describe "MT7" do
+      let(:measure_type) { create :measure_type, measure_type_id: "091" }
+      let(:measure) { create :measure, measure_type: measure_type, measure_type_id: measure_type.measure_type_id }
+
+      it "shouldn't allow a measure type to be deleted if it's used by a measure" do
+        measure
+        expect {
+          measure_type.reload.destroy
+        }.to raise_error(Sequel::HookFailed)
+        expect(measure_type.errors).to have_key(:MT7)
+      end
+    end
   end
+
 
   describe '#excise?' do
     let(:measure_type) { build :measure_type, measure_type_id: measure_type_description.measure_type_id, measure_type_description: measure_type_description }

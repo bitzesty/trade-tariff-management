@@ -8,6 +8,12 @@ class Measurement < Sequel::Model
 
   set_primary_key [:measurement_unit_code, :measurement_unit_qualifier_code]
 
+  one_to_one :measurement_unit, key: :measurement_unit_code,
+                                primary_key: :measurement_unit_code
+
+  one_to_one :measurement_unit_qualifier, key: :measurement_unit_qualifier_code,
+                                          primary_key: :measurement_unit_qualifier_code
+
   def record_code
     "220".freeze
   end

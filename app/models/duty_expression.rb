@@ -12,6 +12,12 @@ class DutyExpression < Sequel::Model
 
   one_to_one :duty_expression_description
 
+  one_to_many :measure_components, key: :duty_expression_id,
+                                   primary_key: :duty_expression_id
+
+  one_to_many :measure_condition_components, key: :duty_expression_id,
+                                             primary_key: :duty_expression_id
+
   delegate :abbreviation, :description, to: :duty_expression_description
 
   def record_code
