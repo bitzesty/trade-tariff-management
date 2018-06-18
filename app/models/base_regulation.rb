@@ -16,9 +16,15 @@ class BaseRegulation < Sequel::Model
   one_to_one :complete_abrogation_regulation,
              key: [ :complete_abrogation_regulation_id,
                     :complete_abrogation_regulation_role ]
+
   one_to_one :explicit_abrogation_regulation,
              key: [ :explicit_abrogation_regulation_id,
                     :explicit_abrogation_regulation_role ]
+
+  one_to_many :generating_measures,
+              class: :Measure,
+              key: [ :measure_generating_regulation_id,
+                     :measure_generating_regulation_role ]
 
   many_to_one :regulation_group
 
