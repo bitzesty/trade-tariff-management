@@ -117,5 +117,31 @@ describe BaseRegulation do
         expect(base_regulation).to be_conformant
       end
     end
+
+    context "ROIMB47" do
+      it "valid" do
+        regulation_group = create :regulation_group,
+                                  validity_start_date: Date.today - 11.days
+        base_regulation = create :base_regulation,
+                                 regulation_group_id: regulation_group.regulation_group_id,
+                                 validity_start_date: Date.today - 10.days
+        expect(
+          base_regulation.conformant_for?(:update)
+        ).to be_truthy
+      end
+
+      it "invalid" do
+        regulation_group = create :regulation_group,
+                                  validity_start_date: Date.today - 11.days,
+                                  validity_end_date: Date.today + 5.days
+        base_regulation = create :base_regulation,
+                                 regulation_group_id: regulation_group.regulation_group_id,
+                                 validity_start_date: Date.today - 10.days,
+                                 validity_end_date: Date.today + 10.days
+        expect(
+          base_regulation.conformant_for?(:update)
+        ).to be_falsey
+      end
+    end
   end
 end

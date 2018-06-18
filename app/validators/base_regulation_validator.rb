@@ -81,7 +81,17 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
   end
 
   # TODO: ROIMB46
-  # TODO: ROIMB47
+
+  validation :ROIMB47,
+             'The validity period of the regulation group id must span the validity period of the base regulation.',
+             on: [:create, :update] do |record|
+    if record.regulation_group.present?
+      record.regulation_group.validity_start_date <= record.validity_start_date &&
+        ((record.regulation_group.validity_end_date.blank? || record.validity_end_date.blank?) ||
+          (record.regulation_group.validity_end_date >= record.validity_end_date))
+    end
+  end
+
   # TODO: ROIMB8
   # TODO: ROIMB9
   # TODO: ROIMB10
