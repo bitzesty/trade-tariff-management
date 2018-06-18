@@ -92,7 +92,17 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
     end
   end
 
-  # TODO: ROIMB8
+  validation :ROIMB8,
+             'Explicit dates of related measures must be within the validity period of the base regulation.' do |record|
+    if record.generating_measures.any?
+      record.generating_measures.all? do |measure|
+        record.validity_start_date <= measure.validity_start_date &&
+        ((record.validity_end_date.blank? || measure.validity_end_date.blank?) ||
+          (record.validity_end_date >= measure.validity_end_date))
+      end
+    end
+  end
+
   # TODO: ROIMB9
   # TODO: ROIMB10
   # TODO: ROIMB11

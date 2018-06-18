@@ -143,5 +143,31 @@ describe BaseRegulation do
         ).to be_falsey
       end
     end
+
+    context "ROIMB8" do
+      it "valid" do
+        measure = create :measure,
+                         :national,
+                         validity_start_date: Date.today - 10.days
+        base_regulation = create :base_regulation,
+                                 base_regulation_id: measure.measure_generating_regulation_id,
+                                 base_regulation_role: measure.measure_generating_regulation_role,
+                                 validity_start_date: Date.today - 11.days
+        expect(base_regulation).to be_conformant
+      end
+
+      it "invalid" do
+        measure = create :measure,
+                         :national,
+                         validity_start_date: Date.today - 10.days,
+                         validity_end_date: Date.today + 10.days
+        base_regulation = create :base_regulation,
+                                 base_regulation_id: measure.measure_generating_regulation_id,
+                                 base_regulation_role: measure.measure_generating_regulation_role,
+                                 validity_start_date: Date.today - 11.days,
+                                 validity_end_date: Date.today + 5.days
+        expect(base_regulation).to_not be_conformant
+      end
+    end
   end
 end
