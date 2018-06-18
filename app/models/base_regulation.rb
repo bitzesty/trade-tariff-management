@@ -20,6 +20,8 @@ class BaseRegulation < Sequel::Model
              key: [ :explicit_abrogation_regulation_id,
                     :explicit_abrogation_regulation_role ]
 
+  many_to_one :regulation_group
+
   def not_completely_abrogated?
     complete_abrogation_regulation.blank?
   end
