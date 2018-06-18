@@ -71,7 +71,15 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
     end
   end
 
-  # TODO: ROIMB44
+  validation :ROIMB44,
+             'The "Regulation Approved Flag" indicates for a draft regulation whether the draft is approved, i.e. the regulation is definitive apart from its publication (only the definitive regulation id and the O.J. reference are not yet known). A draft regulation (regulation id starts with a \'C\') can have its "Regulation Approved Flag" set to 0=\'Not Approved\' or 1=\'Approved\'. Its flag can only change from 0=\'Not Approved\' to 1=\'Approved\'. Any other regulation must have its "Regulation Approved Flag" set to 1=\'Approved\'.' do |record|
+    if record.base_regulation_id.starts_with?("C")
+      !record.column_changed?(:approved_flag) || (record.column_changes[:approved_flag][0] == false && record.column_changes[:approved_flag][1] == true)
+    else
+      record.approved_flag
+    end
+  end
+
   # TODO: ROIMB46
   # TODO: ROIMB47
   # TODO: ROIMB8

@@ -92,5 +92,30 @@ describe BaseRegulation do
         ).to be_falsey
       end
     end
+
+    context "ROIMB44" do
+      it "valid" do
+        base_regulation = create :base_regulation,
+                                 base_regulation_id: "C123",
+                                 approved_flag: false
+        base_regulation.approved_flag = true
+        expect(base_regulation).to be_conformant
+      end
+
+      it "invalid" do
+        base_regulation = create :base_regulation,
+                                 base_regulation_id: "C123",
+                                 approved_flag: true
+        base_regulation.approved_flag = false
+        expect(base_regulation).to_not be_conformant
+      end
+
+      it "approved_flag" do
+        base_regulation = create :base_regulation,
+                                 base_regulation_id: "A123"
+        base_regulation.approved_flag = true
+        expect(base_regulation).to be_conformant
+      end
+    end
   end
 end
