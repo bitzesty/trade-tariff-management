@@ -227,5 +227,36 @@ describe BaseRegulation do
         expect(base_regulation.conformance_errors).to have_key(:ROIMB15)
       end
     end
+
+    context "ROIMB19" do
+      it "valid" do
+        base_regulation = create :base_regulation,
+                                 validity_start_date: Date.today - 10.days
+        modification_regulation = create :modification_regulation,
+                                         base_regulation_id: base_regulation.base_regulation_id,
+                                         base_regulation_role: base_regulation.base_regulation_role,
+                                         validity_start_date: Date.today - 10.days
+        fts_regulation = create :fts_regulation,
+                                full_temporary_stop_regulation_id: modification_regulation.modification_regulation_id,
+                                full_temporary_stop_regulation_role: modification_regulation.modification_regulation_role,
+                                validity_start_date: Date.today - 5.days
+        expect(base_regulation).to be_conformant
+      end
+
+      it "invalid" do
+        base_regulation = create :base_regulation,
+                                 validity_start_date: Date.today - 5.days
+        modification_regulation = create :modification_regulation,
+                                         base_regulation_id: base_regulation.base_regulation_id,
+                                         base_regulation_role: base_regulation.base_regulation_role,
+                                         validity_start_date: Date.today - 5.days
+        fts_regulation = create :fts_regulation,
+                                full_temporary_stop_regulation_id: modification_regulation.modification_regulation_id,
+                                full_temporary_stop_regulation_role: modification_regulation.modification_regulation_role,
+                                validity_start_date: Date.today - 10.days
+        expect(base_regulation).to_not be_conformant
+        expect(base_regulation.conformance_errors).to have_key(:ROIMB19)
+      end
+    end
   end
 end
