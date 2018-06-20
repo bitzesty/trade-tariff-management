@@ -26,6 +26,10 @@ class BaseRegulation < Sequel::Model
               key: [ :measure_generating_regulation_id,
                      :measure_generating_regulation_role ]
 
+  one_to_many :modification_regulations,
+              key: [ :base_regulation_id,
+                     :base_regulation_role ]
+
   many_to_one :regulation_group
 
   def not_completely_abrogated?
