@@ -45,6 +45,7 @@ describe BaseRegulation do
           expect(
             base_regulation.conformant_for?(:update)
           ).to be_falsey
+          expect(base_regulation.conformance_errors).to have_key(:ROIMB5)
         end
       end
     end
@@ -69,6 +70,7 @@ describe BaseRegulation do
           expect(
             base_regulation.conformant_for?(:update)
           ).to be_falsey
+          expect(base_regulation.conformance_errors).to have_key(:ROIMB6)
         end
       end
     end
@@ -90,6 +92,7 @@ describe BaseRegulation do
         expect(
           base_regulation.conformant_for?(:create)
         ).to be_falsey
+        expect(base_regulation.conformance_errors).to have_key(:ROIMB48)
       end
     end
 
@@ -108,6 +111,7 @@ describe BaseRegulation do
                                  approved_flag: true
         base_regulation.approved_flag = false
         expect(base_regulation).to_not be_conformant
+        expect(base_regulation.conformance_errors).to have_key(:ROIMB44)
       end
 
       it "approved_flag" do
@@ -141,6 +145,7 @@ describe BaseRegulation do
         expect(
           base_regulation.conformant_for?(:update)
         ).to be_falsey
+        expect(base_regulation.conformance_errors).to have_key(:ROIMB47)
       end
     end
 
@@ -167,6 +172,7 @@ describe BaseRegulation do
                                  validity_start_date: Date.today - 11.days,
                                  validity_end_date: Date.today + 5.days
         expect(base_regulation).to_not be_conformant
+        expect(base_regulation.conformance_errors).to have_key(:ROIMB8)
       end
     end
 
