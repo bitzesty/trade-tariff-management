@@ -133,7 +133,6 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
   # TODO: ROIMB16
   # TODO: ROIMB17
   # TODO: ROIMB18
-  # TODO: ROIMB20
 
   validation :ROIMB19,
              'The start date of the last FTS in time must be within the validity period of the base regulation if the FTS end date is implicit.' do |record|
@@ -143,6 +142,17 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
           record.validity_end_date.blank? || (
             regulation.last_fts_regulation.validity_start_date <= record.validity_end_date
           )
+        )
+      )
+    end
+  end
+
+  validation :ROIMB20,
+             'The end date of the last FTS in time must be within the validity period of the base regulation if the FTS end date is explicit.' do |record|
+    record.validity_end_date.blank? || record.modification_regulations.all? do |regulation|
+      regulation.last_fts_regulation.blank? || regulation.last_fts_regulation.validity_end_date.blank? || (
+        regulation.last_fts_regulation.validity_end_date >= record.validity_start_date && (
+          regulation.last_fts_regulation.validity_end_date <= record.validity_end_date
         )
       )
     end
