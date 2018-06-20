@@ -118,7 +118,18 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
   # TODO: ROIMB12
   # TODO: ROIMB13
   # TODO: ROIMB14
-  # TODO: ROIMB15
+
+  validation :ROIMB15,
+             'The validity period must span the start date of all related modification regulations.' do |record|
+    record.modification_regulations.all? do |regulation|
+      regulation.validity_start_date >= record.validity_start_date && (
+        record.validity_end_date.blank? || (
+          regulation.validity_start_date <= record.validity_end_date
+        )
+      )
+    end
+  end
+
   # TODO: ROIMB16
   # TODO: ROIMB17
   # TODO: ROIMB18

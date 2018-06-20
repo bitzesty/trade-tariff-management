@@ -204,5 +204,28 @@ describe BaseRegulation do
         expect(base_regulation.conformance_errors).to have_key(:ROIMB11)
       end
     end
+
+    context "ROIMB15" do
+      it "valid" do
+        base_regulation = create :base_regulation,
+                                 validity_start_date: Date.today - 10.days
+        modification_regulation = create :modification_regulation,
+                                         base_regulation_id: base_regulation.base_regulation_id,
+                                         base_regulation_role: base_regulation.base_regulation_role,
+                                         validity_start_date: Date.today - 5.days
+        expect(base_regulation).to be_conformant
+      end
+
+      it "invalid" do
+        base_regulation = create :base_regulation,
+                                 validity_start_date: Date.today - 5.days
+        modification_regulation = create :modification_regulation,
+                                         base_regulation_id: base_regulation.base_regulation_id,
+                                         base_regulation_role: base_regulation.base_regulation_role,
+                                         validity_start_date: Date.today - 10.days
+        expect(base_regulation).to_not be_conformant
+        expect(base_regulation.conformance_errors).to have_key(:ROIMB15)
+      end
+    end
   end
 end
