@@ -106,10 +106,12 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
 
   validation :ROIMB11,
              'The start date of the first PTS in time must be within the validity period of the base regulation. Apply the rule when changing the start date further forward in time.' do |record|
-    if record.generating_measures.any?
-      record.generating_measures.all? do |measure|
-        measure.measure_partial_temporary_stop.blank? || measure.measure_partial_temporary_stop.validity_start_date >= record.validity_start_date
-      end
+    record.generating_measures.all? do |measure|
+      measure.measure_partial_temporary_stop.blank? || (
+        measure.measure_partial_temporary_stop.validity_start_date >= record.validity_start_date && (
+          record.validity_end_date.blank? || measure.measure_partial_temporary_stop.validity_start_date <= record.validity_end_date
+        )
+      )
     end
   end
 
