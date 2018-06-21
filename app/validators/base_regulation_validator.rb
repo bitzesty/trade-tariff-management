@@ -23,7 +23,7 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
   validation :ROIMB5,
              'If the regulation is replaced, completely or partially, modification is allowed only on the fields "Publication Date", "Official journal Number", "Official journal Page" and "Regulation Group Id".',
              on: [:update] do |record|
-    if record.column_changes.present?
+    if record.modification_regulations.any? && record.column_changes.present?
       allowed_fields_to_change = [
         :publication_date,
         :officialjournal_page,

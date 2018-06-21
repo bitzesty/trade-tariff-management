@@ -30,8 +30,15 @@ describe BaseRegulation do
     context "ROIMB5" do
       describe "allows specific fields to be modified" do
         it "valid" do
-          base_regulation = create :base_regulation,
-                                   officialjournal_page: 11
+          base_regulation = create(
+            :base_regulation,
+            officialjournal_page: 11
+          )
+          modification_regulation = create(
+            :modification_regulation,
+            base_regulation_id: base_regulation.base_regulation_id,
+            base_regulation_role: base_regulation.base_regulation_role
+          )
           base_regulation.officialjournal_page = 12
           expect(
             base_regulation.conformant_for?(:update)
@@ -41,6 +48,11 @@ describe BaseRegulation do
         it "invalid" do
           base_regulation = create :base_regulation,
                                    information_text: "AB"
+          modification_regulation = create(
+            :modification_regulation,
+            base_regulation_id: base_regulation.base_regulation_id,
+            base_regulation_role: base_regulation.base_regulation_role
+          )
           base_regulation.information_text = "AC"
           expect(
             base_regulation.conformant_for?(:update)
