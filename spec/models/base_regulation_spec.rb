@@ -295,5 +295,60 @@ describe BaseRegulation do
         expect(base_regulation.conformance_errors).to have_key(:ROIMB20)
       end
     end
+
+    context "ROIMB21" do
+      it "valid" do
+        base_regulation = create(
+          :base_regulation,
+          validity_start_date: Date.today - 10.days
+        )
+        modification_regulation = create(
+          :modification_regulation,
+          base_regulation_id: base_regulation.base_regulation_id,
+          base_regulation_role: base_regulation.base_regulation_role,
+          validity_start_date: Date.today - 10.days
+        )
+        fts_regulation = create(
+          :fts_regulation,
+          full_temporary_stop_regulation_id: modification_regulation.modification_regulation_id,
+          full_temporary_stop_regulation_role: modification_regulation.modification_regulation_role,
+          validity_start_date: Date.today - 5.days
+        )
+        abrogation_regulation = create(
+          :explicit_abrogation_regulation,
+          explicit_abrogation_regulation_id: fts_regulation.full_temporary_stop_regulation_id,
+          explicit_abrogation_regulation_role: fts_regulation.full_temporary_stop_regulation_role,
+          abrogation_date: Date.today - 5.days
+        )
+        expect(base_regulation).to be_conformant
+      end
+
+      it "invalid" do
+        base_regulation = create(
+          :base_regulation,
+          validity_start_date: Date.today - 5.days
+        )
+        modification_regulation = create(
+          :modification_regulation,
+          base_regulation_id: base_regulation.base_regulation_id,
+          base_regulation_role: base_regulation.base_regulation_role,
+          validity_start_date: Date.today - 5.days
+        )
+        fts_regulation = create(
+          :fts_regulation,
+          full_temporary_stop_regulation_id: modification_regulation.modification_regulation_id,
+          full_temporary_stop_regulation_role: modification_regulation.modification_regulation_role,
+          validity_start_date: Date.today - 5.days
+        )
+        abrogation_regulation = create(
+          :explicit_abrogation_regulation,
+          explicit_abrogation_regulation_id: fts_regulation.full_temporary_stop_regulation_id,
+          explicit_abrogation_regulation_role: fts_regulation.full_temporary_stop_regulation_role,
+          abrogation_date: Date.today - 10.days
+        )
+        expect(base_regulation).to_not be_conformant
+        expect(base_regulation.conformance_errors).to have_key(:ROIMB21)
+      end
+    end
   end
 end

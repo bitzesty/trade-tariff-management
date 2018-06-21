@@ -158,7 +158,17 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
     end
   end
 
-  # TODO: ROIMB21
+  validation :ROIMB21,
+             'The abrogation date of the last FTS in time must be within the validity period of the base regulation if the FTS regulation is explicitly abrogated.' do |record|
+    record.modification_regulations.all? do |regulation|
+      regulation.last_fts_regulation.blank? || regulation.last_fts_regulation.explicit_abrogation_regulation.blank? || (
+        regulation.last_fts_regulation.explicit_abrogation_regulation.abrogation_date >= record.validity_start_date && (
+          record.validity_end_date.blank? || regulation.last_fts_regulation.explicit_abrogation_regulation.abrogation_date <= record.validity_end_date
+        )
+      )
+    end
+  end
+
   # TODO: ROIMB22
   # TODO: ROIMB23
   # TODO: ROIMB24
