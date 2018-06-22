@@ -362,5 +362,45 @@ describe BaseRegulation do
         expect(base_regulation.conformance_errors).to have_key(:ROIMB21)
       end
     end
+
+    context "ROIMB22" do
+      it "valid" do
+        measure = create(
+          :measure,
+          :national,
+          validity_start_date: Date.today - 10.days,
+          validity_end_date: Date.today + 10.days
+        )
+        base_regulation = create(
+          :base_regulation,
+          base_regulation_id: measure.measure_generating_regulation_id,
+          base_regulation_role: measure.measure_generating_regulation_role,
+          validity_start_date: Date.today - 11.days,
+          validity_end_date: Date.today + 11.days
+        )
+        expect(base_regulation).to be_conformant
+      end
+
+      it "invalid" do
+        measure = create(
+          :measure,
+          :national,
+          validity_start_date: Date.today - 10.days,
+          validity_end_date: Date.today + 10.days
+        )
+        base_regulation = create(
+          :base_regulation,
+          base_regulation_id: measure.measure_generating_regulation_id,
+          base_regulation_role: measure.measure_generating_regulation_role,
+          validity_start_date: Date.today - 11.days,
+          validity_end_date: Date.today + 11.days
+        )
+        base_regulation.validity_end_date = Date.today + 5.days
+        expect(
+          base_regulation.conformant_for?(:update)
+        ).to be_falsey
+        expect(base_regulation.conformance_errors).to have_key(:ROIMB22)
+      end
+    end
   end
 end
