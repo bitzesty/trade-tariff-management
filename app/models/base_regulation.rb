@@ -24,7 +24,9 @@ class BaseRegulation < Sequel::Model
   one_to_many :generating_measures,
               class: :Measure,
               key: [ :measure_generating_regulation_id,
-                     :measure_generating_regulation_role ]
+                     :measure_generating_regulation_role ] do |ds|
+    ds.with_actual(Measure)
+  end
 
   one_to_many :modification_regulations,
               key: [ :base_regulation_id,
