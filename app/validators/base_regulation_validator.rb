@@ -72,7 +72,7 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
   end
 
   validation :ROIMB44,
-             'The "Regulation Approved Flag" indicates for a draft regulation whether the draft is approved, i.e. the regulation is definitive apart from its publication (only the definitive regulation id and the O.J. reference are not yet known). A draft regulation (regulation id starts with a \'C\') can have its "Regulation Approved Flag" set to 0=\'Not Approved\' or 1=\'Approved\'. Its flag can only change from 0=\'Not Approved\' to 1=\'Approved\'. Any other regulation must have its "Regulation Approved Flag" set to 1=\'Approved\'.' do |record|
+             %{The "Regulation Approved Flag" indicates for a draft regulation whether the draft is approved, i.e. the regulation is definitive apart from its publication (only the definitive regulation id and the O.J. reference are not yet known). A draft regulation (regulation id starts with a 'C') can have its "Regulation Approved Flag" set to 0='Not Approved' or 1='Approved'. Its flag can only change from 0='Not Approved' to 1='Approved'. Any other regulation must have its "Regulation Approved Flag" set to 1='Approved'.} do |record|
     if record.base_regulation_id.starts_with?("C")
       !record.column_changed?(:approved_flag) || (record.column_changes[:approved_flag][0] == false && record.column_changes[:approved_flag][1] == true)
     else
@@ -169,7 +169,21 @@ class BaseRegulationValidator < TradeTariffBackend::Validator
     end
   end
 
-  # TODO: ROIMB22
+  validation :ROIMB22,
+             'Explicit dates of related measures must be within the validity period of the base regulation. Apply the rule when changing the end date further back in time.' do |record|
+    if record.column_changed?(:validity_end_date) && (
+        record.column_changes[:validity_end_date][0].present? && record.column_changes[:validity_end_date][0] > record.column_changes[:validity_end_date][1]
+      )
+      record.generating_measures.all? do |measure|
+        measure.validity_start_date >= record.validity_start_date && (
+          record.validity_end_date.blank? || (
+            measure.validity_end_date <= record.validity_end_date
+          )
+        )
+      end
+    end
+  end
+
   # TODO: ROIMB23
   # TODO: ROIMB24
   # TODO: ROIMB25
