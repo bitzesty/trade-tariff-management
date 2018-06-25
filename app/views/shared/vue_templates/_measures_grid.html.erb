@@ -1,7 +1,7 @@
 <script type="text/x-template" id="measures-grid-template">
   <div class="measures-table-wrapper">
-    <virtual-scroller container-class="measures-table" :items="sorted" :item-height="45" buffer="1000" pool-size="2500" >
-      <div class="table__header" slot="before-content">
+    <div class="measures-table">
+      <div class="table__header">
         <div class="table__column select-all-column">
           <input type="checkbox" class="select-all" value='1' v-model="selectAll" :checked="selectionType == 'all'" />
         </div>
@@ -18,14 +18,17 @@
           <span v-if="!column.sortable">{{column.title}}</span>
         </div>
       </div>
-      <template slot-scope="props">
-        <div class='table__row' :key="props.itemKey" height="45">
-          <div class="table__column select-all-column">
-            <input type="checkbox" name="measures[]" :value="props.item.measure_sid" :checked="(selectionType == 'all' && selectedRows.indexOf(props.item.measure_sid) === -1) || (selectionType == 'none' && selectedRows.indexOf(props.item.measure_sid) > -1)" @change="sendCheckedTrigger" />
+
+      <virtual-scroller container-class="" :items="sorted" :item-height="45" buffer="1000" pool-size="2500" >
+        <template slot-scope="props">
+          <div class='table__row' :key="props.itemKey" height="45">
+            <div class="table__column select-all-column">
+              <input type="checkbox" name="measures[]" :value="props.item.measure_sid" :checked="(selectionType == 'all' && selectedRows.indexOf(props.item.measure_sid) === -1) || (selectionType == 'none' && selectedRows.indexOf(props.item.measure_sid) > -1)" @change="sendCheckedTrigger" />
+            </div>
+            <grid-column v-for="column in enabledColumns" :item="props.item" :column="column.field" :changeProp="column.changeProp"></grid-column>
           </div>
-          <grid-column v-for="column in enabledColumns" :item="props.item" :column="column.field" :changeProp="column.changeProp"></grid-column>
-        </div>
-      </template>
-    </virtual-scroller>
+        </template>
+      </virtual-scroller>
+    </div>
   </div>
 </script>
