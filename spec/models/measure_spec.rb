@@ -844,6 +844,57 @@ describe Measure do
     describe 'ME116' do
       it { should validate_validity_date_span.of(:order_number) }
     end
+
+    describe "ME117" do
+      describe "with quota measure type" do
+        it "valid" do
+          validity_start_date = Date.new(2008,1,1)
+          measure = create :measure,
+                           ordernumber: "090",
+                           order_number_capture_code: 1,
+                           validity_start_date: validity_start_date
+          quota_order_number = create(
+            :quota_order_number,
+            quota_order_number_id: measure.ordernumber,
+            validity_start_date: validity_start_date
+          )
+          quota_order_number_origin = create(
+            :quota_order_number_origin,
+            quota_order_number_sid: quota_order_number.quota_order_number_sid
+          )
+          expect(measure).to be_conformant
+        end
+
+        it "invalid" do
+          validity_start_date = Date.new(2008,1,1)
+          measure = create :measure,
+                           ordernumber: "090",
+                           order_number_capture_code: 1,
+                           validity_start_date: validity_start_date
+          quota_order_number = create(
+            :quota_order_number,
+            quota_order_number_id: measure.ordernumber,
+            validity_start_date: validity_start_date
+          )
+          expect(measure).to_not be_conformant
+          expect(measure.conformance_errors).to have_key(:ME117)
+        end
+      end
+
+      it "ignore order numbers starting with 094" do
+        validity_start_date = Date.new(2008,1,1)
+        measure = create :measure,
+                         ordernumber: "094",
+                         order_number_capture_code: 1,
+                         validity_start_date: validity_start_date
+        quota_order_number = create(
+          :quota_order_number,
+          quota_order_number_id: measure.ordernumber,
+          validity_start_date: validity_start_date
+        )
+        expect(measure).to be_conformant
+      end
+    end
   end
 
   describe '#origin' do

@@ -164,6 +164,16 @@ class MeasureValidator < TradeTariffBackend::Validator
     # Only quota order numbers managed by the first come first served principle are in scope; these order number are starting with '09'; except order numbers starting with '094'
     validates :validity_date_span, of: :order_number
   end
+
+  validation :ME117,
+             %{When a measure has a quota measure type then the origin must exist as a quota order number origin. This rule is only applicable for measures with start date after 31/12/2007. Only origins for quota order numbers managed by the first come first served principle are in scope; these order number are starting with '09'; except order numbers starting with '094'},
+             if: ->(record) {
+               ( record.validity_start_date > Date.new(2007,12,31) ) && (
+                 record.ordernumber.present? && record.ordernumber[0,2] == "09" && record.ordernumber[0,3] != "094"
+               )
+             } do |record|
+    record.quota_order_number.present? && record.quota_order_number.quota_order_number_origin.present?
+  end
 end
 
 # TODO: ME16
