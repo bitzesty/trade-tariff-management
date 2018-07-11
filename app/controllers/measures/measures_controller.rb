@@ -59,9 +59,15 @@ module Measures
 
     def search
       code = search_code
-      ::MeasureService::TrackMeasureSids.new(code).run
+      measure_sids_tracker = ::MeasureService::TrackMeasureSids.new(code)
 
-      redirect_to measures_url(search_code: code)
+      if measure_sids_tracker.valid?
+        measure_sids_tracker.run
+
+        redirect_to measures_url(search_code: code)
+      else
+        redirect_to measures_url
+      end
     end
 
     def create
