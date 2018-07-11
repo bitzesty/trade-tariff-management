@@ -20,6 +20,8 @@ module Measures
       footnotes
     )
 
+    NO_FILTERS_SQL_QUERY = "SELECT * FROM \"measures\" ORDER BY \"validity_start_date\" DESC, \"measure_sid\" DESC"
+
     attr_accessor *([:relation, :search_ops, :page] + ALLOWED_FILTERS)
 
     def initialize(search_ops)
@@ -28,6 +30,32 @@ module Measures
     end
 
     def results(paginated_query=true)
+      setup_sql_query(paginated_query)
+
+      if no_any_filters_applied?
+        #
+        # If there are no any filters applied - then ignore that search.
+        #
+
+        []
+      else
+        if Rails.env.development?
+          p ""
+          p "-" * 100
+          p ""
+          p " search_ops: #{search_ops.inspect}"
+          p ""
+          p " SQL: #{relation.sql}"
+          p ""
+          p "-" * 100
+          p ""
+        end
+
+        relation
+      end
+    end
+
+    def setup_sql_query(paginated_query)
       @relation = Measure.by_start_date_and_measure_sid_reverse
       @relation = relation.page(page) if paginated_query
       @relation = relation.operation_search_jsonb_default if jsonb_search_required?
@@ -41,20 +69,14 @@ module Measures
         instance_variable_set("@#{k}", search_ops[k])
         send("apply_#{k}_filter")
       end
+    end
 
-      if Rails.env.development?
-        p ""
-        p "-" * 100
-        p ""
-        p " search_ops: #{search_ops.inspect}"
-        p ""
-        p " SQL: #{relation.sql}"
-        p ""
-        p "-" * 100
-        p ""
-      end
+    def any_filters_applied?
+      !no_any_filters_applied?
+    end
 
-      relation
+    def no_any_filters_applied?
+      relation.sql == NO_FILTERS_SQL_QUERY
     end
 
     def measure_sids
