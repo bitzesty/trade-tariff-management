@@ -1,7 +1,14 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
-  mount Sidekiq::Web, at: "sidekiq"
+
+  # TODO update once SSO changes
+  admin_constraint = lambda { |request| request.env["warden"].authenticate? and
+    request.env['warden'].user.gds_editor? }
+
+  constraints admin_constraint do
+    mount Sidekiq::Web, at: "sidekiq"
+  end
 
   get 'home/index'
   root to: 'home#index'
