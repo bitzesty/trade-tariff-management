@@ -8,6 +8,12 @@ class ApplicationController < ActionController::Base
   before_action :require_signin_permission!
   around_action :configure_time_machine
 
+  before_action do
+    if current_user && current_user.gds_editor?
+      Rack::MiniProfiler.authorize_request
+    end
+  end
+
   rescue_from Pundit::NotAuthorizedError do |e|
     # Layout and view comes from GDS::SSO::ControllerMethods
     render "authorisations/unauthorised", layout: "unauthorised", status: :forbidden, locals: { message: e.message }

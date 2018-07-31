@@ -86,6 +86,11 @@ gem "lograge", ">= 0.3.6"
 gem "rack-timeout", "~> 0.4"
 gem "bootscale", "~> 0.5", require: false
 
+gem 'rack-mini-profiler'
+gem 'memory_profiler'
+gem 'flamegraph'
+gem 'stackprof'
+
 # We freezed it, as it installs higher version by default,
 # which conflicts with cloud foundary's ruby_buildpack
 # as in new version 'ffi' require 'automake' package
