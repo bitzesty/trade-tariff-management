@@ -1,3 +1,5 @@
+//= require ./conditions-parser
+
 function debounce(func, wait, immediate) {
   var timeout;
   return function() {
@@ -583,6 +585,7 @@ $(document).ready(function() {
             }
 
             var condition = clone(payload.conditions[k]);
+            condition.condition_code = ConditionsParser.getConditionCode(condition);
 
             if (condition.measure_condition_components) {
               var mcc = [];
@@ -718,6 +721,8 @@ $(document).ready(function() {
           payload.conditions = this.measure.conditions.map(function(condition) {
             var c = clone(condition);
 
+            c.condition_code = c.condition_code.substring(0, 1);
+
             c.measure_condition_components = c.measure_condition_components.map(function(component) {
               var c = clone(component);
               if (c.duty_expression_id) {
@@ -795,6 +800,8 @@ $(document).ready(function() {
           payload.conditions = this.measure.conditions.map(function(condition) {
             var c = clone(condition);
 
+            c.condition_code = c.condition_code.substring(0, 1);
+
             c.measure_condition_components = c.measure_condition_components.map(function(component) {
               var c = clone(component);
               if (c.duty_expression_id) {
@@ -862,6 +869,8 @@ $(document).ready(function() {
         try {
           payload.conditions = this.measure.conditions.map(function(condition) {
             var c = clone(condition);
+
+            c.condition_code = c.condition_code.substring(0, 1);
 
             c.measure_condition_components = c.measure_condition_components.map(function(component) {
               var c = clone(component);
