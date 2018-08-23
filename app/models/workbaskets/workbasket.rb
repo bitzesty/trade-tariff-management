@@ -202,7 +202,7 @@ module Workbaskets
       def bulk_edit_collection
         collection_models.map do |db_model|
           db_model.constantize
-                  .by_workbasket(workbasket_id)
+                  .by_workbasket(id)
                   .all
         end.flatten
            .sort do |a, b|

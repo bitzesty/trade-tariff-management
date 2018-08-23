@@ -41,6 +41,8 @@ module WorkbasketValueObjects
           record.national = false
           record.try("approved_flag=", true)
           record.try("stopped_flag=", false)
+
+          assign_unique_sequence_number!
         end
 
         def assign_unique_sequence_number!
