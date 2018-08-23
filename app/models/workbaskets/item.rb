@@ -120,23 +120,16 @@ module Workbaskets
             measure_params
           ).converted_ops
         )
+        @measure.measure_sid = Measure.max(:measure_sid).to_i + 1
 
-        set_oplog_attrs_and_save!(measure)
+        set_oplog_attrs_and_save!(@measure)
       end
 
       def add_duty_expressions!
         measure_components = original_params[:measure_components]
 
-        p ""
-        p " measure_components: #{measure_components.inspect}"
-        p ""
-
         if measure_components.present?
           measure_components.each do |d_ops|
-            p ""
-            p " d_ops: #{d_ops.inspect}"
-            p ""
-
             if d_ops[:duty_expression].present? && d_ops[:duty_expression][:duty_expression_id].present?
               m_component = MeasureComponent.new(
                 { duty_amount: d_ops[:duty_amount] }.merge(unit_ops(d_ops))
@@ -153,10 +146,6 @@ module Workbaskets
       def add_conditions!
         conditions = original_params[:conditions]
 
-        p ""
-        p " conditions: #{conditions.inspect}"
-        p ""
-
         if conditions.present?
           conditions.select do |v|
             v[:measure_condition_code][:condition_code].present?
@@ -164,10 +153,6 @@ module Workbaskets
             v[:measure_condition_code][:condition_code]
           end.map do |k, grouped_ops|
             grouped_ops.each_with_index do |data, index|
-              p ""
-              p " add_condition: index: #{index} data: #{data.inspect}"
-              p ""
-
               add_condition!(index, data)
             end
           end
@@ -251,10 +236,6 @@ module Workbaskets
       end
 
       def unit_ops(data)
-        p ""
-        p " units data: #{data.inspect}"
-        p ""
-
         {
           monetary_unit_code: data[:monetary_unit].present? && data[:monetary_unit].to_s != "null" ? data[:monetary_unit][:monetary_unit_code] : '',
           measurement_unit_code: data[:measurement_unit].present? && data[:measurement_unit].to_s != "null" ? data[:measurement_unit][:measurement_unit_code] : '',

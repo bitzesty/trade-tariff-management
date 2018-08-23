@@ -36,7 +36,7 @@ module WorkbasketValueObjects
           record.added_by_id = ops[:current_admin_id]
           record.status = "awaiting_cross_check"
           record.manual_add = true
-          record.operation = "U"
+          record.operation = "C"
           record.added_at = Time.zone.now
           record.national = false
           record.try("approved_flag=", true)
