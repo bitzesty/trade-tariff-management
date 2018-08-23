@@ -38,14 +38,18 @@ module Measures
     end
 
     def persist!
-      Rails.cache.write("#{ops[:workbasket_id]}_sequence_number", nil)
+      Rails.logger.info ""
+      Rails.logger.info " PERSIST! "
+      Rails.logger.info ""
 
-      workbasket.items.map do |item|
-        item.persist_measure!
-      end
+      # Rails.cache.write("#{ops[:workbasket_id]}_sequence_number", nil)
 
-      workbasket.status = "awaiting_cross_check"
-      workbasket.save
+      # workbasket.items.map do |item|
+      #   item.persist_measure!
+      # end
+
+      # workbasket.status = "awaiting_cross_check"
+      # workbasket.save
     end
 
     def success_response

@@ -98,9 +98,13 @@ module Measures
       end
     end
 
+    expose(:submit_group_for_cross_check) do
+      params[:mode] == "save_group_for_cross_check"
+    end
+
     def update
       if bulk_saver.valid?
-        if params[:submit_cross_check].presen?
+        if submit_group_for_cross_check
           bulk_saver.persist!
         end
 
