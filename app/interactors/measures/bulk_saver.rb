@@ -37,6 +37,17 @@ module Measures
       no_errors?
     end
 
+    def persist!
+      Rails.cache.write("#{ops[:workbasket_id]}_sequence_number", nil)
+
+      workbasket.items.map do |item|
+        item.persist_measure!
+      end
+
+      workbasket.status = "awaiting_cross_check"
+      workbasket.save
+    end
+
     def success_response
       {
         number_of_updated_measures: collection_ops.count,

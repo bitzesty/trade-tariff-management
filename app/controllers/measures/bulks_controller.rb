@@ -100,6 +100,10 @@ module Measures
 
     def update
       if bulk_saver.valid?
+        if params[:submit_cross_check].presen?
+          bulk_saver.persist!
+        end
+
         render json: bulk_saver.success_response,
                status: :ok
       else
