@@ -50,6 +50,7 @@ module Measures
       end
 
       workbasket.status = "awaiting_cross_check"
+      workbasket.operation_date = Date.today + 1.day
       workbasket.save
     end
 
