@@ -16,15 +16,9 @@ module XmlGeneration
     private
 
       def data
-        res = ::Workbaskets::Workbasket.xml_export_collection(
+        ::Workbaskets::Workbasket.xml_export_collection(
           start_date, end_date
         )
-
-        Rails.logger.info ""
-        Rails.logger.info " res: #{res.all.map(&:inspect)}"
-        Rails.logger.info ""
-
-        res
       end
   end
 end

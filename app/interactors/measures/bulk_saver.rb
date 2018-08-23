@@ -35,7 +35,6 @@ module Measures
     def valid?
       validate_collection!
       no_errors?
-      true
     end
 
     def persist!
