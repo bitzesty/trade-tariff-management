@@ -42,7 +42,7 @@ module Measures
       Rails.logger.info " PERSIST! "
       Rails.logger.info ""
 
-      Rails.cache.write("#{ops[:workbasket_id]}_sequence_number", nil)
+      Rails.cache.write("#{workbasket.id}_sequence_number", nil)
 
       workbasket.items.map do |item|
         item.persist_measure!

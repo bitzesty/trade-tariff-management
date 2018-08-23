@@ -26,14 +26,14 @@ window.BulkEditOfMeasuresSaveActions =
       processData: false
       contentType: 'application/json'
       success: (response) ->
-        BulkEditOfMeasuresSaveActions.sendNextBatch(mode)
+        BulkEditOfMeasuresSaveActions.sendNextBatch(mode, response)
       error: (response) ->
         BulkEditOfMeasuresSaveActions.handleErrors(response)
-        BulkEditOfMeasuresSaveActions.sendNextBatch(mode)
+        BulkEditOfMeasuresSaveActions.sendNextBatch(mode, response)
 
     return false
 
-  sendNextBatch: (mode) ->
+  sendNextBatch: (mode, response) ->
     window.__sb_current_batch = window.__sb_current_batch + 1
     if window.__sb_current_batch <= window.__sb_total_pages
 
@@ -44,6 +44,11 @@ window.BulkEditOfMeasuresSaveActions =
       BulkEditOfMeasuresSaveActions.toogleSaveSpinner()
       BulkEditOfMeasuresSaveActions.unlockButtons()
       BulkEditOfMeasuresSaveActions.showSummaryPopup()
+
+      if mode == "save_group_for_cross_check" && response.redirect_url isnt undefined
+        setTimeout (->
+          window.location = response.redirect_url
+        ), 1000
 
     return false
 

@@ -108,8 +108,17 @@ module Measures
           bulk_saver.persist!
         end
 
-        render json: bulk_saver.success_response,
-               status: :ok
+        if submit_group_for_cross_check && params[:final_batch].to_s == "true"
+          render json: {
+            number_of_updated_measures: bulk_saver.collection_ops.count,
+            redirect_url: edit_measures_bulk_url(workbasket.id, search_code: workbasket.search_code, submitted: true),
+            success: :ok
+          }, status: :ok
+
+        else
+          render json: bulk_saver.success_response,
+                 status: :ok
+        end
       else
         render json: bulk_saver.error_response,
                status: :unprocessable_entity
