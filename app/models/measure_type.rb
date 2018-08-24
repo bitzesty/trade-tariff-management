@@ -44,14 +44,17 @@ class MeasureType < Sequel::Model
       if filter_ops[:q].present?
         q_rule = "#{filter_ops[:q]}%"
 
+        excluded_type_ids = %w(122 123 143 146 147)
+
         scope = scope.join_table(:inner,
           :measure_type_descriptions,
           measure_type_id: :measure_type_id
         ).where("
-          measure_types.measure_type_id ilike ? OR
+          (measure_types.measure_type_id ilike ? OR
           measure_types.measure_type_acronym ilike ? OR
-          measure_type_descriptions.description ilike ?",
-          q_rule, q_rule, q_rule
+          measure_type_descriptions.description ilike ?) AND
+          measure_types.measure_type_id NOT IN ?",
+          q_rule, q_rule, q_rule, excluded_type_ids
         )
       end
 
