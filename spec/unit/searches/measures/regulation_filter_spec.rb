@@ -65,6 +65,15 @@ describe "Measure search: regulation filter" do
       expect(res.count).to be_eql(1)
       expect(res[0].measure_sid).to be_eql(c_measure.measure_sid)
 
+      res = search_results(
+        enabled: true,
+        operator: 'is',
+        value: "R157817"
+      )
+
+      expect(res.count).to be_eql(1)
+      expect(res[0].measure_sid).to be_eql(c_measure.measure_sid)
+
       #
       # 'is_not' filter
       #
