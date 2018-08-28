@@ -2626,7 +2626,7 @@ CREATE TABLE public.full_temporary_stop_regulations_oplog (
     officialjournal_page integer,
     validity_start_date timestamp without time zone,
     validity_end_date timestamp without time zone,
-    effective_enddate date,
+    effective_end_date date,
     explicit_abrogation_regulation_role integer,
     explicit_abrogation_regulation_id character varying(8),
     replacement_indicator integer,
@@ -2659,7 +2659,7 @@ CREATE VIEW public.full_temporary_stop_regulations AS
     full_temporary_stop_regulations1.officialjournal_page,
     full_temporary_stop_regulations1.validity_start_date,
     full_temporary_stop_regulations1.validity_end_date,
-    full_temporary_stop_regulations1.effective_enddate,
+    full_temporary_stop_regulations1.effective_end_date,
     full_temporary_stop_regulations1.explicit_abrogation_regulation_role,
     full_temporary_stop_regulations1.explicit_abrogation_regulation_id,
     full_temporary_stop_regulations1.replacement_indicator,
@@ -11468,3 +11468,4 @@ INSERT INTO "schema_migrations" ("filename") VALUES ('20180802084730_add_fields_
 INSERT INTO "schema_migrations" ("filename") VALUES ('20180807180500_add_initial_search_results_code_to_workbaskets.rb');
 INSERT INTO "schema_migrations" ("filename") VALUES ('20180820092723_add_internal_fields_to_duty_expressions.rb');
 INSERT INTO "schema_migrations" ("filename") VALUES ('20180823124148_add_workbasket_type_of_quota_to_quota_definitions.rb');
+INSERT INTO "schema_migrations" ("filename") VALUES ('20180828085635_rename_effective_end_date_column.rb');
