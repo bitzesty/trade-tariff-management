@@ -6,7 +6,7 @@ xml.tag!("oub:full.temporary.stop.regulation") do |full_temporary_stop_regulatio
   xml_data_item_v2(full_temporary_stop_regulation, "officialjournal.page", self.officialjournal_page)
   xml_data_item_v2(full_temporary_stop_regulation, "validity.start.date", self.validity_start_date.strftime("%Y-%m-%d"))
   xml_data_item_v2(full_temporary_stop_regulation, "validity.end.date", self.validity_end_date.try(:strftime, "%Y-%m-%d"))
-  xml_data_item_v2(full_temporary_stop_regulation, "effective.enddate", self.effective_enddate.strftime("%Y-%m-%d"))
+  xml_data_item_v2(full_temporary_stop_regulation, "effective.enddate", self.effective_end_date.strftime("%Y-%m-%d"))
   xml_data_item_v2(full_temporary_stop_regulation, "complete.abrogation.regulation.role", self.complete_abrogation_regulation_role)
   xml_data_item_v2(full_temporary_stop_regulation, "complete.abrogation.regulation.id", self.complete_abrogation_regulation_id)
   xml_data_item_v2(full_temporary_stop_regulation, "explicit.abrogation.regulation.role", self.explicit_abrogation_regulation_role)

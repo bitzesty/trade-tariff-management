@@ -98,13 +98,7 @@ class RegulationParamsNormalizer
 
   def method_effective_end_date(effective_end_date)
     ops = {}
-
-    if reg_params[:role] == "8"
-      ops[:effective_enddate] = effective_end_date
-    else
-      ops[:effective_end_date] = effective_end_date
-    end
-
+    ops[:effective_end_date] = effective_end_date
     ops
   end
 
@@ -256,7 +250,7 @@ class RegulationSaver
     :officialjournal_page,
     :validity_start_date,
     :validity_end_date,
-    :effective_enddate,
+    :effective_end_date,
     :published_date,
     :operation_date
   ]

@@ -4,7 +4,7 @@ FactoryGirl.define do
     full_temporary_stop_regulation_id     { Forgery(:basic).text(exactly: 8) }
     validity_start_date                   { Time.now.ago(2.years) }
     validity_end_date                     { nil }
-    effective_enddate                     { nil }
+    effective_end_date                    { nil }
 
     trait :xml do
       officialjournal_number              "L 120"
@@ -17,7 +17,7 @@ FactoryGirl.define do
       explicit_abrogation_regulation_id   { Forgery(:basic).text(exactly: 8) }
 
       published_date                       { Date.today.ago(14.months) }
-      effective_enddate                    { Date.today.ago(1.years) }
+      effective_end_date                   { Date.today.ago(1.years) }
       validity_end_date                    { Date.today.ago(3.months) }
     end
   end
