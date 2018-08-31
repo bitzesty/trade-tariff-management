@@ -841,6 +841,26 @@ describe Measure do
       end
     end
 
+    describe 'ME105' do
+      let!(:measure1) { create :measure }
+      let!(:measure_condition1) { create :measure_condition, measure_sid: measure1.measure_sid }
+      let!(:measure_condition_component1) { create :measure_condition_component, measure_condition_sid: measure_condition1.measure_condition_sid }
+
+      describe "The reference duty expression must exist" do
+        it "valid" do
+          measure1.status = nil
+          expect(measure1.save).to be_true
+        end
+
+        it "invalid" do
+          measure1.status = nil
+          measure_condition_component1.duty_expression = nil
+
+          expect(measure1.save).to be_false
+        end
+      end
+    end
+
     describe 'ME116' do
       it { should validate_validity_date_span.of(:order_number) }
     end

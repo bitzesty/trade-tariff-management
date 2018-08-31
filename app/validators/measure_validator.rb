@@ -151,8 +151,23 @@ class MeasureValidator < TradeTariffBackend::Validator
        record.export_refund_nomenclature.number_indents <= (record.measure_type.measure_explosion_level))))
   end
 
+  validation :ME105, 'The reference duty expression must exist',
+    on: [:create, :update],
+    if: ->(record) {
+      record.measure_conditions.present? && record.measure_condition_components.present?
+    } do
+      valid = true
+      record.measure_condition_components.each do |mcc|
+        if mcc.duty_expression.blank?
+          valid = false
+        end
+        break if valid == false
+      end
+      valid
+    end
+
   validation :ME115, 'The validity period of the referenced additional code must span the validity period of the measure', on: [:create, :update] do
-    validates :validity_date_span, of: :additional_code
+    validate :validity_date_span, of: :additional_code
   end
 
   validation :ME116, 'When a quota order number is used in a measure then the validity period of the quota order number must span the validity period of the measure.  This rule is only applicable for measures with start date after 31/12/2007.',
