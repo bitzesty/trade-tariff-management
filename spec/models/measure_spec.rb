@@ -842,21 +842,25 @@ describe Measure do
     end
 
     describe 'ME105' do
-      let!(:measure1) { create :measure }
-      let!(:measure_condition1) { create :measure_condition, measure_sid: measure1.measure_sid }
-      let!(:measure_condition_component1) { create :measure_condition_component, measure_condition_sid: measure_condition1.measure_condition_sid }
-
       describe "The reference duty expression must exist" do
+        let!(:measure) { create :measure }
+        let!(:measure_condition) { create :measure_condition, measure_sid: measure.measure_sid }
+        let!(:measure_condition_component) { create :measure_condition_component, measure_condition_sid: measure_condition.measure_condition_sid }
+
         it "valid" do
-          measure1.status = nil
-          expect(measure1.save).to be_true
+          measure.status = nil
+          measure.save!
+          expect(measure).to be_conformant
         end
 
         it "invalid" do
-          measure1.status = nil
-          measure_condition_component1.duty_expression = nil
+          measure.status = nil
+          measure_condition_component.duty_expression = nil
+          measure_condition_component.save!
+          measure.save!
 
-          expect(measure1.save).to be_false
+          expect(measure).to_not be_conformant
+          expect(measure.conformance_errors).to have_key(:ME105)
         end
       end
     end
