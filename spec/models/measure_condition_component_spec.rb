@@ -25,5 +25,29 @@ describe MeasureConditionComponent do
         let(:measurement_unit_qualifier_code) { Forgery(:basic).text(exactly: 1) }
       end
     end
+
+    describe 'Conformance rules' do
+      describe 'ME105' do
+        describe "The reference duty expression must exist" do
+          let!(:measure_condition_component) do
+            create(:measure_condition_component,
+                   duty_expression_id: DutyExpression::MEURSING_DUTY_EXPRESSION_IDS.sample
+            )
+          end
+
+          it "valid" do
+            expect(measure_condition_component).to be_conformant
+          end
+
+          it "invalid" do
+            measure_condition_component.duty_expression_id = nil
+            measure_condition_component.save
+
+            expect(measure_condition_component).to_not be_conformant
+            expect(measure_condition_component.conformance_errors).to have_key(:ME105)
+          end
+        end
+      end
+    end
   end
 end

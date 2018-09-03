@@ -2,6 +2,7 @@ class Measure < Sequel::Model
 
   include ::XmlGeneration::BaseHelper
   include ::WorkbasketHelpers::Association
+  include ::ForceValidatorConcern
 
   VALID_ROLE_TYPE_IDS = [
     1, # Base regulation

@@ -151,26 +151,6 @@ class MeasureValidator < TradeTariffBackend::Validator
        record.export_refund_nomenclature.number_indents <= (record.measure_type.measure_explosion_level))))
   end
 
-  validation :ME105, 'The reference duty expression must exist', on: [:create, :update] do |record|
-    valid = true
-
-    if record.measure_conditions.present?
-      record.measure_conditions.each do |mc|
-        next if mc.measure_condition_components.blank?
-
-        mc.measure_condition_components.each do |mcc|
-          if mcc.duty_expression_id.blank?
-            valid = false
-            break
-          end
-        end
-        break if valid == false
-      end
-    end
-
-    valid
-  end
-
   validation :ME115, 'The validity period of the referenced additional code must span the validity period of the measure', on: [:create, :update] do
     validates :validity_date_span, of: :additional_code
   end

@@ -841,26 +841,6 @@ describe Measure do
       end
     end
 
-    describe 'ME105' do
-      describe "The reference duty expression must exist" do
-        let!(:measure) { create :measure }
-        let!(:measure_condition) { create :measure_condition, measure_sid: measure.measure_sid }
-        let!(:measure_condition_component) { create :measure_condition_component, measure_condition_sid: measure_condition.measure_condition_sid, duty_expression_id: DutyExpression::MEURSING_DUTY_EXPRESSION_IDS.sample }
-
-        it "valid" do
-          expect(measure).to be_conformant
-        end
-
-        it "invalid" do
-          measure_condition_component.duty_expression_id = nil
-          measure_condition_component.save
-
-          expect(measure).to_not be_conformant
-          expect(measure.conformance_errors).to have_key(:ME105)
-        end
-      end
-    end
-
     describe 'ME116' do
       it { should validate_validity_date_span.of(:order_number) }
     end

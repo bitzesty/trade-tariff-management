@@ -2,6 +2,7 @@ class MeasureConditionComponent < Sequel::Model
 
   include ::XmlGeneration::BaseHelper
   include ::WorkbasketHelpers::Association
+  include ::ForceValidatorConcern
 
   plugin :time_machine
   plugin :oplog, primary_key: [:measure_condition_sid,
