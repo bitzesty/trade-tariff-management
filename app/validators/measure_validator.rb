@@ -152,8 +152,6 @@ class MeasureValidator < TradeTariffBackend::Validator
   end
 
   validation :ME105, 'The reference duty expression must exist', on: [:create, :update] do |record|
-    # This validation is not getting called while saving the measure object.
-
     valid = true
 
     if record.measure_conditions.present?
@@ -161,7 +159,7 @@ class MeasureValidator < TradeTariffBackend::Validator
         next if mc.measure_condition_components.blank?
 
         mc.measure_condition_components.each do |mcc|
-          if mcc.duty_expression.blank?
+          if mcc.duty_expression_id.blank?
             valid = false
             break
           end
