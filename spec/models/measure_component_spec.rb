@@ -99,5 +99,31 @@ describe MeasureComponent do
         expect(measure_component.conformance_errors).to have_key(:ME110)
       end
     end
+
+    describe "Flag 'measurement unit' on duty expression is mandatory" do
+      it "ME111: If the flag 'measurement unit' on duty expression is 'mandatory' then a measurement unit must be specified. If the flag is set to 'not permitted' then no measurement unit may be entered." do
+        duty_expression.measurement_unit_applicability_code = 1
+        duty_expression.save
+
+        measure_component.measurement_unit_code = nil
+        measure_component.save
+
+        expect(measure_component).to_not be_conformant
+        expect(measure_component.conformance_errors).to have_key(:ME111)
+      end
+    end
+
+    describe "Flag 'measurement unit' on duty expression is not permitted" do
+      it "ME111: If the flag 'measurement unit' on duty expression is 'mandatory' then a measurement unit must be specified. If the flag is set to 'not permitted' then no measurement unit may be entered." do
+        duty_expression.measurement_unit_applicability_code = 2
+        duty_expression.save
+
+        measure_component.measurement_unit_code = 'TNE'
+        measure_component.save
+
+        expect(measure_component).to_not be_conformant
+        expect(measure_component.conformance_errors).to have_key(:ME111)
+      end
+    end
   end
 end
