@@ -32,9 +32,12 @@ describe MeasureComponent do
     let(:duty_expression_id) { DutyExpression::MEURSING_DUTY_EXPRESSION_IDS.sample }
 
     let!(:duty_expression)   do
-      create :duty_expression,
-        duty_expression_id: duty_expression_id,
-        duty_amount_applicability_code: 1
+      create(:duty_expression,
+             duty_expression_id: duty_expression_id,
+             duty_amount_applicability_code: 1,
+             monetary_unit_applicability_code: 1,
+             measurement_unit_applicability_code: 1
+            )
     end
 
     let!(:measure_component) {
@@ -68,6 +71,32 @@ describe MeasureComponent do
 
         expect(measure_component).to_not be_conformant
         expect(measure_component.conformance_errors).to have_key(:ME109)
+      end
+    end
+
+    describe "Flag 'monetary unit' on duty expression is mandatory" do
+      it "ME110: If the flag 'monetary unit' on duty expression is 'mandatory' then a monetary unit must be specified. If the flag is set to 'not permitted' then no monetary unit may be entered." do
+        duty_expression.monetary_unit_applicability_code = 1
+        duty_expression.save
+
+        measure_component.monetary_unit_code = nil
+        measure_component.save
+
+        expect(measure_component).to_not be_conformant
+        expect(measure_component.conformance_errors).to have_key(:ME110)
+      end
+    end
+
+    describe "Flag 'monetary unit' on duty expression is not permitted" do
+      it "ME110: If the flag 'monetary unit' on duty expression is 'mandatory' then a monetary unit must be specified. If the flag is set to 'not permitted' then no monetary unit may be entered." do
+        duty_expression.monetary_unit_applicability_code = 2
+        duty_expression.save
+
+        measure_component.monetary_unit_code = 'BGN'
+        measure_component.save
+
+        expect(measure_component).to_not be_conformant
+        expect(measure_component.conformance_errors).to have_key(:ME110)
       end
     end
   end
