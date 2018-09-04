@@ -26,4 +26,35 @@ describe MeasureComponent do
       end
     end
   end
+
+  describe 'Conformance rules' do
+    let!(:measure)           { create :measure }
+    let(:duty_expression_id) { DutyExpression::MEURSING_DUTY_EXPRESSION_IDS.sample }
+
+    let!(:duty_expression)   do
+      create :duty_expression,
+        duty_expression_id: duty_expression_id
+    end
+
+    let!(:measure_component) {
+      create(:measure_component,
+             measure_sid: measure.measure_sid,
+             duty_expression_id: duty_expression.duty_expression_id
+      )
+    }
+
+    it "valid" do
+      expect(measure_component).to be_conformant
+    end
+
+    it "ME109: If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered." do
+      measure_component.duty_expression_id = "12"
+      measure_component.duty_amount = nil
+      measure_component.save
+
+      expect(measure_component).to_not be_conformant
+      expect(measure_component.conformance_errors).to have_key(:ME109)
+    end
+  end
+
 end
