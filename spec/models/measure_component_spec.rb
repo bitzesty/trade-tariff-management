@@ -33,7 +33,8 @@ describe MeasureComponent do
 
     let!(:duty_expression)   do
       create :duty_expression,
-        duty_expression_id: duty_expression_id
+        duty_expression_id: duty_expression_id,
+        duty_amount_applicability_code: 1
     end
 
     let!(:measure_component) {
@@ -47,14 +48,27 @@ describe MeasureComponent do
       expect(measure_component).to be_conformant
     end
 
-    it "ME109: If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered." do
-      measure_component.duty_expression_id = "12"
-      measure_component.duty_amount = nil
-      measure_component.save
+    describe "Flag 'amount' on duty expression is mandatory" do
+      it "ME109: If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered." do
+        measure_component.duty_amount = nil
+        measure_component.save
 
-      expect(measure_component).to_not be_conformant
-      expect(measure_component.conformance_errors).to have_key(:ME109)
+        expect(measure_component).to_not be_conformant
+        expect(measure_component.conformance_errors).to have_key(:ME109)
+      end
+    end
+
+    describe "Flag 'amount' on duty expression is not permitted" do
+      it "ME109: If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered." do
+        duty_expression.duty_amount_applicability_code = 2
+        duty_expression.save
+
+        measure_component.duty_amount = 3.0
+        measure_component.save
+
+        expect(measure_component).to_not be_conformant
+        expect(measure_component.conformance_errors).to have_key(:ME109)
+      end
     end
   end
-
 end
