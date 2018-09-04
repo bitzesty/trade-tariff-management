@@ -30,7 +30,6 @@ describe MeasureConditionComponent do
   describe 'Conformance rules' do
     let!(:measure)           { create :measure }
     let!(:measure_condition) { create :measure_condition, measure_sid: measure.measure_sid }
-
     let(:duty_expression_id) { DutyExpression::MEURSING_DUTY_EXPRESSION_IDS.sample }
 
     let!(:duty_expression)   do
@@ -65,5 +64,15 @@ describe MeasureConditionComponent do
       expect(measure_condition_component).to_not be_conformant
       expect(measure_condition_component.conformance_errors).to have_key(:ME106)
     end
+
+    it "ME109: If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered." do
+      measure_condition_component.duty_expression_id = "12"
+      measure_condition_component.duty_amount = nil
+      measure_condition_component.save
+
+      expect(measure_condition_component).to_not be_conformant
+      expect(measure_condition_component.conformance_errors).to have_key(:ME109)
+    end
+
   end
 end
