@@ -13,7 +13,7 @@ class MeasureConditionComponentValidator < TradeTariffBackend::Validator
     record.measure_condition.measure_condition_components.size == 1 && record.duty_expression.present? && (record.duty_expression_description.squish[0] != "+")
   end
 
-  validation :ME108, "The same duty expression can only be used once within condition components of the same condition of the same measure. (i.e. it can be re-used in other conditions, no matter what condition type, of the same measure)", on: [:create, :update] do |record|
+  validation :ME108, "The same duty expression can only be used once within condition components of the same condition of the same measure. (i.e. it can be re-used in other conditions, no matter what condition type, of the same measure)", on: [:create, :update] do
     validates :uniqueness, of: [:measure_condition_sid, :duty_expression_id]
   end
 

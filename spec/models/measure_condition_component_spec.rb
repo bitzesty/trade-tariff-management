@@ -54,6 +54,7 @@ describe MeasureConditionComponent do
       expect(measure_condition_component).to be_conformant
     end
 
+
     it "ME105: The reference duty expression must exist" do
       measure_condition_component.duty_expression_id = nil
       measure_condition_component.save
@@ -77,6 +78,9 @@ describe MeasureConditionComponent do
       expect(measure_condition_component).to_not be_conformant
       expect(measure_condition_component.conformance_errors).to have_key(:ME107)
     end
+
+    # "ME108: The same duty expression can only be used once within condition components of the same condition of the same measure. (i.e. it can be re-used in other conditions, no matter what condition type, of the same measure)"
+    it { should validate_uniqueness.of [:measure_condition_sid, :duty_expression_id] }
 
     describe "Flag 'amount' on duty expression is mandatory" do
       it "ME109: If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered." do
