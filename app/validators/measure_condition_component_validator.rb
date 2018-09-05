@@ -13,6 +13,10 @@ class MeasureConditionComponentValidator < TradeTariffBackend::Validator
     record.measure_condition.measure_condition_components.size == 1 && record.duty_expression.present? && (record.duty_expression_description.squish[0] != "+")
   end
 
+  validation :ME108, "The same duty expression can only be used once within condition components of the same condition of the same measure. (i.e. it can be re-used in other conditions, no matter what condition type, of the same measure)", on: [:create, :update] do |record|
+    validates :uniqueness, of: [:measure_condition_sid, :duty_expression_id]
+  end
+
   validation :ME109, "If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered.", on: [:create, :update] do |record|
     (record.duty_expression_id.present? && record.duty_expression.duty_amount_applicability_code == 1  && record.duty_amount.present?) ||
       (record.duty_expression_id.present? && record.duty_expression.duty_amount_applicability_code == 2  && record.duty_amount.blank?)
