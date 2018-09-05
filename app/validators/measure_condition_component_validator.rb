@@ -9,6 +9,10 @@ class MeasureConditionComponentValidator < TradeTariffBackend::Validator
     validates :validity_date_span, of: :duty_expression
   end
 
+  validation :ME107, "If the short description of a duty expression starts with a '+' then a measure condition component with a preceding duty expression must exist (sequential ascending order) for a condition (at least one, not necessarily the same condition) of the same measure.", on: [:create, :update] do |record|
+    record.measure_condition.measure_condition_components.size == 1 && record.duty_expression.present? && (record.duty_expression_description.squish[0] != "+")
+  end
+
   validation :ME109, "If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered.", on: [:create, :update] do |record|
     (record.duty_expression_id.present? && record.duty_expression.duty_amount_applicability_code == 1  && record.duty_amount.present?) ||
       (record.duty_expression_id.present? && record.duty_expression.duty_amount_applicability_code == 2  && record.duty_amount.blank?)

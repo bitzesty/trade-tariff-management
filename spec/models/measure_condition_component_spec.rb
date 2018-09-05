@@ -41,6 +41,8 @@ describe MeasureConditionComponent do
             )
     end
 
+    let!(:duty_expression_description) { create :duty_expression_description, duty_expression_id: duty_expression_id }
+
     let!(:measure_condition_component) do
       create(:measure_condition_component,
              measure_condition_sid: measure_condition.measure_condition_sid,
@@ -69,6 +71,13 @@ describe MeasureConditionComponent do
       expect(measure_condition_component.conformance_errors).to have_key(:ME106)
     end
 
+    it "ME107: If the short description of a duty expression starts with a '+' then a measure condition component with a preceding duty expression must exist (sequential ascending order) for a condition (at least one, not necessarily the same condition) of the same measure." do
+      allow(measure_condition_component).to receive_messages(duty_expression_description: "+ % or amount")
+
+      expect(measure_condition_component).to_not be_conformant
+      expect(measure_condition_component.conformance_errors).to have_key(:ME107)
+    end
+
     describe "Flag 'amount' on duty expression is mandatory" do
       it "ME109: If the flag 'amount' on duty expression is 'mandatory' then an amount must be specified. If the flag is set to 'not permitted' then no amount may be entered." do
         measure_condition_component.duty_amount = nil
@@ -76,7 +85,6 @@ describe MeasureConditionComponent do
 
         expect(measure_condition_component).to_not be_conformant
         expect(measure_condition_component.conformance_errors).to have_key(:ME109)
-
       end
     end
 
