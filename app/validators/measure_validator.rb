@@ -157,10 +157,20 @@ class MeasureValidator < TradeTariffBackend::Validator
           - a measure-generating regulation, valid on the day after the measure’s (explicit) end date.
         If the measure’s measure-generating regulation is ‘approved’, then so must be the justification regulation" } do |record|
 
-    record.validity_end_date.nil? ||
-      (record.justification_regulation_id == record.measure_generating_regulation_id) ||
-      (record.generating_regulation.present? &&
-       record.generating_regulation.validity_end_date.present? && record.generating_regulation.validity_end_date > record.validity_end_date)
+    valid = true
+
+    # Keeping this code verbose for now (As I am still understanding this code)
+    if record.justification_regulation_id.present? && record.measure_generating_regulation_id.present?
+      valid = record.justification_regulation_id == record.measure_generating_regulation_id
+
+      if record.generating_regulation.present? && record.generating_regulation.validity_end_date.present?
+        valid = record.generating_regulation.validity_end_date > record.validity_end_date
+      else
+        valid = record.validity_end_date.present?
+      end
+    end
+
+    valid
   end
 
   validation :ME115, 'The validity period of the referenced additional code must span the validity period of the measure', on: [:create, :update] do
