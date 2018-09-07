@@ -878,6 +878,33 @@ describe Measure do
       end
     end
 
+    describe "ME113" do
+      let!(:additional_code_type_description) {
+        create(
+          :additional_code_type_description,
+          additional_code_type_id: "4",
+          language_id: "EN",
+          description: "Export refund for processed agricultural goods"
+        )
+      }
+
+      let!(:additional_code_type) {
+        create(
+          :additional_code_type,
+          additional_code_type_id: "1",
+          validity_start_date: Date.yesterday
+        )
+      }
+
+      let!(:measure) { create :measure, additional_code_type_id: additional_code_type.additional_code_type_id }
+
+      it "If the additional code type has as application 'Export Refund for Processed Agricultural Goods' then the additional code must exist as an Export Refund for Processed Agricultural Goods additional code." do
+        expect(measure).to_not be_conformant
+        expect(measure.conformance_errors).to have_key(:ME113)
+      end
+    end
+
+
     describe 'ME116' do
       it { should validate_validity_date_span.of(:order_number) }
     end
