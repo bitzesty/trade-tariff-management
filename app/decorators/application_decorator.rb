@@ -7,6 +7,6 @@ class ApplicationDecorator < Draper::Decorator
   end
 
   def date_format(date)
-    date.try(:strftime, "%d/%m/%Y")
+    date.try(:to_s, :uk)
   end
 end

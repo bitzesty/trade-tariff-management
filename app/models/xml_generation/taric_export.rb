@@ -35,7 +35,7 @@ module XmlGeneration
     private
 
       def mark_export_process_as_started!
-        @extract_start_date_time = Time.now.utc
+        @extract_start_date_time = Time.current
         record.update(state: "G")
       end
 
@@ -47,7 +47,7 @@ module XmlGeneration
         data = ::XmlGeneration::Search.new(
           record.date_filters
         ).result
-        @extract_database_date_time = Time.now.utc
+        @extract_database_date_time = Time.current
 
         @xml_data = renderer.render(data, xml: xml_builder)
       end
@@ -57,7 +57,7 @@ module XmlGeneration
         attach_base_64_version!
         attach_zip_version!
 
-        @extract_end_date_time = Time.now.utc
+        @extract_end_date_time = Time.current
       end
 
       def attach_xml_file!
