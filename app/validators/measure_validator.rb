@@ -151,6 +151,18 @@ class MeasureValidator < TradeTariffBackend::Validator
        record.export_refund_nomenclature.number_indents <= (record.measure_type.measure_explosion_level))))
   end
 
+  validation :ME104,
+    %Q{ "The justification regulation must be either:
+          - the measure’s measure-generating regulation, or
+          - a measure-generating regulation, valid on the day after the measure’s (explicit) end date.
+        If the measure’s measure-generating regulation is ‘approved’, then so must be the justification regulation" } do |record|
+
+    record.validity_end_date.nil? ||
+      (record.justification_regulation_id == record.measure_generating_regulation_id) ||
+      (record.generating_regulation.present? &&
+       record.generating_regulation.validity_end_date.present? && record.generating_regulation.validity_end_date > record.validity_end_date)
+  end
+
   validation :ME115, 'The validity period of the referenced additional code must span the validity period of the measure', on: [:create, :update] do
     validates :validity_date_span, of: :additional_code
   end

@@ -841,6 +841,15 @@ describe Measure do
       end
     end
 
+    describe 'ME104' do
+      #WIP
+      let(:measure1) { create :measure }
+
+      it 'preforms validation' do
+        expect(measure1).to be_conformant
+      end
+    end
+
     describe 'ME116' do
       it { should validate_validity_date_span.of(:order_number) }
     end
