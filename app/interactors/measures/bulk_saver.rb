@@ -47,13 +47,13 @@ module Measures
       end
 
       workbasket.status = "awaiting_cross_check"
-      workbasket.operation_date = Date.today + 1.day
       workbasket.save
     end
 
     def success_response
       {
         number_of_updated_measures: collection_ops.count,
+        collection_sids: collection_sids,
         success: :ok
       }
     end
@@ -73,18 +73,29 @@ module Measures
           )
           item.new_data = measure_params.to_json
 
-          errors = Workbaskets::Workbasket.validate_measure!(measure_params)
+          if item.deleted?
+            item.validation_errors = [].to_json
 
-          if errors.present?
-            errored_columns = Measures::BulkErroredColumnsDetector.new(errors).errored_columns
-            @errors_collection[
-              measure_params[:measure_sid].to_s
-            ] = errored_columns
+          else
+            errors = item.validate_measure!(measure_params)
 
-            item.validation_errors = errored_columns.to_json
+            if errors.present?
+              errored_columns = Measures::BulkErroredColumnsDetector.new(errors).errored_columns
+              @errors_collection[
+                measure_params[:measure_sid].to_s
+              ] = errored_columns
+
+              item.validation_errors = errored_columns.to_json
+            end
           end
 
           item.save
+        end
+      end
+
+      def collection_sids
+        collection_ops.map do |i|
+          i['measure_sid'].to_s
         end
       end
 

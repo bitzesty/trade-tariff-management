@@ -4,39 +4,58 @@ module WorkbasketInteractions
 
       attr_accessor :workbasket_item,
                     :workbasket,
+                    :operation_date,
+                    :existing_measure,
                     :measure
 
       def initialize(workbasket_item)
         @workbasket_item = workbasket_item
         @workbasket = workbasket_item.workbasket
+        @operation_date = workbasket.operation_date.midnight
+        @existing_measure = workbasket_item.record
       end
 
       def persist!
-        add_measure!
-        add_duty_expressions!
-        add_conditions!
-        add_footnotes!
+        end_date_existing_measure!
 
-        measure.set_searchable_data!
+        unless workbasket_item.deleted?
+          add_new_measure!
+          add_duty_expressions!
+          add_conditions!
+          add_footnotes!
+          add_excluded_geographical_areas!
+
+          measure.set_searchable_data!
+        end
       end
 
       private
 
-        def measure_ops
-          @measure_ops ||= ::WorkbasketInteractions::BulkEditOfMeasures::ItemOpsNormalizer.new(
-            workbasket_item.hash_data
-          ).normalized_ops
+        def end_date_existing_measure!
+          existing_measure.validity_end_date = if workbasket_item.deleted?
+            operation_date
+          else
+            (operation_date - 1.day).midnight
+          end
+
+          ::WorkbasketValueObjects::Shared::SystemOpsAssigner.new(
+            existing_measure, system_ops.merge(operation: "U")
+          ).assign!
+
+          existing_measure.save
         end
 
-        def add_measure!
+        def add_new_measure!
           @measure = Measure.new(
             ::Measures::BulkParamsConverter.new(
-              measure_ops
+              existing_measure, measure_ops
             ).converted_ops
           )
-          @measure.measure_sid = Measure.max(:measure_sid).to_i + 1
+          measure.validity_start_date = operation_date
+          measure.measure_sid = Measure.max(:measure_sid).to_i + 1
+          measure.original_measure_sid = existing_measure.measure_sid
 
-          set_oplog_attrs_and_save!(@measure)
+          set_oplog_attrs_and_save!(measure)
         end
 
         def add_duty_expressions!
@@ -52,10 +71,10 @@ module WorkbasketInteractions
         end
 
         def add_conditions!
-          conditions = measure_ops[:conditions]
+          conditions = measure_ops[:measure_conditions]
 
           if conditions.present?
-            ::WorkbasketServices::MeasureAssociationSavers::MeasureComponents.validate_and_persist!(
+            ::WorkbasketServices::MeasureAssociationSavers::Conditions.validate_and_persist!(
               measure,
               system_ops.merge(type_of: :conditions),
               conditions
@@ -64,49 +83,33 @@ module WorkbasketInteractions
         end
 
         def add_footnotes!
-          footnotes_list = measure_ops[:footnotes]
+          footnotes = measure_ops[:footnotes]
 
-          if footnotes_list.present?
-            footnotes_list.each do |f_ops|
-              if f_ops[:footnote_type_id].present? &&
-                 f_ops[:description].present?
-
-                footnote = Footnote.new(
-                  validity_start_date: measure.validity_start_date,
-                  validity_end_date: measure.validity_end_date
-                )
-                footnote.footnote_type_id = f_ops[:footnote_type_id]
-
-                set_oplog_attrs_and_save!(footnote)
-
-                f_m = FootnoteAssociationMeasure.new
-                f_m.measure_sid = measure.measure_sid
-                f_m.footnote_id = footnote.footnote_id
-                f_m.footnote_type_id = f_ops[:footnote_type_id]
-
-                set_oplog_attrs_and_save!(f_m)
-
-                fd_period = FootnoteDescriptionPeriod.new(
-                  validity_start_date: footnote.validity_start_date,
-                  validity_end_date: footnote.validity_end_date
-                )
-                fd_period.footnote_id = footnote.footnote_id
-                fd_period.footnote_type_id = f_ops[:footnote_type_id]
-
-                set_oplog_attrs_and_save!(fd_period)
-
-                fd = FootnoteDescription.new(
-                  language_id: "EN",
-                  description: f_ops[:description]
-                )
-                fd.footnote_id = footnote.footnote_id
-                fd.footnote_type_id = f_ops[:footnote_type_id]
-                fd.footnote_description_period_sid = fd_period.footnote_description_period_sid
-
-                set_oplog_attrs_and_save!(fd)
-              end
-            end
+          if footnotes.present?
+            ::WorkbasketServices::MeasureAssociationSavers::Footnotes.validate_and_persist!(
+              measure,
+              system_ops.merge(type_of: :footnotes),
+              footnotes
+            )
           end
+        end
+
+        def add_excluded_geographical_areas!
+          excluded_geographical_areas = measure_ops[:excluded_geographical_areas]
+
+          if excluded_geographical_areas.present?
+            ::WorkbasketServices::MeasureAssociationSavers::ExcludedGeographicalAreas.validate_and_persist!(
+              measure,
+              system_ops.merge(type_of: :excluded_geographical_areas),
+              excluded_geographical_areas
+            )
+          end
+        end
+
+        def measure_ops
+          @measure_ops ||= ::WorkbasketInteractions::BulkEditOfMeasures::ItemOpsNormalizer.new(
+            workbasket_item.hash_data
+          ).normalized_ops
         end
 
         def set_oplog_attrs_and_save!(record)
@@ -114,27 +117,18 @@ module WorkbasketInteractions
 
           ::WorkbasketValueObjects::Shared::SystemOpsAssigner.new(
             record, system_ops
-          ).send(:assign_bulk_edit_options!)
+          ).assign!
 
           record.save
         end
 
         def system_ops
           {
-            operation_date: Date.today + 1.day,
+            operation_date: operation_date,
             current_admin_id: workbasket.user_id,
-            workbasket_id: workbasket.id
+            workbasket_id: workbasket.id,
+            status: "awaiting_cross_check"
           }
-        end
-
-        def parsed_value(data, parent_field_name, field_name)
-          parent_value = data[parent_field_name]
-
-          if parent_value.present? && parent_value.to_s != "null"
-            parent_value[field_name]
-          else
-            ''
-          end
         end
     end
   end
