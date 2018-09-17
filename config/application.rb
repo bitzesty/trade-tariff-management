@@ -25,6 +25,7 @@ module TradeTariffBackend
 
     # Enable the asset pipeline
     config.assets.enabled = false
+    config.assets.paths << Rails.root.join('vendor', 'assets')
 
     # Configure sequel
     config.sequel.schema_format = :sql

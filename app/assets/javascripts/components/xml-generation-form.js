@@ -5,8 +5,8 @@ window.Parsley.addValidator('minDateTo', {
       return true;
     }
 
-    var date = moment(value, "DD/MM/YYYY", true);
-    var val = moment($(requirement).val(), "DD/MM/YYYY", true);
+    var date = moment(value, "DD/MM/YYYY, h:mm A", false);
+    var val = moment($(requirement).val(), "DD/MM/YYYY, h:mm A", false);
 
     if (!val.isValid() || !date.isValid()) {
       return true;
@@ -26,8 +26,8 @@ window.Parsley.addValidator('maxDateTo', {
       return true;
     }
 
-    var date = moment(value, "DD/MM/YYYY", true);
-    var val = moment($(requirement).val(), "DD/MM/YYYY", true);
+    var date = moment(value, "DD/MM/YYYY, h:mm A", false);
+    var val = moment($(requirement).val(), "DD/MM/YYYY, h:mm A", false);
 
     if (!val.isValid() || !date.isValid()) {
       return true;
@@ -47,7 +47,7 @@ window.Parsley.addValidator('moment', {
       return true;
     }
 
-    var date = moment(value, "DD/MM/YYYY", true);
+    var date = moment(value, "DD/MM/YYYY, h:mm A", false);
 
     return date.isValid();
   },

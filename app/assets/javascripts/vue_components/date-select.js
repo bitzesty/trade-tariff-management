@@ -10,6 +10,7 @@ Vue.component('date-select', {
     var self = this;
 
     new Pikaday({
+      showTime: false,
       field: $(this.$el)[0],
       format: "DD/MM/YYYY",
       blurFieldOnSelect: true
