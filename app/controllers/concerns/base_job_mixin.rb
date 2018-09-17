@@ -39,8 +39,8 @@ module BaseJobMixin
     def date_filters
       ops = {}
 
-      ops[:start_date] = params[:start_date].try(:to_date) || Date.today
-      ops[:end_date] = params[:end_date].try(:to_date) if params[:end_date].present?
+      ops[:start_date] = params[:start_date].try(:to_time) || Date.today
+      ops[:end_date] = params[:end_date].try(:to_time) if params[:end_date].present?
 
       ops
 
