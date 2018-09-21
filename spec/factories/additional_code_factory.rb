@@ -24,13 +24,14 @@ FactoryGirl.define do
   factory :additional_code_description_period do
     additional_code_description_period_sid { generate(:additional_code_sid) }
     additional_code_sid                    { generate(:additional_code_sid) }
-    additional_code_type_id                { Forgery(:basic).text(exactly: 1) }
-    additional_code                        { Forgery(:basic).text(exactly: 3) }
+    additional_code_type_id                { Forgery(:basic).text(exactly: 1, allow_lower: false) }
+    additional_code                        { Forgery(:basic).text(exactly: 3, allow_lower: false) }
     validity_start_date                    { Date.today.ago(2.years) }
     validity_end_date                      { nil }
 
     trait :xml do
       validity_end_date                    { Date.today.ago(1.years) }
+      operation_date                       { Date.today }
     end
   end
 
@@ -59,6 +60,7 @@ FactoryGirl.define do
 
     trait :xml do
       language_id                          { "EN" }
+      operation_date                       { Date.today }
     end
   end
 
