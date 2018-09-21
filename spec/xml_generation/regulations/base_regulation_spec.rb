@@ -34,4 +34,5 @@ describe "BaseRegulation XML generation" do
   end
 
   include_context "xml_generation_record_context"
+  include_context "taric3 xsd context"
 end

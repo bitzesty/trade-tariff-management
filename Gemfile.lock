@@ -880,6 +880,10 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
+    rspec (3.5.0)
+      rspec-core (~> 3.5.0)
+      rspec-expectations (~> 3.5.0)
+      rspec-mocks (~> 3.5.0)
     rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
@@ -897,6 +901,9 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
+    rspec-xsd (0.1.0)
+      nokogiri (~> 1.6)
+      rspec (~> 3)
     rspec_junit_formatter (0.3.0)
       rspec-core (>= 2, < 4, != 2.12.0)
     rubyzip (1.2.2)
@@ -1062,6 +1069,7 @@ DEPENDENCIES
   redis-rails
   responders (~> 2.1, >= 2.1.0)
   rspec-rails (~> 3.5.2)
+  rspec-xsd
   rspec_junit_formatter
   rubyzip (~> 1.2.2)
   sass-rails (= 5.0.6)

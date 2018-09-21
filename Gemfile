@@ -127,4 +127,5 @@ group :test do
   gem 'capybara-selenium'
   gem 'selenium-webdriver'
   gem 'launchy'
+  gem 'rspec-xsd'
 end
