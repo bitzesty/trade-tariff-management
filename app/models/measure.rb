@@ -320,6 +320,7 @@ class Measure < Sequel::Model
 
     if measure_generating_regulation_id.present?
       ops[:regulation_code] = generating_regulation_code
+      ops[:full_regulation_code] = ops[:regulation_code].gsub(/\W/, '')
     end
 
     if workbasket.present?
