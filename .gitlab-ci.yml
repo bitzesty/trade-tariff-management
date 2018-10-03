@@ -1,5 +1,7 @@
+image: ruby:2.5.0
+
 before_script:
-  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+  - apt-get update -qq && apt-get install -y -qq postgres libsqlite3-dev nodejs
   - ruby -v
   - which ruby
   - gem install bundler --no-ri --no-rdoc
@@ -12,3 +14,8 @@ rspec:
 rubocop:
   script:
     - bundle exec rubocop
+
+cache:
+  paths:
+    - vendor/bundle
+    - node_modules
