@@ -1,11 +1,27 @@
 image: ruby:2.5.0
 
 before_script:
-  - apt-get update -qq && apt-get install -y -qq postgres libsqlite3-dev nodejs
+  - sudo apt-get update -qq && sudo apt-get install -y build-essential postgresql libpq-dev nodejs rake
   - ruby -v
   - which ruby
   - gem install bundler --no-ri --no-rdoc
   - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+  - bundle exec rails db:create RAILS_ENV=test
+  - bundle exec rails db:schema:load RAILS_ENV=test
+
+services:
+  - postgres:9.6.2
+
+cache:
+  paths:
+    - vendor/bundle
+    - node_modules
+
+
+variables:
+  BUNDLE_PATH: vendor/bundle
+  DISABLE_SPRING: 1
+  DB_HOST: postgres
 
 rspec:
   script:
@@ -14,8 +30,3 @@ rspec:
 rubocop:
   script:
     - bundle exec rubocop
-
-cache:
-  paths:
-    - vendor/bundle
-    - node_modules
