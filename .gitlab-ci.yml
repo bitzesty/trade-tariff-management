@@ -19,6 +19,11 @@ test:
     - apt-get update -qy
     - apt-get install -y postgresql-client
     - apt-get install -y nodejs
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
     - bundle install --jobs 4 --retry 3 --path vendor
     - RAILS_ENV=test bundle exec rake db:create db:migrate
   script:
