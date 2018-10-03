@@ -2,10 +2,11 @@ image:
   name: ruby:2.5.0
 
 variables:
-  POSTGRES_DB: ci_test
+  POSTGRES_DB: dit_test
   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
 
 services:
+  - name: redis:3.2.7
   - name: postgres:9.6-alpine
     alias: postgres
 
