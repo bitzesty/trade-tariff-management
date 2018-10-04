@@ -1,17 +1,18 @@
 image:
   name: ruby:2.5.0
 
-variables:
-  POSTGRES_DB: dit_test
-  DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
-  SELENIUM_URL: "http://selenium__standalone-chrome:4444/wd/hub"
-
 services:
   - name: redis:3.2.7
     alias: redis
   - name: postgres:9.6-alpine
     alias: postgres
   - selenium/standalone-chrome:latest
+  - blueimp/chromedriver:latest
+
+variables:
+  POSTGRES_DB: dit_test
+  DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+  SELENIUM_URL: "http://selenium__standalone-chrome:4444/wd/hub"
 
 stages:
   - test
