@@ -4,12 +4,13 @@ image:
 variables:
   POSTGRES_DB: dit_test
   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
-  REDISTOGO_URL: redis://127.0.0.1:6379
 
 services:
   - redis:latest
   - name: postgres:9.6-alpine
     alias: postgres
+
+Host: redis
 
 stages:
   - test
