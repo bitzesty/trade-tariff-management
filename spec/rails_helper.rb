@@ -50,16 +50,16 @@ RSpec.configure do |config|
   config.include CapybaraHelper
   config.include Rails.application.routes.url_helpers
 
-  redis = Redis.new(:db => 15)
-  RedisLockDb.redis = redis
+  # redis = Redis.new(:db => 15)
+  # RedisLockDb.redis = redis
 
-  config.before(:suite) do
-    redis.flushdb
-  end
+  # config.before(:suite) do
+  #   redis.flushdb
+  # end
 
-  config.after(:suite) do
-    redis.flushdb
-  end
+  # config.after(:suite) do
+  #   redis.flushdb
+  # end
 
   config.before(:each) do
     Rails.cache.clear
