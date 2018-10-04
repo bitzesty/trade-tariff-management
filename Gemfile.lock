@@ -1,11 +1,4 @@
 GIT
-  remote: git@gitlab.bitzesty.com:open-source/simplecov-rcov.git
-  revision: 5761838cf0357e560d1dfe5669d945f9c0cb22d0
-  specs:
-    simplecov-rcov (0.2.3)
-      simplecov (>= 0.4.1)
-
-GIT
   remote: https://github.com/alphagov/govuk_frontend_toolkit_gem.git
   revision: 9cc9101f3c70f485f1b2d38be174665b79cbc16f
   submodules: true
@@ -949,6 +942,8 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    simplecov-rcov (0.2.3)
+      simplecov (>= 0.4.1)
     sinatra (2.0.2)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -1073,7 +1068,7 @@ DEPENDENCIES
   sidekiq-scheduler (~> 2.1.8)
   simple_form (~> 3.5)
   simplecov (~> 0.14.1)
-  simplecov-rcov!
+  simplecov-rcov
   sinatra (~> 2.0.2)
   slim-rails
   tilt
