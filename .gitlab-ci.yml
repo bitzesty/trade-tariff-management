@@ -4,6 +4,7 @@ image:
 variables:
   POSTGRES_DB: dit_test
   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+  REDISTOGO_URL: redis://redis:6379
 
 services:
   - name: redis:3.2.7
@@ -24,7 +25,10 @@ test:
     - RAILS_ENV=test SCHEMA=db/structure.sql bundle exec rake db:structure:load --trace
   script:
     - RAILS_ENV=test RAILS_DISABLE_TEST_LOG=true bundle exec rspec spec/ --tag '~skip_ci' --format RspecJunitFormatter --out rspec.xml --format progress
-  cache:
-    key: gems-cache
-    paths:
-      - vendor/ruby
+
+cache:
+  key: gems-cache
+  paths:
+    - vendor/ruby
+    - vendor/bundle
+    - node_modules
