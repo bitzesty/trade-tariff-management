@@ -1,6 +1,9 @@
 image:
   name: ruby:2.5.0
 
+image:
+  name: redis:3.2.11
+
 variables:
   POSTGRES_DB: dit_test
   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
@@ -18,8 +21,6 @@ test:
     - apt-get update -qy
     - apt-get install -y postgresql-client
     - apt-get install -y nodejs
-    - apt-get install redis-server
-    - service redis-server start
     - bundle install --jobs 4 --retry 3 --path=cache/bundler
     - RAILS_ENV=test bundle exec rake db:create --trace
     - RAILS_ENV=test SCHEMA=db/structure.sql bundle exec rake db:structure:load --trace
