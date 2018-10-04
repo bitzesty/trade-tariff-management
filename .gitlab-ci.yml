@@ -6,10 +6,8 @@ variables:
   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
 
 services:
-  - name: redis:latest
-    alias: redis
   - name: postgres:9.6-alpine
-    alias: postgres
+  - name: redis:alpine
 
 stages:
   - test
