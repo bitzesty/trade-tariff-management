@@ -7,7 +7,7 @@ variables:
   REDISTOGO_URL: redis://redis:6379
 
 services:
-  - name: redis:3.2.7
+  - redis:latest
   - name: postgres:9.6-alpine
     alias: postgres
 
@@ -20,7 +20,7 @@ test:
     - apt-get update -qy
     - apt-get install -y postgresql-client
     - apt-get install -y nodejs
-    - bundle install --jobs 4 --retry 3 --path vendor
+    - bundle install --jobs 4 --retry 3 --path=cache/bundler
     - RAILS_ENV=test bundle exec rake db:create --trace
     - RAILS_ENV=test SCHEMA=db/structure.sql bundle exec rake db:structure:load --trace
   script:
