@@ -7,7 +7,7 @@ describe QuotaReopeningEvent do
     describe "conformance rules" do
       let!(:quota_reopening_event) { create :quota_reopening_event }
 
-      describe "QEE1: The quota definition SID must exist." do
+      describe "QRE1: The quota definition SID must exist." do
         it "should run validation succssfully" do
           expect(quota_reopening_event).to be_conformant
         end
