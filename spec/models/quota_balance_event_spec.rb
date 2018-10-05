@@ -1,7 +1,9 @@
-require 'rails_helper'
+# frozen_string_literal: true
+
+require "rails_helper"
 
 describe QuotaBalanceEvent do
-  describe '.last' do
+  describe ".last" do
     let!(:balance_event1)    { create :quota_balance_event,
                                       occurrence_timestamp: 3.days.ago }
     let!(:balance_event2)    { create :quota_balance_event,
@@ -9,19 +11,19 @@ describe QuotaBalanceEvent do
     let!(:balance_event3)    { create :quota_balance_event,
                                       occurrence_timestamp: 6.days.ago }
 
-    it 'should order items by desc occurrence_timestamp' do
+    it "should order items by desc occurrence_timestamp" do
       expect(described_class.last).to eq(balance_event2)
     end
   end
 
-  describe '.status' do
+  describe ".status" do
     it "should return 'open' string" do
-      expect(described_class.status).to eq('open')
+      expect(described_class.status).to eq("open")
     end
   end
 
-  describe 'validations' do
-    describe 'conformance rules' do
+  describe "validations" do
+    describe "conformance rules" do
       let!(:balance_event) { create :quota_balance_event,
                              occurrence_timestamp: 3.days.ago }
 
