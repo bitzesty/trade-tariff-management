@@ -97,6 +97,9 @@ $(document).ready(function() {
       },
       hasConformanceErrors: function() {
         return Object.keys(this.conformanceErrors).length > 0;
+      },
+      isGroup: function() {
+        return !!this.types.group.selected;
       }
     },
     methods: {
@@ -138,6 +141,17 @@ $(document).ready(function() {
           validity_end_date: this.geographical_area.validity_end_date,
           operation_date: this.geographical_area.operation_date,
         };
+      },
+      triggerAddMemberships: function() {
+        if (this.isGroup) {
+          this.addingMembers = true;
+        } else {
+          this.addingToGroups = true;
+        }
+      },
+      closePopups: function() {
+        this.addingMembers = false;
+        this.addingToGroups = false;
       }
     }
   });

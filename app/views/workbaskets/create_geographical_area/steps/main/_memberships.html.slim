@@ -10,4 +10,26 @@ fieldset
     | Added items will be shown in the list below. Click an item to change its join or leave date.
     br
 
-  = link_to "Add memberships", "#", class: "button js-geographical-area-manage-memberships"
+  button.button v-on:click.prevent="triggerAddMemberships"
+    | Add memberships
+
+  table.table
+    thead
+      tr
+        th colspan="2"
+          | {{membershipHeadingText}}
+        th
+          | Join date
+        th
+          | Leave date
+    tbody
+      tr v-for="(membership, index) in memberships"
+        td
+          | {{membership.geographical_area_id}}
+        td
+          | {{membership.description}}
+        td
+          | {{membership.validity_start_date}}
+        td
+          | {{membership.validity_end_date}}
+
