@@ -10,26 +10,28 @@ fieldset
     | Added items will be shown in the list below. Click an item to change its join or leave date.
     br
 
-  button.button v-on:click.prevent="triggerAddMemberships"
+  button.button v-on:click.prevent="triggerAddMemberships" :disabled="!this.geographical_area.geographical_code"
     | Add memberships
 
-  table.table
-    thead
-      tr
-        th colspan="2"
-          | {{membershipHeadingText}}
-        th
-          | Join date
-        th
-          | Leave date
-    tbody
-      tr v-for="(membership, index) in memberships"
-        td
-          | {{membership.geographical_area_id}}
-        td
-          | {{membership.description}}
-        td
-          | {{membership.validity_start_date}}
-        td
-          | {{membership.validity_end_date}}
+  .bootstrap-row v-if="this.geographical_area.geographical_code"
+    .col-xs-12.col-sm-12.col-md-8.col-lg-7.col-xl-6
+      table.table
+        thead
+          tr
+            th colspan="2"
+              | {{isGroup ? "Members" : "Is a member of"}}
+            th
+              | Join date
+            th
+              | Leave date
+        tbody
+          tr v-for="(membership, index) in memberships"
+            td
+              | {{membership.geographical_area_id}}
+            td
+              | {{membership.description}}
+            td
+              | {{membership.validity_start_date}}
+            td
+              | {{membership.validity_end_date}}
 

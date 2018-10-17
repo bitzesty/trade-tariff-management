@@ -12,32 +12,15 @@ $(document).ready(function() {
         savedSuccessfully: false,
         errors: {},
         conformanceErrors: {},
-        errorsSummary: ""
+        errorsSummary: "",
+        parentGroupsList: window.__geographical_area_groups_json
       };
-
-      var types = {
-        country: {
-          selected: false
-        },
-        group: {
-          selected: false
-        },
-        region: {
-          selected: false
-        }
-      }
 
       if (!$.isEmptyObject(window.__geographical_area_json)) {
         data.geographical_area = this.parseGeographicalAreaPayload(window.__geographical_area_json);
-
-        if (data.geographical_area.geographical_code) {
-          types[data.geographical_area.geographical_code]['selected'] = true;
-        }
       } else {
         data.geographical_area = this.emptyGeographicalArea();
       }
-
-      data.types = types;
 
       return data;
     },
@@ -99,20 +82,20 @@ $(document).ready(function() {
         return Object.keys(this.conformanceErrors).length > 0;
       },
       isGroup: function() {
-        return !!this.types.group.selected;
+        return this.geographical_area.geographical_code === 'group';
+      },
+      isRegion: function() {
+        return this.geographical_area.geographical_code === 'region';
+      },
+      isCountry: function() {
+        return this.geographical_area.geographical_code === 'country';
       }
     },
     methods: {
       parseGeographicalAreaPayload: function(payload) {
-        return {
-          geographical_code: payload.geographical_code,
-          geographical_area_id: payload.geographical_area_id,
-          parent_geographical_area_group_id: payload.parent_geographical_area_group_id,
-          description: payload.description,
-          validity_start_date: payload.validity_start_date,
-          validity_end_date: payload.validity_end_date,
-          operation_date: payload.operation_date
-        };
+        payload.memberships = objectToArray(payload.memberships);
+
+        return payload;
       },
       emptyGeographicalArea: function() {
         return {
@@ -122,25 +105,12 @@ $(document).ready(function() {
           description: null,
           validity_start_date: null,
           validity_end_date: null,
-          operation_date: null
+          operation_date: null,
+          memberships: []
         }
       },
       createGeographicalAreaMainStepPayLoad: function() {
-        geographical_code = $("input[name='geographical_area[geographical_code]']").val();
-
-        if (geographical_code.length > 0 && geographical_code == 'on') {
-          geographical_code = '';
-        }
-
-        return {
-          geographical_code: geographical_code,
-          geographical_area_id: this.geographical_area.geographical_area_id,
-          parent_geographical_area_group_id: $("select[name='geographical_area[parent_geographical_area_group_id]']").val(),
-          description: this.geographical_area.description,
-          validity_start_date: this.geographical_area.validity_start_date,
-          validity_end_date: this.geographical_area.validity_end_date,
-          operation_date: this.geographical_area.operation_date,
-        };
+        return this.geographical_area;
       },
       triggerAddMemberships: function() {
         if (this.isGroup) {
