@@ -13,6 +13,8 @@ $(document).ready(function() {
         errors: {},
         conformanceErrors: {},
         errorsSummary: "",
+        addingMembers: false,
+        addingToGroups: false,
         parentGroupsList: window.__geographical_area_groups_json
       };
 

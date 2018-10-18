@@ -137,7 +137,9 @@ class GeographicalArea < Sequel::Model
     {
       geographical_area_id: geographical_area_id,
       description: description || '',
-      is_country: is_country?
+      is_country: is_country?,
+      validity_start_date: validity_start_date,
+      validity_end_date: validity_end_date
     }
   end
 
