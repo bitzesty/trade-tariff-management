@@ -15,6 +15,8 @@ $(document).ready(function() {
         errorsSummary: "",
         addingMembers: false,
         addingToGroups: false,
+        sortBy: "geographical_area_id",
+        sortDir: "desc",
         parentGroupsList: window.__geographical_area_groups_json
       };
 
@@ -91,11 +93,80 @@ $(document).ready(function() {
       },
       isCountry: function() {
         return this.geographical_area.geographical_code === 'country';
+      },
+      sortedMemberships: function() {
+        var memberships = this.geographical_area.geographical_area_memberships.slice(0);
+        var sortBy = this.sortBy;
+        var sortDir = this.sortDir;
+
+        memberships.sort(function(a, b) {
+          if (sortBy == "geographical_area_id") {
+            a = a[sortBy];
+            b = b[sortBy];
+
+            if (a == null || a == "-") {
+              return -1;
+            }
+
+            if (b == null || b == "-") {
+              return 1;
+            }
+
+            return ('' + a).localeCompare(b);
+          } else {
+            a = a[sortBy];
+            b = b[sortBy];
+
+            if (a == null || a == "-") {
+              return -1;
+            }
+
+            if (b == null || b == "-") {
+              return 1;
+            }
+
+            return moment(a, "DD MMM YYYY", true).diff(moment(b, "DD MMM YYYY", true), "days");
+          }
+        });
+
+        if (sortDir === "desc") {
+          memberships.reverse();
+        }
+
+        return memberships;
+      }
+    },
+    watch: {
+      "geographical_area.geographical_code": function(val, oldVal) {
+        this.geographical_area.geographical_area_memberships = [];
+
+        if (val == "country" || val == "region") {
+          var ergaOmnes = this.findGeographicalArea("1011");
+          var thirdCountries = this.findGeographicalArea("1008");
+
+          console.log(ergaOmnes, thirdCountries)
+
+          this.geographical_area.geographical_area_memberships.push({
+            geographical_area: ergaOmnes,
+            geographical_area_id: ergaOmnes.geographical_area_id,
+            geographical_area_group_sid: this.geographical_area.geographical_area_id,
+            validity_start_date: this.join_date,
+            validity_end_date: this.leave_date
+          });
+
+          this.geographical_area.geographical_area_memberships.push({
+            geographical_area: thirdCountries,
+            geographical_area_id: thirdCountries.geographical_area_id,
+            geographical_area_group_sid: this.geographical_area.geographical_area_id,
+            validity_start_date: this.join_date,
+            validity_end_date: this.leave_date
+          });
+        }
       }
     },
     methods: {
       parseGeographicalAreaPayload: function(payload) {
-        payload.memberships = objectToArray(payload.memberships);
+        payload.geographical_area_memberships = objectToArray(payload.geographical_area_memberships);
 
         return payload;
       },
@@ -108,7 +179,7 @@ $(document).ready(function() {
           validity_start_date: null,
           validity_end_date: null,
           operation_date: null,
-          memberships: []
+          geographical_area_memberships: []
         }
       },
       createGeographicalAreaMainStepPayLoad: function() {
@@ -124,6 +195,24 @@ $(document).ready(function() {
       closePopups: function() {
         this.addingMembers = false;
         this.addingToGroups = false;
+      },
+      findGeographicalArea: function(code) {
+        for (var area in window.__geographical_area_groups_json) {
+          if (code == area.geographical_area_id) {
+            return area;
+          }
+        }
+
+        return null;
+      },
+      changeSorting: function(field) {
+        if (field !== this.sortBy) {
+          this.sortDir = "desc";
+        } else {
+          this.sortDir = this.sortDir == "desc" ? "asc" : "desc";
+        }
+
+        this.sortBy = field;
       }
     }
   });

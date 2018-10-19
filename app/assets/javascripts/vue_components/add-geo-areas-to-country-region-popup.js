@@ -1,33 +1,35 @@
-Vue.component("add-geo-areas-to-group-popup", {
-  template: "#add-geo-areas-to-group-popup-template",
+Vue.component("add-geo-areas-to-country-region-popup", {
+  template: "#add-geo-areas-to-country-region-popup-template",
   props: ["geographicalArea", "validityStartDate", "onClose", "open"],
   data: function() {
     return {
-      codes: "",
+      memberships: [],
       valid: true,
-      join_date: null,
-      leave_date: null,
       errors: [],
       processing: false
     };
   },
-  computed: {
-    codesArray: function() {
-      return this.codes.replace(/[\.\,\s;:\/\\\n]+/g, " ").match(/\S+/g);
-    },
-    notEnoughInfo: function() {
-      return this.codes.trim().length === 0 ||
-             moment(this.join_date, "DD/MM/YYYY", true).isValid() === false;
-    }
-  },
   mounted: function() {
-    var start = moment(this.validityStartDate, "DD/MM/YYYY", true);
-
-    if (start.isValid()) {
-      this.join_date = this.validityStartDate;
+    if (this.geographicalArea.geographical_area_memberships.length > 0) {
+      this.memberships = this.geographicalArea.geographical_area_memberships.map(function(m) {
+        return clone(m);
+      });
+    } else {
+      this.addMembership();
     }
   },
   methods: {
+    addMembership: function() {
+      var start_date = moment(this.geographicalArea.validity_start_date, "DD/MM/YYYY", true);
+
+      this.memberships.push({
+        geographical_area: this.geographicalArea,
+        geographical_area_id: this.geographicalArea.geographical_area_id,
+        validity_start_date: start_date.isValid() ? this.geographicalArea.validity_start_date : null,
+        validity_end_date: null,
+        geographical_area_group_sid: null
+      });
+    },
     validate: function(resolve, reject) {
       var self = this;
 
@@ -111,7 +113,7 @@ Vue.component("add-geo-areas-to-group-popup", {
 
           var area = areas[k];
 
-          self.geographicalArea.geographical_area_memberships.push({
+          self.geographicalArea.memberships.push({
             geographical_area: area,
             geographical_area_id: area.geographical_area_id,
             geographical_area_group_sid: self.geographicalArea.geographical_area_id,

@@ -1,0 +1,32 @@
+script type="text/x-template" id="add-geo-areas-to-country-region-popup-template"
+  pop-up :open="open" :on-close="triggerClose"
+    template slot="title"
+      | Add this {{geographicalArea.geographical_code}} to geographical area group(s)
+
+    .error-summary role="alert" aria-labelledby="memberships-popup-error-heading" tabindex="-1" v-cloak="" v-if="!valid"
+
+      h2.heading-medium.error-summary-heading#memberships-popup-error-heading
+        | Error
+
+      p
+        | {{errorSummary}}
+
+      p
+        | See individual fields for details.
+
+    info-message
+      | You can add this {{geographicalArea.geographical_code}} to one or more area groups here. It will automatically be added to the parents/ancestors of each group you specify here, so you do not need to do that manually.
+
+    .bootstrap-row.membership-row v-for="(membership, index) in memberships"
+      .col-sm-6
+        custom-select :options" => "groupsList" , "allow-clear" => true, "code-field" => "geographical_area_id", "label-field" => "description", "value-field" => "geographical_area_id", "v-model" => "membership.geographical_area_group_sid", placeholder: "― select group ―", "code-class-name" => "prefix--country"
+      .col-md-3
+        date-select :value.sync="membership.validity_start_date"
+      .col-md-3
+        date-select :value.sync="membership.validity_end_date"
+
+
+    .form-actions
+      button.button @click.prevent="addMemberships" :disabled="notEnoughInfo || processing"
+        | Add memberships
+      a.secondary-button href="#" @click.prevent="onClose" Cancel
