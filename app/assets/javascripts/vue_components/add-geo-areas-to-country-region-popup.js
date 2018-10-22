@@ -6,7 +6,8 @@ Vue.component("add-geo-areas-to-country-region-popup", {
       memberships: [],
       valid: true,
       errors: [],
-      processing: false
+      processing: false,
+      groupsList: window.__geographical_area_groups_json
     };
   },
   mounted: function() {
@@ -54,50 +55,6 @@ Vue.component("add-geo-areas-to-country-region-popup", {
       if (!this.valid) {
         return reject();
       }
-
-      if (moment(this.join_date, "DD/MM/YYYY", true).isValid() === false) {
-        this.errors.join_date = "The join date must be valid";
-        this.valid = false;
-        this.errorSummary = "Memberships could not be added because invalid data has been entered for one or more fields.";
-      }
-
-      if (this.leave_date && moment(this.leave_date, "DD/MM/YYYY", true).isValid() === false) {
-        this.errors.leave_date = "The leave date, if entered, must be valid";
-        this.valid = false;
-        this.errorSummary = "Memberships could not be added because invalid data has been entered for one or more fields.";
-      }
-
-      if (!this.valid) {
-        return reject();
-      }
-
-      $.ajax({
-        type: "GET",
-        url: "/geographical_areas/check_multiple",
-        data: {
-          codes: codesArray
-        },
-        success: function(codes) {
-          codesArray.forEach(function(c) {
-            if (codes[c] == "null" && !self.errors.codes) {
-              self.valid = false;
-
-              self.errors = {
-                codes: "One or more of the codes entered are not recognised – either they are not valid ISO codes or they do not exist in the TAP database (you may need to add a new country or region)."
-              };
-
-              self.errorSummary = "Memberships could not be added because invalid data has been entered for one or more fields.";
-            }
-          });
-
-          if (self.valid) {
-            resolve(codes);
-          } else {
-            reject();
-          }
-        },
-        error: reject
-      });
     },
     addMemberships: function() {
       var self = this;

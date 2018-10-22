@@ -144,8 +144,6 @@ $(document).ready(function() {
           var ergaOmnes = this.findGeographicalArea("1011");
           var thirdCountries = this.findGeographicalArea("1008");
 
-          console.log(ergaOmnes, thirdCountries)
-
           this.geographical_area.geographical_area_memberships.push({
             geographical_area: ergaOmnes,
             geographical_area_id: ergaOmnes.geographical_area_id,
@@ -197,13 +195,17 @@ $(document).ready(function() {
         this.addingToGroups = false;
       },
       findGeographicalArea: function(code) {
-        for (var area in window.__geographical_area_groups_json) {
-          if (code == area.geographical_area_id) {
-            return area;
-          }
+        var ids = window.__geographical_area_groups_json.map(function(m) {
+          return m.geographical_area_id;
+        });
+
+        var index = ids.indexOf(code);
+
+        if (index === -1) {
+          return;
         }
 
-        return null;
+        return window.__geographical_area_groups_json[index];
       },
       changeSorting: function(field) {
         if (field !== this.sortBy) {
