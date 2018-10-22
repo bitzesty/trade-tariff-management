@@ -46,9 +46,11 @@ fieldset
         tbody
           tr v-for="(membership, index) in sortedMemberships"
             td
-              | {{membership.geographical_area_id}}
+              a href="#" role="button" v-on:click.prevent="editMembership(membership)"
+                | {{membership.geographical_area_id}}
             td
-              | {{membership.geographical_area.description}}
+              a href="#" role="button" v-on:click.prevent="editMembership(membership)"
+                | {{membership.geographical_area.description}}
             td
               | {{membership.validity_start_date}}
             td
@@ -57,3 +59,5 @@ fieldset
   add-geo-areas-to-group-popup :validity-start-date="geographical_area.validity_start_date" :geographical-area="geographical_area" :on-close="closePopups" :open="true" v-if="addingMembers"
 
   add-geo-areas-to-country-region-popup :validity-start-date="geographical_area.validity_start_date" :geographical-area="geographical_area" :on-close="closePopups" :open="true" v-if="addingToGroups"
+
+  edit-geographical-area-membership-popup :geographical-area="geographical_area" :membership="editingMembership" :on-close="closePopups" :open="true" v-if="editingMembership !== null"

@@ -15,6 +15,7 @@ $(document).ready(function() {
         errorsSummary: "",
         addingMembers: false,
         addingToGroups: false,
+        editingMembership: null,
         sortBy: "geographical_area_id",
         sortDir: "desc",
         parentGroupsList: window.__geographical_area_groups_json
@@ -193,6 +194,7 @@ $(document).ready(function() {
       closePopups: function() {
         this.addingMembers = false;
         this.addingToGroups = false;
+        this.editingMembership = null;
       },
       findGeographicalArea: function(code) {
         var ids = window.__geographical_area_groups_json.map(function(m) {
@@ -215,6 +217,9 @@ $(document).ready(function() {
         }
 
         this.sortBy = field;
+      },
+      editMembership: function(membership) {
+        this.editingMembership = membership;
       }
     }
   });
