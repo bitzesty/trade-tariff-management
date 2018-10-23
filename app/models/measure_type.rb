@@ -1,6 +1,7 @@
 class MeasureType < Sequel::Model
 
   include ::XmlGeneration::BaseHelper
+  include ::WorkbasketHelpers::Association
   include OwnValidityPeriod
 
   IMPORT_MOVEMENT_CODES = [0, 2]

@@ -52,6 +52,13 @@ module WorkbasketHelper
     end
   end
 
+  def create_measure_type_section_header
+    case current_step
+    when "main"
+      "Add measure type"
+    end
+  end
+
   def create_quota_section_header
     case current_step
     when "main"
@@ -219,6 +226,12 @@ module WorkbasketHelper
         step: :main
       )
 
+    when :create_measure_type
+      edit_measure_type_url(
+        workbasket.id,
+        step: :main
+      )
+
     when :bulk_edit_of_additional_codes
 
       if workbasket.settings.settings["title"].blank?
@@ -308,6 +321,8 @@ module WorkbasketHelper
       edit_certificate_url(workbasket.id)
     when :edit_geographical_area
       edit_geographical_area_url(workbasket.id)
+    when :create_certificate
+      create_certificate_url(workbasket.id)
     end
   end
 end

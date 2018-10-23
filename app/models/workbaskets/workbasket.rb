@@ -11,6 +11,7 @@ module Workbaskets
       :bulk_edit_of_additional_codes,
       :bulk_edit_of_quotas,
       :create_geographical_area,
+      :create_measure_type,
       :create_footnote,
       :edit_footnote,
       :create_certificate,
@@ -102,6 +103,7 @@ module Workbaskets
       create_additional_code
       create_footnote
       create_certificate
+      create_measure_type
     )
 
     EDIT_WORKABSKETS = %w(
@@ -142,11 +144,15 @@ module Workbaskets
 
     one_to_one :create_geographical_area_settings, key: :workbasket_id,
                                                    class_name: "Workbaskets::CreateGeographicalAreaSettings"
+
     one_to_one :create_footnote_settings, key: :workbasket_id,
                                           class_name: "Workbaskets::CreateFootnoteSettings"
 
     one_to_one :create_certificate_settings, key: :workbasket_id,
-                                                   class_name: "Workbaskets::CreateCertificateSettings"
+                                             class_name: "Workbaskets::CreateCertificateSettings"
+
+    one_to_one :create_measure_type_settings, key: :workbasket_id,
+                                              class_name: "Workbaskets::CreateMeasureTypeSettings"
 
     one_to_one :edit_footnote_settings, key: :workbasket_id,
                                         class_name: "Workbaskets::EditFootnoteSettings"
@@ -437,6 +443,8 @@ module Workbaskets
         create_footnote_settings
       when :create_certificate
         create_certificate_settings
+      when :create_measure_type
+        create_measure_type_settings
       when :edit_footnote
         edit_footnote_settings
       when :edit_certificate
@@ -552,6 +560,7 @@ module Workbaskets
           create_geographical_area
           create_footnote
           create_certificate
+          create_measure_type
           edit_footnote
           edit_certificate
           edit_geographical_area
@@ -587,6 +596,8 @@ module Workbaskets
           ::Workbaskets::CreateFootnoteSettings
         when :create_certificate
           ::Workbaskets::CreateCertificateSettings
+        when :create_measure_type
+          ::Workbaskets::CreateMeasureTypeSettings
         when :edit_footnote
           ::Workbaskets::EditFootnoteSettings
         when :edit_certificate
