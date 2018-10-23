@@ -1,0 +1,13 @@
+fieldset
+  h3.heading-medium
+    | What series will this measure type belogn to?
+
+  form-group :errors="errors" error-key="measure_type_series_id"
+    template slot-scope="slotProps"
+      label.form-label
+        span.error-message v-if="slotProps.hasError" v-cloak=""
+          | {{slotProps.error}}
+
+      .bootstrap-row
+        .col-lg-6.col-md-8.col-sm-12.col-xs-12.js-select-measure-type
+          = content_tag "custom-select", "", { ":options" => "measure_type_series_list" , "allow-clear" => true, "code-field" => "measure_type_series_id", "label-field" => "description", "value-field" => "measure_type_series_id", "v-model" => "measure_type.measure_type_series_id", placeholder: "― select measure type ―", "name" => "measure_type[measure_type_seriries_id]", "code-class-name" => "prefix--country" }
