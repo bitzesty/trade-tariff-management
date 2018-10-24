@@ -37,7 +37,7 @@ module WorkbasketInteractions
       end
 
       def fetch_errors
-        check_measure_type_serries_id!
+        check_measure_type_series_id!
         check_measure_type_id!
         check_description!
         check_validity_period!
@@ -52,9 +52,9 @@ module WorkbasketInteractions
 
       private
 
-        def check_measure_type_serries_id!
-          if measure_type_serries_id.blank?
-            @errors[:measure_type_serries_id] = errors_translator(:measure_type_serries_id_blank)
+        def check_measure_type_series_id!
+          if measure_type_series_id.blank?
+            @errors[:measure_type_series_id] = errors_translator(:measure_type_series_id_blank)
             @errors_summary = errors_translator(:summary_minimal_required_fields)
           end
         end
@@ -63,6 +63,21 @@ module WorkbasketInteractions
           if measure_type_id.blank?
             @errors[:measure_type_id] = errors_translator(:measure_type_id_blank)
             @errors_summary = errors_translator(:summary_minimal_required_fields)
+          else
+            if [3, 6].exclude? measure_type_id.size
+              @errors[:measure_type_id] = errors_translator(:measure_type_id_size)
+              @errors_summary = errors_translator(:summary_invalid_data)
+            end
+
+            if !string_is_numeric?(measure_type_id)
+              @errors[:measure_type_id] = errors_translator(:measure_type_id_not_numeric)
+              @errors_summary = errors_translator(:summary_invalid_data)
+            end
+
+            if MeasureType.where(measure_type_series_id: measure_type_series_id, measure_type_id: measure_type_id).present?
+              @errors[:measure_type_id] = errors_translator(:measure_type_id_unique)
+              @errors_summary = errors_translator(:summary_invalid_data)
+            end
           end
         end
 
@@ -117,6 +132,10 @@ module WorkbasketInteractions
 
             nil
           end
+        end
+
+        def string_is_numeric?
+          Float(self) != nil rescue false
         end
     end
   end
