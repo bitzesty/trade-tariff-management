@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WorkbasketForms
   class CreateMeasureTypeForm
     extend ActiveModel::Naming
@@ -9,7 +11,6 @@ module WorkbasketForms
                   :operation_date,
                   :validity_start_date,
                   :validity_end_date
-
 
     def measure_type_series_list
       MeasureTypeSeries.actual.map do |mts|

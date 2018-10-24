@@ -1,5 +1,5 @@
 = render "workbaskets/shared/edit_base", subheader: link_to("(find and edit existing ones instead)")
 
 script
-  == "window.__certificate_json = #{workbasket_settings.settings.to_json};"
-  == "window.__certificate_types_list_json = #{form.measure_type_series_list.to_json};"
+  == "window.__measure_type_json = #{workbasket_settings.settings.to_json};"
+  == "window.__measure_type_series_list_json = #{form.measure_type_series_list.to_json};"

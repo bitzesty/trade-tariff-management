@@ -21,7 +21,7 @@ $(document).ready(function(){
         data.measure_type = this.emptyMeasureType();
       }
 
-      data.measure_type_series_list = window.__measure_type_series_list;
+      data.measure_type_series_list = window.__measure_type_series_list_json;
       return data;
     },
     mounted: function() {

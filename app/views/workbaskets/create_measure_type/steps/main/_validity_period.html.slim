@@ -1,6 +1,6 @@
 fieldset
   h3.heading-medium
-    | When is the certiticate valid from?
+    | When is the measure type valid from?
 
   form-group :errors="errors" error-key="validity_start_date"
     template slot-scope="slotProps"
@@ -11,11 +11,11 @@ fieldset
 
       .bootstrap-row
         .col-md-6
-          = content_tag "date-select", "", ":value.sync" => "certificate.validity_start_date"
+          = content_tag "date-select", "", ":value.sync" => "measure_type.validity_start_date"
 
 fieldset
   h3.heading-medium
-    | When is the certiticate valid until?
+    | When is the measure type valid until?
 
   form-group :errors="errors" error-key="validity_end_date"
     template slot-scope="slotProps"
@@ -23,9 +23,9 @@ fieldset
         span.error-message v-if="slotProps.hasError" v-cloak=""
           | {{slotProps.error}}
         span.form-hint
-          | This is optional and should usually be left unset (open-ended) unless you know the certiticate is only needed for a limited time.
+          | This is optional and should usually be left unset (open-ended) unless you know the measure type is only needed for a limited time.
 
       .bootstrap-row
         .col-md-6
-          = content_tag "date-select", "", ":value.sync" => "certificate.validity_end_date"
+          = content_tag "date-select", "", ":value.sync" => "measure_type.validity_end_date"
 

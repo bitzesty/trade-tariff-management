@@ -1,14 +1,14 @@
 fieldset
   h3.heading-medium
-    | What is the measure_type code?
+    | What code will identify this measure type?
 
-  form-group.without_bottom_margin :errors="errors" error-key="certificate_code"
+  form-group.without_bottom_margin :errors="errors" error-key="measure_type_id"
     template slot-scope="slotProps"
       label.form-label
         span.error-message v-if="slotProps.hasError" v-cloak=""
           | {{slotProps.error}}
         span.form-hint
-          | Maximum 3 numbers or letters. Must not already be in use for the selected certificate type.
+          | This must be unique and either three or six digits long (numbers only)
 
       .bootstrap-row
         .col-md-1
