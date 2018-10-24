@@ -1,0 +1,30 @@
+.panel.panel--confirmation
+  h1.heading-xlarge
+    | Measure type submitted
+
+  h3.heading-medium
+    | A new
+    =<> "'#{measure_type.decorate.measure_type_description}'"
+    | with code
+    =<> "'#{measure_type.measure_type_id}'"
+    | and description
+    br
+    =<> "'#{measure_type.description}'"
+    | has been submitted for cross-check.
+
+br
+h3.heading-medium
+  | Next steps
+
+ul class="list"
+  li
+    a href="#"
+      | Withdraw submission / edit measure_type (not implemented)
+  li
+    = link_to "View this measure_type", read_only_section_url
+  li
+    = link_to "Create another measure_type", new_create_measure_type_url
+  li
+    = link_to "Return to main menu", root_url
+br
+br

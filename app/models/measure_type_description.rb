@@ -1,6 +1,7 @@
 class MeasureTypeDescription < Sequel::Model
 
   include ::XmlGeneration::BaseHelper
+  include ::WorkbasketHelpers::Association
 
   set_primary_key [:measure_type_id]
   plugin :oplog, primary_key: :measure_type_id

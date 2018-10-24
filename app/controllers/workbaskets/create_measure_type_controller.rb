@@ -22,7 +22,7 @@ module Workbaskets
       WorkbasketForms::CreateMeasureTypeForm.new
     end
 
-    expose(:create_measure_type) do
+    expose(:measure_type) do
       workbasket_settings.collection.first
     end
 

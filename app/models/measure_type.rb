@@ -97,6 +97,10 @@ class MeasureType < Sequel::Model
     "00".freeze
   end
 
+  def decorate
+    MeasureTypeDecorator.new(self)
+  end
+
   def json_mapping
     {
       oid: oid,
