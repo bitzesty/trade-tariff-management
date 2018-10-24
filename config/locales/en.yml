@@ -93,7 +93,7 @@ en:
   create_measure_type:
     measure_type_series_id_blank: "Measure type series must be spcified."
     measure_type_id_blank: "Measure type code must be specified."
-    measure_type_id_size: "Measure type code must be tree or size digits long."
+    measure_type_id_size: "Measure type code must be tree or six digits long."
     measure_type_id_not_numeric: "Measure type code must be comprise numbers only."
     measure_type_id_unique: "Measure type code must not already be in use."
     description_blank: "Description cannot be left blank and must comprise at least one word."

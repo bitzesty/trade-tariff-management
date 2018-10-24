@@ -69,7 +69,7 @@ module WorkbasketInteractions
               @errors_summary = errors_translator(:summary_invalid_data)
             end
 
-            if !string_is_numeric?(measure_type_id)
+            if !numeric_string?(measure_type_id)
               @errors[:measure_type_id] = errors_translator(:measure_type_id_not_numeric)
               @errors_summary = errors_translator(:summary_invalid_data)
             end
@@ -134,8 +134,8 @@ module WorkbasketInteractions
           end
         end
 
-        def string_is_numeric?
-          Float(self) != nil rescue false
+        def numeric_string?(str)
+          Float(str) != nil rescue false
         end
     end
   end

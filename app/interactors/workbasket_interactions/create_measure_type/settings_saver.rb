@@ -5,7 +5,7 @@ module WorkbasketInteractions
       include ::WorkbasketHelpers::SettingsSaverHelperMethods
 
       ATTRS_PARSER_METHODS = %w(
-        measure_type_serries_id
+        measure_type_series_id
         measure_type_id
         description
         validity_start_date

@@ -3,6 +3,7 @@ module WorkbasketValueObjects
     class AttributesParser
 
       SIMPLE_OPS = %w(
+        measure_type_series_id
         measure_type_id
         description
       )
