@@ -227,7 +227,7 @@ module WorkbasketHelper
       )
 
     when :create_measure_type
-      edit_measure_type_url(
+      edit_create_measure_type_url(
         workbasket.id,
         step: :main
       )
