@@ -28,6 +28,7 @@ module WorkbasketInteractions
 
         @start_date = parse_date(:validity_start_date)
         @end_date = parse_date(:validity_end_date)
+        @operation_date = parse_date(:operation_date)
       end
 
       ALLOWED_OPS.map do |option_name|
@@ -128,6 +129,7 @@ module WorkbasketInteractions
           rescue Exception => e
             if date_in_string.present?
               @errors[option_name] = errors_translator("#{option_name}_wrong_format".to_sym)
+              @errors_summary = errors_translator(:summary_invalid_data)
             end
 
             nil

@@ -44,9 +44,6 @@ module WorkbasketInteractions
       end
 
       def save!
-        workbasket.operation_date = operation_date
-        workbasket.save
-
         settings.set_settings_for!(current_step, settings_params)
       end
 

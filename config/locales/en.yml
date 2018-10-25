@@ -106,6 +106,7 @@ en:
     summary_minimal_required_fields: "The measure type could not be submitted because one or more required fields are missing."
     summary_invalid_data: "The measure type could not be submitted because invalid data has been entered for one or more fields."
     summary_conformance_rules: "The measure type not be submitted because there are conformance errors."
+    operation_date_wrong_format: "Format is invalid."
 
   find_geographical_areas:
     start_date_invalid: Start date is invalid.
