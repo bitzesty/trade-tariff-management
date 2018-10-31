@@ -29,7 +29,7 @@
       </loading-indicator>
     </div>
 
-    <div v-else>
+    <div  v-if="pagination.total_count == 0 && !this.readOnly">
       <warning-message>
         This workbasket contains no {{thing}} to edit.
       </warning-message>
