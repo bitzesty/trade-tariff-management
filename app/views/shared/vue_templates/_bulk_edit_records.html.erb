@@ -11,8 +11,16 @@
         <h1 class="heading-xlarge" slot="title">
           Loading {{thing}}
         </h1>
-        <h4 class="heading-medium" slot-scope="slotProps">
+        <h4 class="heading-medium" slot-scope="slotProps" v-if="readOnly !== true">
           Please wait while we load and prepare {{thing}} for editing
+          <br>
+          {{slotProps.start}} to {{slotProps.end}} of {{slotProps.total}}
+          <br>
+          <loading-spinner></loading-spinner>
+        </h4>
+
+        <h4 class="heading-medium" slot-scope="slotProps" v-if="readOnly === true">
+          Please wait while we load {{thing}}
           <br>
           {{slotProps.start}} to {{slotProps.end}} of {{slotProps.total}}
           <br>

@@ -24,6 +24,6 @@ script
   = render "workbaskets/shared/js_variables", form: ::WorkbasketForms::CreateMeasuresForm.new(Measure.new)
 
 .bulk-edit-measures
-  bulk-edit-records primary-key="measure_sid" initial-sort-key="measure_sid" :bulk-actions="bulkActions" thing="measures" :columns="columns" :actions="actions" :record-table-processing="recordTableProcessing" :preprocess-record="preprocessRecord"
+  bulk-edit-records primary-key="measure_sid" initial-sort-key="measure_sid" :bulk-actions="bulkActions" thing="quota measures" :columns="columns" :actions="actions" :record-table-processing="recordTableProcessing" :preprocess-record="preprocessRecord" :read-only="true"
 
 = render "shared/vue_templates/bulk_edit_records"
