@@ -113,29 +113,51 @@ module WorkbasketInteractions
           original_footnote.measure_sids == measure_sids
         end
 
-        def description_changed?
-          original_footnote.description.to_s.squish != description.to_s.squish
-        end
-
         def check_conformance_rules!
           Sequel::Model.db.transaction(@do_not_rollback_transactions.present? ? {} : { rollback: :always }) do
-            end_date_existing_footnote!
 
-            add_footnote!
-            add_footnote_description_period!
-            add_footnote_description!
+            if it_is_just_description_changed?
 
-            if description_changed?
+              p ""
+              p "*" * 100
+              p ""
+              p " JUST DESC CHANGED 1!"
+              p ""
+              p "*" * 100
+              p ""
+
+              end_date_existing_footnote_description_period!
               add_next_footnote_description_period!
               add_next_footnote_description!
-            end
 
-            end_date_existing_commodity_codes_associations!
-            if commodity_codes.present?
-              add_new_commodity_codes_associations!
-            end
+            else
 
-            add_new_measures_associations! if measure_sids.present?
+              p ""
+              p "*" * 100
+              p ""
+              p " ALL CHANGED 1!"
+              p ""
+              p "*" * 100
+              p ""
+
+              end_date_existing_footnote!
+
+              add_footnote!
+              add_footnote_description_period!
+              add_footnote_description!
+
+              if description_should_be_changed_later?
+                add_next_footnote_description_period!
+                add_next_footnote_description!
+              end
+
+              end_date_existing_commodity_codes_associations!
+              if commodity_codes.present?
+                add_new_commodity_codes_associations!
+              end
+
+              add_new_measures_associations! if measure_sids.present?
+            end
 
             parse_and_format_conformance_rules
           end
@@ -144,19 +166,16 @@ module WorkbasketInteractions
         def parse_and_format_conformance_rules
           @conformance_errors = {}
 
-          unless footnote.conformant?
-            @conformance_errors.merge!(get_conformance_errors(footnote))
-          end
+          if it_is_just_description_changed?
 
-          unless footnote_description_period.conformant?
-            @conformance_errors.merge!(get_conformance_errors(footnote_description_period))
-          end
+            p ""
+            p "*" * 100
+            p ""
+            p " JUST DESC CHANGED 2!"
+            p ""
+            p "*" * 100
+            p ""
 
-          unless footnote_description.conformant?
-            @conformance_errors.merge!(get_conformance_errors(footnote_description))
-          end
-
-          if description_changed?
             unless next_footnote_description_period.conformant?
               @conformance_errors.merge!(get_conformance_errors(next_footnote_description_period))
             end
@@ -164,20 +183,52 @@ module WorkbasketInteractions
             unless next_footnote_description.conformant?
               @conformance_errors.merge!(get_conformance_errors(next_footnote_description))
             end
-          end
 
-          if commodity_codes_candidates.present?
-            commodity_codes_candidates.map do |item|
-              unless item.conformant?
-                @conformance_errors.merge!(get_conformance_errors(item))
+          else
+
+            p ""
+            p "*" * 100
+            p ""
+            p " ALL CHANGED 2!"
+            p ""
+            p "*" * 100
+            p ""
+
+            unless footnote.conformant?
+              @conformance_errors.merge!(get_conformance_errors(footnote))
+            end
+
+            unless footnote_description_period.conformant?
+              @conformance_errors.merge!(get_conformance_errors(footnote_description_period))
+            end
+
+            unless footnote_description.conformant?
+              @conformance_errors.merge!(get_conformance_errors(footnote_description))
+            end
+
+            if description_should_be_changed_later?
+              unless next_footnote_description_period.conformant?
+                @conformance_errors.merge!(get_conformance_errors(next_footnote_description_period))
+              end
+
+              unless next_footnote_description.conformant?
+                @conformance_errors.merge!(get_conformance_errors(next_footnote_description))
               end
             end
-          end
 
-          if measures_candidates.present?
-            measures_candidates.map do |item|
-              unless item.conformant?
-                @conformance_errors.merge!(get_conformance_errors(item))
+            if commodity_codes_candidates.present?
+              commodity_codes_candidates.map do |item|
+                unless item.conformant?
+                  @conformance_errors.merge!(get_conformance_errors(item))
+                end
+              end
+            end
+
+            if measures_candidates.present?
+              measures_candidates.map do |item|
+                unless item.conformant?
+                  @conformance_errors.merge!(get_conformance_errors(item))
+                end
               end
             end
           end
@@ -199,6 +250,21 @@ module WorkbasketInteractions
           end
         end
 
+        def end_date_existing_footnote_description_period!
+          footnote_description_period = original_footnote.footnote_description
+                                                         .footnote_description_period
+
+          unless footnote_description_period.already_end_dated?
+            footnote_description_period.validity_end_date = (description_validity_start_date || validity_start_date)
+
+            ::WorkbasketValueObjects::Shared::SystemOpsAssigner.new(
+              footnote_description_period, system_ops.merge(operation: "U")
+            ).assign!(false)
+
+            footnote_description_period.save
+          end
+        end
+
         def add_footnote!
           @footnote = Footnote.new(
             validity_start_date: validity_start_date,
@@ -216,7 +282,7 @@ module WorkbasketInteractions
         def add_footnote_description_period!
           @footnote_description_period = FootnoteDescriptionPeriod.new(
             validity_start_date: validity_start_date,
-            validity_end_date: (description_validity_start_date || validity_end_date)
+            validity_end_date: description_should_be_changed_later? ? description_validity_start_date : validity_end_date
           )
 
           footnote_description_period.footnote_id = footnote.footnote_id
@@ -230,7 +296,7 @@ module WorkbasketInteractions
 
         def add_footnote_description!
           @footnote_description = FootnoteDescription.new(
-            description: original_footnote.description,
+            description: description_should_be_changed_later? ? original_footnote.description : description,
             language_id: "EN"
           )
 
@@ -273,6 +339,26 @@ module WorkbasketInteractions
           set_primary_key!(next_footnote_description)
 
           next_footnote_description.save if persist_mode?
+        end
+
+        def description_changed?
+          original_footnote.description.to_s.squish != description.to_s.squish
+        end
+
+        def description_should_be_changed_later?
+          description_changed? &&
+          description_validity_start_date.present? &&
+          description_validity_start_date != validity_start_date
+        end
+
+        def it_is_just_description_changed?
+          @it_is_just_description_changed ||= (
+            description_changed? &&
+            original_footnote.validity_start_date.strftime("%Y-%m-%d") == validity_start_date.try(:strftime, "%Y-%m-%d") &&
+            original_footnote.validity_end_date.try(:strftime, "%Y-%m-%d") == validity_end_date.try(:strftime, "%Y-%m-%d") &&
+            original_footnote.commodity_codes == commodity_codes &&
+            original_footnote.measure_sids == measure_sids
+          )
         end
 
         def end_date_existing_commodity_codes_associations!
