@@ -85,6 +85,7 @@ module WorkbasketInteractions
 
         def validate!
           check_initial_validation_rules!
+          check_if_nothing_changed! if @errors.blank?
           check_conformance_rules! if @errors.blank?
         end
 
@@ -97,6 +98,25 @@ module WorkbasketInteractions
           @errors_summary = initial_validator.errors_summary
         end
 
+        def check_if_nothing_changed!
+          if nothing_changed?
+            @errors[:general] = "Nothing changed"
+            @errors_summary = initial_validator.errors_translator(:nothing_changed)
+          end
+        end
+
+        def nothing_changed?
+          original_footnote.description.to_s.squish == description.to_s.squish &&
+          original_footnote.validity_start_date.strftime("%Y-%m-%d") == validity_start_date.try(:strftime, "%Y-%m-%d") &&
+          original_footnote.validity_end_date.try(:strftime, "%Y-%m-%d") == validity_end_date.try(:strftime, "%Y-%m-%d") &&
+          original_footnote.commodity_codes == commodity_codes &&
+          original_footnote.measure_sids == measure_sids
+        end
+
+        def description_changed?
+          original_footnote.description.to_s.squish != description.to_s.squish
+        end
+
         def check_conformance_rules!
           Sequel::Model.db.transaction(@do_not_rollback_transactions.present? ? {} : { rollback: :always }) do
             end_date_existing_footnote!
@@ -105,7 +125,7 @@ module WorkbasketInteractions
             add_footnote_description_period!
             add_footnote_description!
 
-            if description_validity_start_date.present?
+            if description_changed?
               add_next_footnote_description_period!
               add_next_footnote_description!
             end
@@ -136,7 +156,7 @@ module WorkbasketInteractions
             @conformance_errors.merge!(get_conformance_errors(footnote_description))
           end
 
-          if description_validity_start_date.present?
+          if description_changed?
             unless next_footnote_description_period.conformant?
               @conformance_errors.merge!(get_conformance_errors(next_footnote_description_period))
             end
