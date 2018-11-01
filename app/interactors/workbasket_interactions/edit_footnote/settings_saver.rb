@@ -316,8 +316,8 @@ module WorkbasketInteractions
             validity_end_date: validity_end_date
           )
 
-          next_footnote_description_period.footnote_id = footnote.footnote_id
-          next_footnote_description_period.footnote_type_id = footnote.footnote_type_id
+          next_footnote_description_period.footnote_id = (footnote || original_footnote).footnote_id
+          next_footnote_description_period.footnote_type_id = (footnote || original_footnote).footnote_type_id
 
           assign_system_ops!(next_footnote_description_period)
           set_primary_key!(next_footnote_description_period)
@@ -331,8 +331,8 @@ module WorkbasketInteractions
             language_id: "EN"
           )
 
-          next_footnote_description.footnote_id = footnote.footnote_id
-          next_footnote_description.footnote_type_id = footnote.footnote_type_id
+          next_footnote_description.footnote_id = (footnote || original_footnote).footnote_id
+          next_footnote_description.footnote_type_id = (footnote || original_footnote).footnote_type_id
           next_footnote_description.footnote_description_period_sid = next_footnote_description_period.footnote_description_period_sid
 
           assign_system_ops!(next_footnote_description)
