@@ -40,7 +40,12 @@ class MeasureConditionComponentValidator < TradeTariffBackend::Validator
   end
 
   validation :ME108, "The same duty expression can only be used once within condition components of the same condition of the same measure. (i.e. it can be re-used in other conditions, no matter what condition type, of the same measure)", on: [:create, :update] do
-    validates :uniqueness, of: [:measure_condition_sid, :duty_expression_id]
+    if record.measure_condition.present?
+      record.measure_conditions.map do |mc|
+        measure_condition_components_to_check = mc.measure_condition_components.map{ |mcc| mcc.duty_expression_id }
+        measure_condition_components_to_check.size == measure_condition_components_to_check.uniq.size
+      end.all?
+    end
   end
 
   validation :ME109,
