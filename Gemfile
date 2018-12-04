@@ -74,8 +74,7 @@ gem "redis-rails"
 gem "sidekiq", "~> 4.1.4"
 gem "sidekiq-scheduler", "~> 2.1.8"
 
-gem "plek", "~> 1.11"
-gem "gds-sso", "~> 13", ">= 13.6.0"
+gem "omniauth-oauth2"
 
 # System gems
 gem "connection_pool", "~> 2.2"

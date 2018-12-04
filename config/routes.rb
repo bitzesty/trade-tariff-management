@@ -1,9 +1,12 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
+  # TODO admin only namespace
   mount Sidekiq::Web, at: "sidekiq"
 
   root to: 'workbaskets#index'
+
+  match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
 
   get "healthcheck" => "healthcheck#index"
 
