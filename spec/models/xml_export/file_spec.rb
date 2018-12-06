@@ -91,7 +91,10 @@ RSpec.describe XmlExport::File do
         load "xml_export/file"
       end
 
-      after { load "xml_export/file" }
+      after do
+        allow(Rails).to receive(:env).and_call_original
+        load "xml_export/file"
+      end
 
       it "uses FTP storage" do
         file_types.each do |file_type|
