@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe XmlExport::File do
   include EnvironmentHelper
 
-  describe "#save_with_envelope_id" do
-    subject(:xml_export_file) { build(:xml_export_file) }
+  subject(:xml_export_file) { build(:xml_export_file) }
 
+  describe "#save_with_envelope_id" do
     it "persists the record" do
       expect { xml_export_file.save_with_envelope_id }.
         to change { xml_export_file.exists? }.from(false).to(true)
@@ -71,6 +71,33 @@ RSpec.describe XmlExport::File do
 
       expect(insert_duplicate).to raise_error Sequel::UniqueConstraintViolation
       expect(xml_export_file_2.exists?).to eq false
+    end
+  end
+
+  describe "setting file upload storage" do
+    let(:file_types) { [:xml_attacher, :meta_attacher] }
+
+    context "in non-production environment" do
+      it "uses the default storage" do
+        file_types.each do |file_type|
+          expect(xml_export_file.send(file_type).store.storage_key).to eq :disk_store
+        end
+      end
+    end
+
+    context "in production environment" do
+      before do
+        allow(Rails).to receive(:env) { "production".inquiry }
+        load "xml_export/file"
+      end
+
+      after { load "xml_export/file" }
+
+      it "uses FTP storage" do
+        file_types.each do |file_type|
+          expect(xml_export_file.send(file_type).store.storage_key).to eq :hmrc_ftp
+        end
+      end
     end
   end
 

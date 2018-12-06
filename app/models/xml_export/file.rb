@@ -1,10 +1,28 @@
 module XmlExport
   class File < Sequel::Model(:xml_export_files)
 
-    include XmlDataUploader::Attachment.new(:xml)
-    include XmlDataUploader::Attachment.new(:base_64)
-    include XmlDataUploader::Attachment.new(:zip)
-    include XmlDataUploader::Attachment.new(:meta)
+    class << self
+      def include_uploader(type)
+        include XmlDataUploader::Attachment.new(type, file_storage[type])
+      end
+
+      def file_storage
+        disk = { cache: :disk_cache, store: :disk_store }
+        s3 = { cache: :s3_cache, store: :s3_store }
+        ftp = { cache: :s3_cache, store: :hmrc_ftp }
+
+        if Rails.env.production?
+          { xml: ftp, meta: ftp, base_64: s3, zip: s3, }
+        else
+          { xml: disk, meta: disk, base_64: disk, zip: disk }
+        end
+      end
+    end
+
+    include_uploader(:xml)
+    include_uploader(:base_64)
+    include_uploader(:zip)
+    include_uploader(:meta)
 
     plugin :serialization
 
