@@ -17,7 +17,7 @@ hmrc_ftp_options = {
   host: ENV["HMRC_FTP_HOST"],
   user: ENV["HMRC_FTP_USERNAME"],
   password: ENV["HMRC_FTP_PASSWORD"],
-  dir: "/mnt/ftps"
+  dir: "/tohmrc"
 }
 
 # The shrine-ftp gem doesn't implement a method to set the FTP port, so
