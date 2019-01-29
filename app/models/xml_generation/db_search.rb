@@ -117,17 +117,17 @@ module XmlGeneration
   private
 
     def data
-      EXPORT_MODELS.map do |entity|
-        entity.where(where_clause).all
+      [Measure].map do |entity|
+        "#{entity}::Operation".constantize.where(where_clause).all
       end.flatten
     end
 
     def where_clause
       if end_date.present?
-        ['? <= operation_date AND operation_date <= ?', start_date, end_date]
+        ['? <= operation_date AND operation_date <= ? AND national = ?', start_date, end_date, true]
       else
-        ['operation_date = ?', start_date]
+        ['operation_date >= ? AND national = ?', start_date, true]
       end
     end
-end
+  end
 end

@@ -22,6 +22,7 @@ module Sequel
           class_name: model
         )
         operation_class.set_primary_key(primary_key)
+        operation_class.include(::XmlGeneration::BaseHelper)
 
         model.const_set(:Operation, operation_class)
         model.const_get(:Operation).unrestrict_primary_key
@@ -37,6 +38,9 @@ module Sequel
 
         # Delegations
         model.delegate :operation_klass, to: model
+        operation_class.delegate :subrecord_code, to: :record
+        operation_class.delegate :record_code, to: :record
+        operation_class.delegate :class, to: :record
       end
 
       module InstanceMethods
