@@ -130,6 +130,7 @@ Sequel.migration do
     }
 
     run %Q{
+      DROP VIEW full_temporary_stop_regulations;
       CREATE OR REPLACE VIEW full_temporary_stop_regulations AS
        SELECT full_temporary_stop_regulations1.full_temporary_stop_regulation_role,
           full_temporary_stop_regulations1.full_temporary_stop_regulation_id,

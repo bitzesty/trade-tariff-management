@@ -51,6 +51,14 @@ NB: In the newer Diego architecture from CloudFoundry, no-route skips creating a
 * When writing validators in `app/validators` please run the rake task
 `audit:verify` which runs the validator against existing data.
 
+### National data export
+
+re-create local db, restore production dump, run fixes in rails console,  run migrations.
+console fixes:
+> Sequel::Model.db.run("DROP FUNCTION reassign_owned() CASCADE;")
+
+> Sequel::Model.db.run("DELETE FROM schema_migrations WHERE filename IN ('20180730143329_add_tariff_update_presence_errors.rb','20180828074852_add_complete_abrogation_regulation_id_column.rb','20181003140819_add_updated_at_to_sections.rb','20181029112658_change_size_to_six_for_measure_type_id.rb','20181211165412_create_guides.rb');")
+
 ### Environment variables
 
 - `XML_ENVELOPE_ID_OFFSET_YEAR_<YYYY>` - allows the XML envelope ID to be
