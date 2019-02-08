@@ -71,7 +71,8 @@ module XmlGeneration
     end
 
     def xml_generator_search
-      ::XmlGeneration::WorkbasketSearch.new(record.workbasket_selected)
+      ::XmlGeneration::DBSearch.new
+      # ::XmlGeneration::WorkbasketSearch.new(record.workbasket_selected)
     end
 
     def validate_xml_data!
