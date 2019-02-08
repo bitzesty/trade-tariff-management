@@ -239,13 +239,6 @@ module Workbaskets
           underscored_keywords)
       end
 
-      def xml_export_collection(start_date, end_date)
-        by_date_range(
-          start_date, end_date
-        ).in_status(%w[awaiting_cds_upload_create_new awaiting_cds_upload_edit awaiting_cross_check])
-         .order(:operation_date)
-      end
-
       def by_date_range(start_date, end_date)
         if end_date.present?
           where(
@@ -301,6 +294,14 @@ module Workbaskets
     end
 
     begin :workflow_related_helpers
+          def submit_for_cross_check!(current_admin:)
+            move_status_to!(current_admin, :awaiting_cross_check)
+
+            settings.collection.map do |item|
+              item.move_status_to!(:awaiting_cross_check)
+            end
+          end
+
           def assign_cross_checker!(current_user)
             add_event!(current_user, :cross_check_process_started)
 
@@ -340,8 +341,15 @@ module Workbaskets
           end
 
           def can_withdraw?
-            status.to_sym.in?(STATES_WITH_ERROR) ||
-              status.to_sym.in?(APPROVER_SCOPE)
+            (rejected? || waiting_for_cross_check_or_approval?)
+          end
+
+          def rejected?
+            status.to_sym.in?(STATES_WITH_ERROR)
+          end
+
+          def waiting_for_cross_check_or_approval?
+            status.to_sym.in?(APPROVER_SCOPE)
           end
 
           def cross_check_process_can_be_started?
@@ -354,7 +362,7 @@ module Workbaskets
           end
 
           def can_continue_cross_check?(current_user)
-            awaiting_cross_check? && cross_checker_is?(current_user)
+            awaiting_cross_check? && !current_user.author_of_workbasket?(self) && cross_checker_id.blank?
           end
 
           def approve_process_can_be_started?
