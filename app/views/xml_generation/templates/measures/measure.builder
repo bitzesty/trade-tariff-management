@@ -1,10 +1,10 @@
 xml.tag!("oub:measure") do |measure|
   xml_data_item_v2(measure, "measure.sid", self.measure_sid)
-  xml_data_item_v2(measure, "measure.type", self.measure_type_id)
+  xml_data_item_v2(measure, "measure.type", measure_type_format(self))
   xml_data_item_v2(measure, "geographical.area", self.geographical_area_id)
   xml_data_item_v2(measure, "goods.nomenclature.item.id", self.goods_nomenclature_item_id)
-  xml_data_item_v2(measure, "additional.code.type", self.additional_code_type_id)
-  xml_data_item_v2(measure, "additional.code", self.additional_code_id)
+  xml_data_item_v2(measure, "additional.code.type", additional_code_type_format(self))
+  xml_data_item_v2(measure, "additional.code", additional_code_format(self))
   xml_data_item_v2(measure, "ordernumber", self.ordernumber)
   xml_data_item_v2(measure, "reduction.indicator", self.reduction_indicator)
   xml_data_item_v2(measure, "validity.start.date", self.validity_start_date.strftime("%Y-%m-%dT%H:%M:%S"))

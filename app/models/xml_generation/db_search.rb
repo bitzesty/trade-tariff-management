@@ -106,7 +106,7 @@ module XmlGeneration
                   :end_date
 
     def initialize
-      @start_date = '2018-07-19'
+      @start_date = '2018-07-18'
       @end_date = '2019-02-02'
     end
 

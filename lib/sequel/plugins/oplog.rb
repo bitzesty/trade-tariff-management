@@ -40,6 +40,7 @@ module Sequel
         model.delegate :operation_klass, to: model
         operation_class.delegate :subrecord_code, to: :record
         operation_class.delegate :record_code, to: :record
+        operation_class.delegate :excise?, to: :record
         operation_class.delegate :class, to: :record
       end
 
