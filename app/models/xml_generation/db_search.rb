@@ -117,25 +117,55 @@ module XmlGeneration
   private
 
     def data
-      [MonetaryExchangePeriod, MonetaryExchangeRate, Measure].map do |entity|
+      [
+        MonetaryExchangePeriod,
+        MonetaryExchangeRate,
+        Measure,
+        MeasureTypeSeries,
+        MeasureTypeSeriesDescription,
+        MeasureType,
+        MeasureTypeDescription,
+        MeasureAction,
+        MeasureActionDescription,
+        MeasureComponent,
+        MeasureConditionCode,
+        MeasureConditionCodeDescription,
+        MeasureCondition,
+        MeasureConditionComponent,
+        MeasureExcludedGeographicalArea,
+        DutyExpression,
+        MeasurementUnit,
+        MonetaryUnit,
+        MeasurementUnitQualifier,
+        Certificate,
+        CertificateType
+      ].map do |entity|
         "#{entity}::Operation".constantize.where(where_clause(entity)).all
       end.flatten
     end
 
     def where_clause(klass)
-      if end_date.present?
-        if klass.columns.include?(:national)
-          ['? <= operation_date AND operation_date <= ? AND national = ?', start_date, end_date, true]
-        else
-          ['? <= operation_date AND operation_date <= ?', start_date, end_date]
-        end
+      # all records with negative measure_sid are national
+      # operation_date is blank for old records, but we also need to export them
+      if klass.columns.include?(:measure_sid)
+        ['(operation_date <= ? OR operation_date IS NULL) AND measure_sid < 0', end_date]
       else
-        if klass.columns.include?(:national)
-          ['operation_date >= ? AND national = ?', start_date, true]
-        else
-          ['operation_date >= ?', start_date]
-        end
+        ['operation_date <= ? OR operation_date IS NULL', end_date]
       end
+
+      # if end_date.present?
+      #   if klass.columns.include?(:measure_sid)
+      #     ['? <= operation_date AND operation_date <= ? AND measure_sid < 0', start_date, end_date]
+      #   else
+      #     ['? <= operation_date AND operation_date <= ?', start_date, end_date]
+      #   end
+      # else
+      #   if klass.columns.include?(:measure_sid)
+      #     ['operation_date >= ? AND measure_sid < 0', start_date]
+      #   else
+      #     ['operation_date >= ?', start_date]
+      #   end
+      # end
     end
   end
 end

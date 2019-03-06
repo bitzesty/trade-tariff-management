@@ -12,6 +12,33 @@ module Sequel
           def record_class
             self.class.to_s.chomp("::Operation").constantize
           end
+
+          # using methods instead of delegations because sometimes record is nil
+          # ---------national xml-------
+          def subrecord_code
+            record.subrecord_code
+          rescue
+            ''
+          end
+
+          def record_code
+            record.record_code
+          rescue
+            ''
+          end
+
+          def excise?
+            record.excise?
+          rescue
+            false
+          end
+
+          def class
+            record.class
+          rescue
+            self.class
+          end
+          # ----------------------------
         end
 
         operation_class.one_to_one(
@@ -38,10 +65,10 @@ module Sequel
 
         # Delegations
         model.delegate :operation_klass, to: model
-        operation_class.delegate :subrecord_code, to: :record
-        operation_class.delegate :record_code, to: :record
-        operation_class.delegate :excise?, to: :record
-        operation_class.delegate :class, to: :record
+        # operation_class.delegate :subrecord_code, to: :record
+        # operation_class.delegate :record_code, to: :record
+        # operation_class.delegate :excise?, to: :record
+        # operation_class.delegate :class, to: :record
       end
 
       module InstanceMethods

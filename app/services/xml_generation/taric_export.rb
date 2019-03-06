@@ -76,8 +76,10 @@ module XmlGeneration
     end
 
     def validate_xml_data!
-      errors = ::XmlGeneration::XmlXsdValidator.new(xml_data).run
-      @record.update(validation_errors: errors.to_json)
+      # need to skip errors for full national xml export because there are a lot of errors and pg fails
+
+      # errors = ::XmlGeneration::XmlXsdValidator.new(xml_data).run
+      # @record.update(validation_errors: errors.to_json)
     end
 
     def attach_files!
