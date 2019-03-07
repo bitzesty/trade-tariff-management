@@ -4,10 +4,11 @@ module XmlGeneration
 
     attr_accessor :transactions
 
-    def initialize(grouped_records)
-      @transactions = grouped_records.map.with_index(1) do |record_group, index|
-        ::XmlGeneration::NodeTransaction.new(index, record_group)
-      end
+    def initialize(records)
+      # @transactions = grouped_records.map.with_index(1) do |record_group, index|
+      #   ::XmlGeneration::NodeTransaction.new(index, record_group)
+      # end
+      ::XmlGeneration::NodeTransaction.new(1, records)
       @_message_id = 0
       @_record_sequence_number = 0
     end
