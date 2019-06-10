@@ -16,7 +16,7 @@ module AdditionalCodes
       if params[:q].present?
         q_rule = params[:q].strip.downcase
 
-        scope = scope.select do |ac_type|
+        scope = scope.all.select do |ac_type|
           ilike?(ac_type.additional_code_type_id, q_rule) ||
             ilike?(ac_type.description, q_rule)
         end
