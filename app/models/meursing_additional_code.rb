@@ -20,6 +20,14 @@ class MeursingAdditionalCode < Sequel::Model
     "00".freeze
   end
 
+  def additional_code_type_id
+    "7"
+  end
+
+  def description
+    # Meursing doesn't have a description
+  end
+
   def status_title
     if status.present?
       I18n.t(:measures)[:states][status.to_sym]
