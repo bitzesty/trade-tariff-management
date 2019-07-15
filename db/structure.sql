@@ -17,6 +17,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+<<<<<<< Updated upstream
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -42,6 +43,813 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+=======
+-- Name: ml; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA ml;
+
+
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
+--
+-- Name: clear_data(character varying); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.clear_data(from_date character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+
+DECLARE d timestamp;
+BEGIN
+	d = TO_TIMESTAMP(from_date, 'YYYY-MM-DD');
+
+	DELETE FROM additional_code_description_periods_oplog WHERE operation_date > d;
+	DELETE FROM additional_code_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM additional_code_type_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM additional_code_type_measure_types_oplog WHERE operation_date > d;
+	DELETE FROM additional_code_types_oplog WHERE operation_date > d;
+	DELETE FROM additional_codes_oplog WHERE operation_date > d;
+	DELETE FROM base_regulations_oplog WHERE operation_date > d;
+	DELETE FROM certificate_description_periods_oplog WHERE operation_date > d;
+	DELETE FROM certificate_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM certificate_type_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM certificate_types_oplog WHERE operation_date > d;
+	DELETE FROM certificates_oplog WHERE operation_date > d;
+	DELETE FROM complete_abrogation_regulations_oplog WHERE operation_date > d;
+	DELETE FROM duty_expression_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM duty_expressions_oplog WHERE operation_date > d;
+	DELETE FROM explicit_abrogation_regulations_oplog WHERE operation_date > d;
+	DELETE FROM footnote_association_additional_codes_oplog WHERE operation_date > d;
+	DELETE FROM footnote_association_goods_nomenclatures_oplog WHERE operation_date > d;
+	DELETE FROM footnote_association_measures_oplog WHERE operation_date > d;
+	DELETE FROM footnote_description_periods_oplog WHERE operation_date > d;
+	DELETE FROM footnote_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM footnote_type_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM footnote_types_oplog WHERE operation_date > d;
+	DELETE FROM footnotes_oplog WHERE operation_date > d;
+	DELETE FROM fts_regulation_actions_oplog WHERE operation_date > d;
+	DELETE FROM full_temporary_stop_regulations_oplog WHERE operation_date > d;
+	DELETE FROM geographical_area_description_periods_oplog WHERE operation_date > d;
+	DELETE FROM geographical_area_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM geographical_area_memberships_oplog WHERE operation_date > d;
+	DELETE FROM geographical_areas_oplog WHERE operation_date > d;
+	DELETE FROM goods_nomenclature_description_periods_oplog WHERE operation_date > d;
+	DELETE FROM goods_nomenclature_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM goods_nomenclature_group_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM goods_nomenclature_indents_oplog WHERE operation_date > d;
+	DELETE FROM goods_nomenclature_origins_oplog WHERE operation_date > d;
+	DELETE FROM goods_nomenclature_successors_oplog WHERE operation_date > d;
+	DELETE FROM goods_nomenclatures_oplog WHERE operation_date > d;
+	DELETE FROM measure_action_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM measure_actions_oplog WHERE operation_date > d;
+	DELETE FROM measure_components_oplog WHERE operation_date > d;
+	DELETE FROM measure_condition_code_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM measure_condition_codes_oplog WHERE operation_date > d;
+	DELETE FROM measure_condition_components_oplog WHERE operation_date > d;
+	DELETE FROM measure_conditions_oplog WHERE operation_date > d;
+	DELETE FROM measure_excluded_geographical_areas_oplog WHERE operation_date > d;
+	DELETE FROM measure_partial_temporary_stops_oplog WHERE operation_date > d;
+	DELETE FROM measure_type_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM measure_type_series_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM measure_type_series_oplog WHERE operation_date > d;
+	DELETE FROM measure_types_oplog WHERE operation_date > d;
+	DELETE FROM measurement_unit_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM measurement_unit_qualifier_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM measurement_unit_qualifiers_oplog WHERE operation_date > d;
+	DELETE FROM measurement_units_oplog WHERE operation_date > d;
+	DELETE FROM measurements_oplog WHERE operation_date > d;
+	DELETE FROM measures_oplog WHERE operation_date > d;
+	DELETE FROM modification_regulations_oplog WHERE operation_date > d;
+	DELETE FROM monetary_exchange_periods_oplog WHERE operation_date > d;
+	DELETE FROM monetary_exchange_rates_oplog WHERE operation_date > d;
+	DELETE FROM monetary_unit_descriptions_oplog WHERE operation_date > d;
+	DELETE FROM monetary_units_oplog WHERE operation_date > d;
+	DELETE FROM prorogation_regulation_actions_oplog WHERE operation_date > d;
+	DELETE FROM prorogation_regulations_oplog WHERE operation_date > d;
+	DELETE FROM quota_associations_oplog WHERE operation_date > d;
+	DELETE FROM quota_balance_events_oplog WHERE operation_date > d;
+	DELETE FROM quota_blocking_periods_oplog WHERE operation_date > d;
+	DELETE FROM quota_critical_events_oplog WHERE operation_date > d;
+	DELETE FROM quota_definitions_oplog WHERE operation_date > d;
+	DELETE FROM quota_exhaustion_events_oplog WHERE operation_date > d;
+	DELETE FROM quota_order_number_origin_exclusions_oplog WHERE operation_date > d;
+	DELETE FROM quota_order_number_origins_oplog WHERE operation_date > d;
+	DELETE FROM quota_order_numbers_oplog WHERE operation_date > d;
+	DELETE FROM quota_reopening_events_oplog WHERE operation_date > d;
+	DELETE FROM quota_suspension_periods_oplog WHERE operation_date > d;
+	DELETE FROM quota_unblocking_events_oplog WHERE operation_date > d;
+	DELETE FROM quota_unsuspension_events_oplog WHERE operation_date > d;
+	DELETE FROM regulation_replacements_oplog WHERE operation_date > d;
+END
+$$;
+
+
+--
+-- Name: describe(character varying); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.describe(p_table character varying) RETURNS TABLE(column_name character varying, data_type character varying, character_maximum_length integer)
+    LANGUAGE plpgsql STABLE
+    AS $_$
+BEGIN RETURN QUERY 
+	select column_name, data_type, character_maximum_length
+	from INFORMATION_SCHEMA.COLUMNS where table_name = $1;
+END;
+
+$_$;
+
+
+--
+-- Name: goods_nomenclature_export(text); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.goods_nomenclature_export(pchapter text) RETURNS TABLE(goods_nomenclature_sid integer, goods_nomenclature_item_id character varying, producline_suffix character varying, validity_start_date timestamp without time zone, validity_end_date timestamp without time zone, description text, number_indents integer, goods_nomenclature_description_period_sid integer, desc_validity_start_date timestamp without time zone, desc_validity_end_date timestamp without time zone, nice_description text, chapter text, node text, leaf text)
+    LANGUAGE plpgsql
+    AS $_$
+
+#variable_conflict use_column
+
+BEGIN
+
+IF pchapter = '' THEN
+pchapter = '%';
+END IF;
+
+/* temporary table contains results of query plus a placeholder column for leaf - defaulted to 0
+node column has the significant digits used to find child nodes having the same significant digits.
+The basic query retrieves all current (and future) nomenclature with indents and descriptions */
+
+DROP TABLE IF EXISTS tmp_nomenclature;
+
+CREATE TEMP TABLE tmp_nomenclature ON COMMIT DROP AS
+SELECT gn.goods_nomenclature_sid, gn.goods_nomenclature_item_id, gn.producline_suffix, gn.validity_start_date, gn.validity_end_date, 
+gnd.description,
+gni.number_indents, 
+gndp.goods_nomenclature_description_period_sid, gndp.validity_start_date "desc_validity_start_date", gndp.validity_end_date "desc_validity_end_date",
+concat(repeat (' -', gni.number_indents), ' ', gnd.description) "nice_description",
+left (gn.goods_nomenclature_item_id, 2) "chapter",
+REGEXP_REPLACE (gn.goods_nomenclature_item_id, '(00)+$', '') AS "node",
+'0' AS "leaf"
+FROM goods_nomenclatures gn
+JOIN goods_nomenclature_descriptions gnd ON gnd.goods_nomenclature_sid = gn.goods_nomenclature_sid
+JOIN goods_nomenclature_description_periods gndp ON gndp.goods_nomenclature_description_period_sid = gnd.goods_nomenclature_description_period_sid
+JOIN goods_nomenclature_indents gni ON gni.goods_nomenclature_sid = gn.goods_nomenclature_sid
+WHERE (gn.validity_end_date IS NULL OR gn.validity_end_date >= CURRENT_DATE)
+AND gn.goods_nomenclature_item_id LIKE pchapter
+AND gndp.goods_nomenclature_description_period_sid IN
+(SELECT MAX (gndp2.goods_nomenclature_description_period_sid)
+FROM goods_nomenclature_description_periods gndp2
+WHERE gndp2.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp2.validity_start_date < CURRENT_DATE
+UNION
+SELECT gndp3.goods_nomenclature_description_period_sid
+FROM goods_nomenclature_description_periods gndp3
+WHERE gndp3.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp3.validity_start_date >= CURRENT_DATE)
+AND gni.goods_nomenclature_indent_sid IN
+(SELECT MAX (gni2.goods_nomenclature_indent_sid)
+FROM goods_nomenclature_indents gni2
+WHERE gni2.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni2.validity_start_date < CURRENT_DATE
+UNION
+SELECT gni3.goods_nomenclature_indent_sid
+FROM goods_nomenclature_indents gni3
+WHERE gni3.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni3.validity_start_date >= CURRENT_DATE);
+
+/* index to speed up child node matching - need to perf test to see if any use */
+CREATE INDEX t1_i_nomenclature 
+ON tmp_nomenclature (goods_nomenclature_sid, goods_nomenclature_item_id);
+
+/* cursor loops through result set to identify if nodes are leaf and updates the flag if so */
+DECLARE
+cur_nomenclature CURSOR FOR 
+SELECT * FROM tmp_nomenclature;
+
+BEGIN
+
+FOR nom_record IN cur_nomenclature LOOP
+Raise Notice 'goods nomenclature item id %', nom_record.goods_nomenclature_item_id;
+
+/* Leaf nodes have to have pls of 80 and no children having the same nomenclature code */
+IF nom_record.producline_suffix = '80' THEN
+IF LENGTH (nom_record.node) = 10 OR NOT EXISTS (SELECT 1 
+FROM tmp_nomenclature 
+WHERE goods_nomenclature_item_id LIKE CONCAT(nom_record.node,'%')
+AND goods_nomenclature_item_id <> nom_record.goods_nomenclature_item_id) THEN
+
+UPDATE tmp_nomenclature tn
+SET leaf = '1'
+WHERE goods_nomenclature_sid = nom_record.goods_nomenclature_sid;
+
+END IF;
+END IF;
+
+END LOOP;
+
+END;
+
+RETURN QUERY 
+SELECT * 
+FROM tmp_nomenclature;
+
+END;
+
+$_$;
+
+
+--
+-- Name: goods_nomenclature_export2(text); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.goods_nomenclature_export2(pchapter text) RETURNS TABLE(goods_nomenclature_sid integer, goods_nomenclature_item_id character varying, producline_suffix character varying, validity_start_date timestamp without time zone, validity_end_date timestamp without time zone, description text, number_indents integer, goods_nomenclature_description_period_sid integer, desc_validity_start_date timestamp without time zone, desc_validity_end_date timestamp without time zone, chapter text, node text, leaf text, significant_digits integer)
+    LANGUAGE plpgsql
+    AS $_$
+
+#variable_conflict use_column
+
+BEGIN
+
+IF pchapter = '' THEN
+pchapter = '%';
+END IF;
+
+/* temporary table contains results of query plus a placeholder column for leaf - defaulted to 0
+node column has the significant digits used to find child nodes having the same significant digits.
+The basic query retrieves all current (and future) nomenclature with indents and descriptions */
+
+DROP TABLE IF EXISTS tmp_nomenclature;
+
+CREATE TEMP TABLE tmp_nomenclature ON COMMIT DROP AS
+SELECT gn.goods_nomenclature_sid, gn.goods_nomenclature_item_id, gn.producline_suffix, gn.validity_start_date, gn.validity_end_date, 
+regexp_replace(gnd.description, E'[\\n\\r]+', ' ', 'g') as description,
+gni.number_indents, 
+gndp.goods_nomenclature_description_period_sid, gndp.validity_start_date "desc_validity_start_date", gndp.validity_end_date "desc_validity_end_date",
+/*concat(repeat (' -', gni.number_indents), ' ', gnd.description) "nice_description",*/
+left (gn.goods_nomenclature_item_id, 2) "chapter",
+REGEXP_REPLACE (gn.goods_nomenclature_item_id, '(00)+$', '') AS "node",
+'0' AS "leaf",
+CASE
+WHEN RIGHT(gn.goods_nomenclature_item_id, 8) = '00000000' THEN 2
+WHEN RIGHT(gn.goods_nomenclature_item_id, 6) = '000000' THEN 4
+WHEN RIGHT(gn.goods_nomenclature_item_id, 4) = '0000' THEN 6
+WHEN RIGHT(gn.goods_nomenclature_item_id, 2) = '00' THEN 8
+ELSE 10
+END As significant_digits
+FROM goods_nomenclatures gn
+JOIN goods_nomenclature_descriptions gnd ON gnd.goods_nomenclature_sid = gn.goods_nomenclature_sid
+JOIN goods_nomenclature_description_periods gndp ON gndp.goods_nomenclature_description_period_sid = gnd.goods_nomenclature_description_period_sid
+JOIN goods_nomenclature_indents gni ON gni.goods_nomenclature_sid = gn.goods_nomenclature_sid
+WHERE (gn.validity_end_date IS NULL OR gn.validity_end_date >= CURRENT_DATE)
+AND gn.goods_nomenclature_item_id LIKE pchapter
+AND gndp.goods_nomenclature_description_period_sid IN
+(SELECT MAX (gndp2.goods_nomenclature_description_period_sid)
+FROM goods_nomenclature_description_periods gndp2
+WHERE gndp2.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp2.validity_start_date < CURRENT_DATE
+UNION
+SELECT gndp3.goods_nomenclature_description_period_sid
+FROM goods_nomenclature_description_periods gndp3
+WHERE gndp3.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp3.validity_start_date >= CURRENT_DATE)
+AND gni.goods_nomenclature_indent_sid IN
+(SELECT MAX (gni2.goods_nomenclature_indent_sid)
+FROM goods_nomenclature_indents gni2
+WHERE gni2.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni2.validity_start_date < CURRENT_DATE
+UNION
+SELECT gni3.goods_nomenclature_indent_sid
+FROM goods_nomenclature_indents gni3
+WHERE gni3.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni3.validity_start_date >= CURRENT_DATE);
+
+/* index to speed up child node matching - need to perf test to see if any use */
+CREATE INDEX t1_i_nomenclature 
+ON tmp_nomenclature (goods_nomenclature_sid, goods_nomenclature_item_id);
+
+/* cursor loops through result set to identify if nodes are leaf and updates the flag if so */
+DECLARE
+cur_nomenclature CURSOR FOR 
+SELECT * FROM tmp_nomenclature;
+
+BEGIN
+
+FOR nom_record IN cur_nomenclature LOOP
+Raise Notice 'goods nomenclature item id %', nom_record.goods_nomenclature_item_id;
+
+/* Leaf nodes have to have pls of 80 and no children having the same nomenclature code */
+IF nom_record.producline_suffix = '80' THEN
+IF LENGTH (nom_record.node) = 10 OR NOT EXISTS (SELECT 1 
+FROM tmp_nomenclature 
+WHERE goods_nomenclature_item_id LIKE CONCAT(nom_record.node,'%')
+AND goods_nomenclature_item_id <> nom_record.goods_nomenclature_item_id) THEN
+
+UPDATE tmp_nomenclature tn
+SET leaf = '1'
+WHERE goods_nomenclature_sid = nom_record.goods_nomenclature_sid;
+
+END IF;
+END IF;
+
+END LOOP;
+
+END;
+
+RETURN QUERY 
+SELECT * 
+FROM tmp_nomenclature;
+
+END;
+
+$_$;
+
+
+--
+-- Name: goods_nomenclature_export3(text); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.goods_nomenclature_export3(pchapter text) RETURNS TABLE(goods_nomenclature_sid integer, goods_nomenclature_item_id character varying, producline_suffix character varying, validity_start_date timestamp without time zone, validity_end_date timestamp without time zone, description text, number_indents integer, goods_nomenclature_description_period_sid integer, desc_validity_start_date timestamp without time zone, desc_validity_end_date timestamp without time zone, nice_description text, hs_chapter text, hs_section integer, node text, leaf text, significant_digits integer)
+    LANGUAGE plpgsql
+    AS $_$
+
+#variable_conflict use_column
+
+BEGIN
+
+IF pchapter = '' THEN
+pchapter = '%';
+END IF;
+
+/* temporary table contains results of query plus a placeholder column for leaf - defaulted to 0
+node column has the significant digits used to find child nodes having the same significant digits.
+The basic query retrieves all current (and future) nomenclature with indents and descriptions */
+
+DROP TABLE IF EXISTS tmp_nomenclature;
+
+CREATE TEMP TABLE tmp_nomenclature ON COMMIT DROP AS
+SELECT gn.goods_nomenclature_sid, gn.goods_nomenclature_item_id, gn.producline_suffix, gn.validity_start_date, gn.validity_end_date, 
+regexp_replace(gnd.description, E'[\\n\\r]+', ' ', 'g') as description,
+gni.number_indents, 
+gndp.goods_nomenclature_description_period_sid, gndp.validity_start_date "desc_validity_start_date", gndp.validity_end_date "desc_validity_end_date",
+concat(repeat (' -', gni.number_indents), ' ', regexp_replace(gnd.description, E'[\\n\\r]+', ' ', 'g')) "nice_description",
+left (gn.goods_nomenclature_item_id, 2) AS "hs_chapter",
+CASE
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (1, 2, 3, 4, 5) THEN 1
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (6, 7, 8, 9, 10, 11, 12, 13, 14) THEN 2
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (15) THEN 3
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (16, 17, 18, 19, 20, 21, 22, 23, 24) THEN 4
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (25, 26, 27) THEN 5
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38) THEN 6
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (39, 40) THEN 7
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (41, 42, 43) THEN 8
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (44, 45, 46) THEN 9
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (47, 48, 49) THEN 10
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63) THEN 11
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (64, 65, 66, 67) THEN 12
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (68, 69, 70) THEN 13
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (71) THEN 14
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) THEN 15
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (84, 85) THEN 16
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (86, 87, 88, 89) THEN 17
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (90, 91, 92) THEN 18
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (93) THEN 19
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (94, 95, 96) THEN 20
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (97, 98) THEN 21
+ELSE 10
+END As "hs_section",
+REGEXP_REPLACE (gn.goods_nomenclature_item_id, '(00)+$', '') AS "node",
+'0' AS "leaf",
+CASE
+WHEN RIGHT(gn.goods_nomenclature_item_id, 8) = '00000000' THEN 2
+WHEN RIGHT(gn.goods_nomenclature_item_id, 6) = '000000' THEN 4
+WHEN RIGHT(gn.goods_nomenclature_item_id, 4) = '0000' THEN 6
+WHEN RIGHT(gn.goods_nomenclature_item_id, 2) = '00' THEN 8
+ELSE 10
+END As significant_digits
+FROM goods_nomenclatures gn
+JOIN goods_nomenclature_descriptions gnd ON gnd.goods_nomenclature_sid = gn.goods_nomenclature_sid
+JOIN goods_nomenclature_description_periods gndp ON gndp.goods_nomenclature_description_period_sid = gnd.goods_nomenclature_description_period_sid
+JOIN goods_nomenclature_indents gni ON gni.goods_nomenclature_sid = gn.goods_nomenclature_sid
+WHERE (gn.validity_end_date IS NULL OR gn.validity_end_date >= CURRENT_DATE)
+AND gn.goods_nomenclature_item_id LIKE pchapter
+AND gndp.goods_nomenclature_description_period_sid IN
+(SELECT MAX (gndp2.goods_nomenclature_description_period_sid)
+FROM goods_nomenclature_description_periods gndp2
+WHERE gndp2.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp2.validity_start_date < CURRENT_DATE
+UNION
+SELECT gndp3.goods_nomenclature_description_period_sid
+FROM goods_nomenclature_description_periods gndp3
+WHERE gndp3.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp3.validity_start_date >= CURRENT_DATE)
+AND gni.goods_nomenclature_indent_sid IN
+(SELECT MAX (gni2.goods_nomenclature_indent_sid)
+FROM goods_nomenclature_indents gni2
+WHERE gni2.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni2.validity_start_date < CURRENT_DATE
+UNION
+SELECT gni3.goods_nomenclature_indent_sid
+FROM goods_nomenclature_indents gni3
+WHERE gni3.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni3.validity_start_date >= CURRENT_DATE);
+
+/* index to speed up child node matching - need to perf test to see if any use */
+CREATE INDEX t1_i_nomenclature 
+ON tmp_nomenclature (goods_nomenclature_sid, goods_nomenclature_item_id);
+
+/* cursor loops through result set to identify if nodes are leaf and updates the flag if so */
+DECLARE
+cur_nomenclature CURSOR FOR 
+SELECT * FROM tmp_nomenclature;
+
+BEGIN
+
+FOR nom_record IN cur_nomenclature LOOP
+Raise Notice 'goods nomenclature item id %', nom_record.goods_nomenclature_item_id;
+
+/* Leaf nodes have to have pls of 80 and no children having the same nomenclature code */
+IF nom_record.producline_suffix = '80' THEN
+IF LENGTH (nom_record.node) = 10 OR NOT EXISTS (SELECT 1 
+FROM tmp_nomenclature 
+WHERE goods_nomenclature_item_id LIKE CONCAT(nom_record.node,'%')
+AND goods_nomenclature_item_id <> nom_record.goods_nomenclature_item_id) THEN
+
+UPDATE tmp_nomenclature tn
+SET leaf = '1'
+WHERE goods_nomenclature_sid = nom_record.goods_nomenclature_sid;
+
+END IF;
+END IF;
+
+END LOOP;
+
+END;
+
+RETURN QUERY 
+SELECT * 
+FROM tmp_nomenclature;
+
+END;
+
+$_$;
+
+
+--
+-- Name: goods_nomenclature_export_2019(text); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.goods_nomenclature_export_2019(pchapter text) RETURNS TABLE(goods_nomenclature_sid integer, goods_nomenclature_item_id character varying, producline_suffix character varying, validity_start_date timestamp without time zone, validity_end_date timestamp without time zone, description text, number_indents integer, goods_nomenclature_description_period_sid integer, desc_validity_start_date timestamp without time zone, desc_validity_end_date timestamp without time zone, nice_description text, chapter text, node text, leaf text)
+    LANGUAGE plpgsql
+    AS $_$
+
+#variable_conflict use_column
+
+BEGIN
+
+IF pchapter = '' THEN
+pchapter = '%';
+END IF;
+
+/* temporary table contains results of query plus a placeholder column for leaf - defaulted to 0
+node column has the significant digits used to find child nodes having the same significant digits.
+The basic query retrieves all current (and future) nomenclature with indents and descriptions */
+
+DROP TABLE IF EXISTS tmp_nomenclature;
+
+CREATE TEMP TABLE tmp_nomenclature ON COMMIT DROP AS
+SELECT gn.goods_nomenclature_sid, gn.goods_nomenclature_item_id, gn.producline_suffix, gn.validity_start_date, gn.validity_end_date, 
+gnd.description,
+gni.number_indents, 
+gndp.goods_nomenclature_description_period_sid, gndp.validity_start_date "desc_validity_start_date", gndp.validity_end_date "desc_validity_end_date",
+concat(repeat (' -', gni.number_indents), ' ', gnd.description) "nice_description",
+left (gn.goods_nomenclature_item_id, 2) "chapter",
+REGEXP_REPLACE (gn.goods_nomenclature_item_id, '(00)+$', '') AS "node",
+'0' AS "leaf"
+FROM goods_nomenclatures gn
+JOIN goods_nomenclature_descriptions gnd ON gnd.goods_nomenclature_sid = gn.goods_nomenclature_sid
+JOIN goods_nomenclature_description_periods gndp ON gndp.goods_nomenclature_description_period_sid = gnd.goods_nomenclature_description_period_sid
+JOIN goods_nomenclature_indents gni ON gni.goods_nomenclature_sid = gn.goods_nomenclature_sid
+WHERE (gn.validity_end_date IS NULL OR gn.validity_end_date >= '2019-01-01')
+AND gn.goods_nomenclature_item_id LIKE pchapter
+AND gndp.goods_nomenclature_description_period_sid IN
+(SELECT MAX (gndp2.goods_nomenclature_description_period_sid)
+FROM goods_nomenclature_description_periods gndp2
+WHERE gndp2.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp2.validity_start_date < '2019-01-01'
+UNION
+SELECT gndp3.goods_nomenclature_description_period_sid
+FROM goods_nomenclature_description_periods gndp3
+WHERE gndp3.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp3.validity_start_date >= '2019-01-01')
+AND gni.goods_nomenclature_indent_sid IN
+(SELECT MAX (gni2.goods_nomenclature_indent_sid)
+FROM goods_nomenclature_indents gni2
+WHERE gni2.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni2.validity_start_date < '2019-01-01'
+UNION
+SELECT gni3.goods_nomenclature_indent_sid
+FROM goods_nomenclature_indents gni3
+WHERE gni3.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni3.validity_start_date >= '2019-01-01');
+
+/* index to speed up child node matching - need to perf test to see if any use */
+CREATE INDEX t1_i_nomenclature 
+ON tmp_nomenclature (goods_nomenclature_sid, goods_nomenclature_item_id);
+
+/* cursor loops through result set to identify if nodes are leaf and updates the flag if so */
+DECLARE
+cur_nomenclature CURSOR FOR 
+SELECT * FROM tmp_nomenclature;
+
+BEGIN
+
+FOR nom_record IN cur_nomenclature LOOP
+Raise Notice 'goods nomenclature item id %', nom_record.goods_nomenclature_item_id;
+
+/* Leaf nodes have to have pls of 80 and no children having the same nomenclature code */
+IF nom_record.producline_suffix = '80' THEN
+IF LENGTH (nom_record.node) = 10 OR NOT EXISTS (SELECT 1 
+FROM tmp_nomenclature 
+WHERE goods_nomenclature_item_id LIKE CONCAT(nom_record.node,'%')
+AND goods_nomenclature_item_id <> nom_record.goods_nomenclature_item_id) THEN
+
+UPDATE tmp_nomenclature tn
+SET leaf = '1'
+WHERE goods_nomenclature_sid = nom_record.goods_nomenclature_sid;
+
+END IF;
+END IF;
+
+END LOOP;
+
+END;
+
+RETURN QUERY 
+SELECT * 
+FROM tmp_nomenclature;
+
+END;
+
+$_$;
+
+
+--
+-- Name: goods_nomenclature_export_brexit(text); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.goods_nomenclature_export_brexit(pchapter text) RETURNS TABLE(goods_nomenclature_sid integer, goods_nomenclature_item_id character varying, producline_suffix character varying, validity_start_date timestamp without time zone, validity_end_date timestamp without time zone, description text, number_indents integer, goods_nomenclature_description_period_sid integer, desc_validity_start_date timestamp without time zone, desc_validity_end_date timestamp without time zone, nice_description text, chapter text, node text, leaf text)
+    LANGUAGE plpgsql
+    AS $_$
+
+#variable_conflict use_column
+
+BEGIN
+
+IF pchapter = '' THEN
+pchapter = '%';
+END IF;
+
+/* temporary table contains results of query plus a placeholder column for leaf - defaulted to 0
+node column has the significant digits used to find child nodes having the same significant digits.
+The basic query retrieves all current (and future) nomenclature with indents and descriptions */
+
+DROP TABLE IF EXISTS tmp_nomenclature;
+
+CREATE TEMP TABLE tmp_nomenclature ON COMMIT DROP AS
+SELECT gn.goods_nomenclature_sid, gn.goods_nomenclature_item_id, gn.producline_suffix, gn.validity_start_date, gn.validity_end_date, 
+gnd.description,
+gni.number_indents, 
+gndp.goods_nomenclature_description_period_sid, gndp.validity_start_date "desc_validity_start_date", gndp.validity_end_date "desc_validity_end_date",
+concat(repeat (' -', gni.number_indents), ' ', gnd.description) "nice_description",
+left (gn.goods_nomenclature_item_id, 2) "chapter",
+REGEXP_REPLACE (gn.goods_nomenclature_item_id, '(00)+$', '') AS "node",
+'0' AS "leaf"
+FROM goods_nomenclatures gn
+JOIN goods_nomenclature_descriptions gnd ON gnd.goods_nomenclature_sid = gn.goods_nomenclature_sid
+JOIN goods_nomenclature_description_periods gndp ON gndp.goods_nomenclature_description_period_sid = gnd.goods_nomenclature_description_period_sid
+JOIN goods_nomenclature_indents gni ON gni.goods_nomenclature_sid = gn.goods_nomenclature_sid
+WHERE (gn.validity_end_date IS NULL OR gn.validity_end_date >= '2019-03-30')
+AND gn.goods_nomenclature_item_id LIKE pchapter
+AND gndp.goods_nomenclature_description_period_sid IN
+(SELECT MAX (gndp2.goods_nomenclature_description_period_sid)
+FROM goods_nomenclature_description_periods gndp2
+WHERE gndp2.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp2.validity_start_date <= '2019-03-30'
+UNION
+SELECT gndp3.goods_nomenclature_description_period_sid
+FROM goods_nomenclature_description_periods gndp3
+WHERE gndp3.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp3.validity_start_date >= '2019-03-30')
+AND gni.goods_nomenclature_indent_sid IN
+(SELECT MAX (gni2.goods_nomenclature_indent_sid)
+FROM goods_nomenclature_indents gni2
+WHERE gni2.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni2.validity_start_date < '2019-03-30'
+UNION
+SELECT gni3.goods_nomenclature_indent_sid
+FROM goods_nomenclature_indents gni3
+WHERE gni3.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni3.validity_start_date >= '2019-03-30');
+
+/* index to speed up child node matching - need to perf test to see if any use */
+CREATE INDEX t1_i_nomenclature 
+ON tmp_nomenclature (goods_nomenclature_sid, goods_nomenclature_item_id);
+
+/* cursor loops through result set to identify if nodes are leaf and updates the flag if so */
+DECLARE
+cur_nomenclature CURSOR FOR 
+SELECT * FROM tmp_nomenclature;
+
+BEGIN
+
+FOR nom_record IN cur_nomenclature LOOP
+Raise Notice 'goods nomenclature item id %', nom_record.goods_nomenclature_item_id;
+
+/* Leaf nodes have to have pls of 80 and no children having the same nomenclature code */
+IF nom_record.producline_suffix = '80' THEN
+IF LENGTH (nom_record.node) = 10 OR NOT EXISTS (SELECT 1 
+FROM tmp_nomenclature 
+WHERE goods_nomenclature_item_id LIKE CONCAT(nom_record.node,'%')
+AND goods_nomenclature_item_id <> nom_record.goods_nomenclature_item_id) THEN
+
+UPDATE tmp_nomenclature tn
+SET leaf = '1'
+WHERE goods_nomenclature_sid = nom_record.goods_nomenclature_sid;
+
+END IF;
+END IF;
+
+END LOOP;
+
+END;
+
+RETURN QUERY 
+SELECT * 
+FROM tmp_nomenclature;
+
+END;
+
+$_$;
+
+
+--
+-- Name: goods_nomenclature_export_date_param(text); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.goods_nomenclature_export_date_param(pchapter text) RETURNS TABLE(goods_nomenclature_sid integer, goods_nomenclature_item_id character varying, producline_suffix character varying, validity_start_date timestamp without time zone, validity_end_date timestamp without time zone, description text, number_indents integer, goods_nomenclature_description_period_sid integer, desc_validity_start_date timestamp without time zone, desc_validity_end_date timestamp without time zone, nice_description text, hs_chapter text, hs_section integer, node text, leaf text, significant_digits integer)
+    LANGUAGE plpgsql
+    AS $_$
+
+#variable_conflict use_column
+
+BEGIN
+
+IF pchapter = '' THEN
+pchapter = '%';
+END IF;
+
+/* temporary table contains results of query plus a placeholder column for leaf - defaulted to 0
+node column has the significant digits used to find child nodes having the same significant digits.
+The basic query retrieves all current (and future) nomenclature with indents and descriptions */
+
+DROP TABLE IF EXISTS tmp_nomenclature;
+
+CREATE TEMP TABLE tmp_nomenclature ON COMMIT DROP AS
+SELECT gn.goods_nomenclature_sid, gn.goods_nomenclature_item_id, gn.producline_suffix, gn.validity_start_date, gn.validity_end_date, 
+regexp_replace(gnd.description, E'[\\n\\r]+', ' ', 'g') as description,
+gni.number_indents, 
+gndp.goods_nomenclature_description_period_sid, gndp.validity_start_date "desc_validity_start_date", gndp.validity_end_date "desc_validity_end_date",
+concat(repeat (' -', gni.number_indents), ' ', regexp_replace(gnd.description, E'[\\n\\r]+', ' ', 'g')) "nice_description",
+left (gn.goods_nomenclature_item_id, 2) AS "hs_chapter",
+CASE
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (1, 2, 3, 4, 5) THEN 1
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (6, 7, 8, 9, 10, 11, 12, 13, 14) THEN 2
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (15) THEN 3
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (16, 17, 18, 19, 20, 21, 22, 23, 24) THEN 4
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (25, 26, 27) THEN 5
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38) THEN 6
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (39, 40) THEN 7
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (41, 42, 43) THEN 8
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (44, 45, 46) THEN 9
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (47, 48, 49) THEN 10
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63) THEN 11
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (64, 65, 66, 67) THEN 12
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (68, 69, 70) THEN 13
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (71) THEN 14
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83) THEN 15
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (84, 85) THEN 16
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (86, 87, 88, 89) THEN 17
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (90, 91, 92) THEN 18
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (93) THEN 19
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (94, 95, 96) THEN 20
+WHEN LEFT(gn.goods_nomenclature_item_id, 2)::integer IN (97, 98) THEN 21
+ELSE 10
+END As "hs_section",
+REGEXP_REPLACE (gn.goods_nomenclature_item_id, '(00)+$', '') AS "node",
+'0' AS "leaf",
+CASE
+WHEN RIGHT(gn.goods_nomenclature_item_id, 8) = '00000000' THEN 2
+WHEN RIGHT(gn.goods_nomenclature_item_id, 6) = '000000' THEN 4
+WHEN RIGHT(gn.goods_nomenclature_item_id, 4) = '0000' THEN 6
+WHEN RIGHT(gn.goods_nomenclature_item_id, 2) = '00' THEN 8
+ELSE 10
+END As significant_digits
+FROM goods_nomenclatures gn
+JOIN goods_nomenclature_descriptions gnd ON gnd.goods_nomenclature_sid = gn.goods_nomenclature_sid
+JOIN goods_nomenclature_description_periods gndp ON gndp.goods_nomenclature_description_period_sid = gnd.goods_nomenclature_description_period_sid
+JOIN goods_nomenclature_indents gni ON gni.goods_nomenclature_sid = gn.goods_nomenclature_sid
+WHERE (gn.validity_end_date IS NULL OR gn.validity_end_date >= CURRENT_DATE)
+AND gn.goods_nomenclature_item_id LIKE pchapter
+AND gndp.goods_nomenclature_description_period_sid IN
+(SELECT MAX (gndp2.goods_nomenclature_description_period_sid)
+FROM goods_nomenclature_description_periods gndp2
+WHERE gndp2.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp2.validity_start_date < CURRENT_DATE
+UNION
+SELECT gndp3.goods_nomenclature_description_period_sid
+FROM goods_nomenclature_description_periods gndp3
+WHERE gndp3.goods_nomenclature_sid = gnd.goods_nomenclature_sid
+AND gndp3.validity_start_date >= CURRENT_DATE)
+AND gni.goods_nomenclature_indent_sid IN
+(SELECT MAX (gni2.goods_nomenclature_indent_sid)
+FROM goods_nomenclature_indents gni2
+WHERE gni2.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni2.validity_start_date < CURRENT_DATE
+UNION
+SELECT gni3.goods_nomenclature_indent_sid
+FROM goods_nomenclature_indents gni3
+WHERE gni3.goods_nomenclature_sid = gn.goods_nomenclature_sid
+AND gni3.validity_start_date >= CURRENT_DATE);
+
+/* index to speed up child node matching - need to perf test to see if any use */
+CREATE INDEX t1_i_nomenclature 
+ON tmp_nomenclature (goods_nomenclature_sid, goods_nomenclature_item_id);
+
+/* cursor loops through result set to identify if nodes are leaf and updates the flag if so */
+DECLARE
+cur_nomenclature CURSOR FOR 
+SELECT * FROM tmp_nomenclature;
+
+BEGIN
+
+FOR nom_record IN cur_nomenclature LOOP
+Raise Notice 'goods nomenclature item id %', nom_record.goods_nomenclature_item_id;
+
+/* Leaf nodes have to have pls of 80 and no children having the same nomenclature code */
+IF nom_record.producline_suffix = '80' THEN
+IF LENGTH (nom_record.node) = 10 OR NOT EXISTS (SELECT 1 
+FROM tmp_nomenclature 
+WHERE goods_nomenclature_item_id LIKE CONCAT(nom_record.node,'%')
+AND goods_nomenclature_item_id <> nom_record.goods_nomenclature_item_id) THEN
+
+UPDATE tmp_nomenclature tn
+SET leaf = '1'
+WHERE goods_nomenclature_sid = nom_record.goods_nomenclature_sid;
+
+END IF;
+END IF;
+
+END LOOP;
+
+END;
+
+RETURN QUERY 
+SELECT * 
+FROM tmp_nomenclature;
+
+END;
+
+$_$;
+
+
+--
+-- Name: reformat_regulation_id(character varying); Type: FUNCTION; Schema: ml; Owner: -
+--
+
+CREATE FUNCTION ml.reformat_regulation_id(reg character varying) RETURNS character varying
+    LANGUAGE plpgsql
+    AS $$
+declare
+outreg character varying;
+begin
+select into outreg left(reg, 1) || right(reg, 4) || '/' || substring(reg, 2, 2);
+return outreg;
+end
+$$;
+>>>>>>> Stashed changes
 
 
 --
@@ -76,6 +884,2039 @@ CREATE FUNCTION public.reassign_owned() RETURNS event_trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: chapters; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.chapters (
+    chapter character varying,
+    description character varying
+);
+
+
+--
+-- Name: config; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.config (
+    last_exported_operation_date timestamp without time zone,
+    last_transaction_id integer
+);
+
+
+--
+-- Name: measure_action_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measure_action_descriptions_oplog (
+    action_code character varying(255),
+    language_id character varying(5),
+    description text,
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: measure_action_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measure_action_descriptions AS
+ SELECT measure_action_descriptions1.action_code,
+    measure_action_descriptions1.language_id,
+    measure_action_descriptions1.description,
+    measure_action_descriptions1.oid,
+    measure_action_descriptions1.operation,
+    measure_action_descriptions1.operation_date,
+    measure_action_descriptions1.status,
+    measure_action_descriptions1.workbasket_id,
+    measure_action_descriptions1.workbasket_sequence_number
+   FROM public.measure_action_descriptions_oplog measure_action_descriptions1
+  WHERE ((measure_action_descriptions1.oid IN ( SELECT max(measure_action_descriptions2.oid) AS max
+           FROM public.measure_action_descriptions_oplog measure_action_descriptions2
+          WHERE ((measure_action_descriptions1.action_code)::text = (measure_action_descriptions2.action_code)::text))) AND ((measure_action_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: measure_actions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measure_actions_oplog (
+    action_code character varying(255),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: measure_actions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measure_actions AS
+ SELECT measure_actions1.action_code,
+    measure_actions1.validity_start_date,
+    measure_actions1.validity_end_date,
+    measure_actions1.oid,
+    measure_actions1.operation,
+    measure_actions1.operation_date,
+    measure_actions1.status,
+    measure_actions1.workbasket_id,
+    measure_actions1.workbasket_sequence_number
+   FROM public.measure_actions_oplog measure_actions1
+  WHERE ((measure_actions1.oid IN ( SELECT max(measure_actions2.oid) AS max
+           FROM public.measure_actions_oplog measure_actions2
+          WHERE ((measure_actions1.action_code)::text = (measure_actions2.action_code)::text))) AND ((measure_actions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: defra_ins_action_codes; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_action_codes AS
+ SELECT ma.action_code,
+    mad.description
+   FROM public.measure_actions ma,
+    public.measure_action_descriptions mad
+  WHERE (((ma.action_code)::text = (mad.action_code)::text) AND (ma.validity_end_date IS NULL))
+  ORDER BY ma.action_code;
+
+
+--
+-- Name: certificate_type_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.certificate_type_descriptions_oplog (
+    certificate_type_code character varying(1),
+    language_id character varying(5),
+    description text,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: certificate_type_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.certificate_type_descriptions AS
+ SELECT certificate_type_descriptions1.certificate_type_code,
+    certificate_type_descriptions1.language_id,
+    certificate_type_descriptions1.description,
+    certificate_type_descriptions1."national",
+    certificate_type_descriptions1.oid,
+    certificate_type_descriptions1.operation,
+    certificate_type_descriptions1.operation_date,
+    certificate_type_descriptions1.status,
+    certificate_type_descriptions1.workbasket_id,
+    certificate_type_descriptions1.workbasket_sequence_number
+   FROM public.certificate_type_descriptions_oplog certificate_type_descriptions1
+  WHERE ((certificate_type_descriptions1.oid IN ( SELECT max(certificate_type_descriptions2.oid) AS max
+           FROM public.certificate_type_descriptions_oplog certificate_type_descriptions2
+          WHERE ((certificate_type_descriptions1.certificate_type_code)::text = (certificate_type_descriptions2.certificate_type_code)::text))) AND ((certificate_type_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: certificate_types_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.certificate_types_oplog (
+    certificate_type_code character varying(1),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: certificate_types; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.certificate_types AS
+ SELECT certificate_types1.certificate_type_code,
+    certificate_types1.validity_start_date,
+    certificate_types1.validity_end_date,
+    certificate_types1."national",
+    certificate_types1.oid,
+    certificate_types1.operation,
+    certificate_types1.operation_date,
+    certificate_types1.status,
+    certificate_types1.workbasket_id,
+    certificate_types1.workbasket_sequence_number
+   FROM public.certificate_types_oplog certificate_types1
+  WHERE ((certificate_types1.oid IN ( SELECT max(certificate_types2.oid) AS max
+           FROM public.certificate_types_oplog certificate_types2
+          WHERE ((certificate_types1.certificate_type_code)::text = (certificate_types2.certificate_type_code)::text))) AND ((certificate_types1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: defra_ins_certificate_types; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_certificate_types AS
+ SELECT ct.certificate_type_code,
+    ctd.description
+   FROM public.certificate_types ct,
+    public.certificate_type_descriptions ctd
+  WHERE (((ct.certificate_type_code)::text = (ctd.certificate_type_code)::text) AND (ct.validity_end_date IS NULL));
+
+
+--
+-- Name: base_regulations_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.base_regulations_oplog (
+    base_regulation_role integer,
+    base_regulation_id character varying(255),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    community_code integer,
+    regulation_group_id character varying(255),
+    replacement_indicator integer,
+    stopped_flag boolean,
+    information_text text,
+    approved_flag boolean,
+    published_date date,
+    officialjournal_number character varying(255),
+    officialjournal_page integer,
+    effective_end_date timestamp without time zone,
+    antidumping_regulation_role integer,
+    related_antidumping_regulation_id character varying(255),
+    complete_abrogation_regulation_role integer,
+    complete_abrogation_regulation_id character varying(255),
+    explicit_abrogation_regulation_role integer,
+    explicit_abrogation_regulation_id character varying(255),
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    added_by_id integer,
+    added_at timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: base_regulations; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.base_regulations AS
+ SELECT base_regulations1.base_regulation_role,
+    base_regulations1.base_regulation_id,
+    base_regulations1.validity_start_date,
+    base_regulations1.validity_end_date,
+    base_regulations1.community_code,
+    base_regulations1.regulation_group_id,
+    base_regulations1.replacement_indicator,
+    base_regulations1.stopped_flag,
+    base_regulations1.information_text,
+    base_regulations1.approved_flag,
+    base_regulations1.published_date,
+    base_regulations1.officialjournal_number,
+    base_regulations1.officialjournal_page,
+    base_regulations1.effective_end_date,
+    base_regulations1.antidumping_regulation_role,
+    base_regulations1.related_antidumping_regulation_id,
+    base_regulations1.complete_abrogation_regulation_role,
+    base_regulations1.complete_abrogation_regulation_id,
+    base_regulations1.explicit_abrogation_regulation_role,
+    base_regulations1.explicit_abrogation_regulation_id,
+    base_regulations1."national",
+    base_regulations1.oid,
+    base_regulations1.operation,
+    base_regulations1.operation_date,
+    base_regulations1.added_by_id,
+    base_regulations1.added_at,
+    base_regulations1.status,
+    base_regulations1.workbasket_id,
+    base_regulations1.workbasket_sequence_number
+   FROM public.base_regulations_oplog base_regulations1
+  WHERE ((base_regulations1.oid IN ( SELECT max(base_regulations2.oid) AS max
+           FROM public.base_regulations_oplog base_regulations2
+          WHERE (((base_regulations1.base_regulation_id)::text = (base_regulations2.base_regulation_id)::text) AND (base_regulations1.base_regulation_role = base_regulations2.base_regulation_role)))) AND ((base_regulations1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: goods_nomenclatures_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.goods_nomenclatures_oplog (
+    goods_nomenclature_sid integer,
+    goods_nomenclature_item_id character varying(10),
+    producline_suffix character varying(255),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    statistical_indicator integer,
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: goods_nomenclatures; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.goods_nomenclatures AS
+ SELECT goods_nomenclatures1.goods_nomenclature_sid,
+    goods_nomenclatures1.goods_nomenclature_item_id,
+    goods_nomenclatures1.producline_suffix,
+    goods_nomenclatures1.validity_start_date,
+    goods_nomenclatures1.validity_end_date,
+    goods_nomenclatures1.statistical_indicator,
+    goods_nomenclatures1.oid,
+    goods_nomenclatures1.operation,
+    goods_nomenclatures1.operation_date,
+    goods_nomenclatures1.status,
+    goods_nomenclatures1.workbasket_id,
+    goods_nomenclatures1.workbasket_sequence_number
+   FROM public.goods_nomenclatures_oplog goods_nomenclatures1
+  WHERE ((goods_nomenclatures1.oid IN ( SELECT max(goods_nomenclatures2.oid) AS max
+           FROM public.goods_nomenclatures_oplog goods_nomenclatures2
+          WHERE (goods_nomenclatures1.goods_nomenclature_sid = goods_nomenclatures2.goods_nomenclature_sid))) AND ((goods_nomenclatures1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: measure_components_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measure_components_oplog (
+    measure_sid integer,
+    duty_expression_id character varying(255),
+    duty_amount double precision,
+    monetary_unit_code character varying(255),
+    measurement_unit_code character varying(3),
+    measurement_unit_qualifier_code character varying(1),
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    added_by_id integer,
+    added_at timestamp without time zone,
+    "national" boolean,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    original_duty_expression_id text
+);
+
+
+--
+-- Name: measure_components; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measure_components AS
+ SELECT measure_components1.measure_sid,
+    measure_components1.duty_expression_id,
+    measure_components1.duty_amount,
+    measure_components1.monetary_unit_code,
+    measure_components1.measurement_unit_code,
+    measure_components1.measurement_unit_qualifier_code,
+    measure_components1.oid,
+    measure_components1.operation,
+    measure_components1.operation_date,
+    measure_components1.added_by_id,
+    measure_components1.added_at,
+    measure_components1."national",
+    measure_components1.status,
+    measure_components1.workbasket_id,
+    measure_components1.workbasket_sequence_number,
+    measure_components1.original_duty_expression_id
+   FROM public.measure_components_oplog measure_components1
+  WHERE ((measure_components1.oid IN ( SELECT max(measure_components2.oid) AS max
+           FROM public.measure_components_oplog measure_components2
+          WHERE ((measure_components1.measure_sid = measure_components2.measure_sid) AND ((measure_components1.duty_expression_id)::text = (measure_components2.duty_expression_id)::text)))) AND ((measure_components1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: measures_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measures_oplog (
+    measure_sid integer,
+    measure_type_id character varying(3),
+    geographical_area_id character varying(255),
+    goods_nomenclature_item_id character varying(10),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    measure_generating_regulation_role integer,
+    measure_generating_regulation_id character varying(255),
+    justification_regulation_role integer,
+    justification_regulation_id character varying(255),
+    stopped_flag boolean,
+    geographical_area_sid integer,
+    goods_nomenclature_sid integer,
+    ordernumber character varying(255),
+    additional_code_type_id text,
+    additional_code_id character varying(3),
+    additional_code_sid integer,
+    reduction_indicator integer,
+    export_refund_nomenclature_sid integer,
+    created_at timestamp without time zone,
+    "national" boolean,
+    tariff_measure_number character varying(10),
+    invalidated_by integer,
+    invalidated_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    added_by_id integer,
+    added_at timestamp without time zone,
+    status text,
+    last_status_change_at timestamp without time zone,
+    last_update_by_id integer,
+    updated_at timestamp without time zone,
+    workbasket_id integer,
+    searchable_data jsonb DEFAULT '{}'::jsonb,
+    searchable_data_updated_at timestamp without time zone,
+    workbasket_sequence_number integer,
+    original_measure_sid text
+);
+
+
+--
+-- Name: measures; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measures AS
+ SELECT measures1.measure_sid,
+    measures1.measure_type_id,
+    measures1.geographical_area_id,
+    measures1.goods_nomenclature_item_id,
+    measures1.validity_start_date,
+    measures1.validity_end_date,
+    measures1.measure_generating_regulation_role,
+    measures1.measure_generating_regulation_id,
+    measures1.justification_regulation_role,
+    measures1.justification_regulation_id,
+    measures1.stopped_flag,
+    measures1.geographical_area_sid,
+    measures1.goods_nomenclature_sid,
+    measures1.ordernumber,
+    measures1.additional_code_type_id,
+    measures1.additional_code_id,
+    measures1.additional_code_sid,
+    measures1.reduction_indicator,
+    measures1.export_refund_nomenclature_sid,
+    measures1."national",
+    measures1.tariff_measure_number,
+    measures1.invalidated_by,
+    measures1.invalidated_at,
+    measures1.oid,
+    measures1.operation,
+    measures1.operation_date,
+    measures1.added_by_id,
+    measures1.added_at,
+    measures1.status,
+    measures1.last_status_change_at,
+    measures1.last_update_by_id,
+    measures1.workbasket_id,
+    measures1.searchable_data,
+    measures1.searchable_data_updated_at,
+    measures1.workbasket_sequence_number,
+    measures1.original_measure_sid,
+    measures1.updated_at
+   FROM public.measures_oplog measures1
+  WHERE ((measures1.oid IN ( SELECT max(measures2.oid) AS max
+           FROM public.measures_oplog measures2
+          WHERE (measures1.measure_sid = measures2.measure_sid))) AND ((measures1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: modification_regulations_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.modification_regulations_oplog (
+    modification_regulation_role integer,
+    modification_regulation_id character varying(255),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    published_date date,
+    officialjournal_number character varying(255),
+    officialjournal_page integer,
+    base_regulation_role integer,
+    base_regulation_id character varying(255),
+    replacement_indicator integer,
+    stopped_flag boolean,
+    information_text text,
+    approved_flag boolean,
+    explicit_abrogation_regulation_role integer,
+    explicit_abrogation_regulation_id character varying(8),
+    effective_end_date timestamp without time zone,
+    complete_abrogation_regulation_role integer,
+    complete_abrogation_regulation_id character varying(8),
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    added_by_id integer,
+    added_at timestamp without time zone,
+    "national" boolean,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: modification_regulations; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.modification_regulations AS
+ SELECT modification_regulations1.modification_regulation_role,
+    modification_regulations1.modification_regulation_id,
+    modification_regulations1.validity_start_date,
+    modification_regulations1.validity_end_date,
+    modification_regulations1.published_date,
+    modification_regulations1.officialjournal_number,
+    modification_regulations1.officialjournal_page,
+    modification_regulations1.base_regulation_role,
+    modification_regulations1.base_regulation_id,
+    modification_regulations1.replacement_indicator,
+    modification_regulations1.stopped_flag,
+    modification_regulations1.information_text,
+    modification_regulations1.approved_flag,
+    modification_regulations1.explicit_abrogation_regulation_role,
+    modification_regulations1.explicit_abrogation_regulation_id,
+    modification_regulations1.effective_end_date,
+    modification_regulations1.complete_abrogation_regulation_role,
+    modification_regulations1.complete_abrogation_regulation_id,
+    modification_regulations1.oid,
+    modification_regulations1.operation,
+    modification_regulations1.operation_date,
+    modification_regulations1.added_by_id,
+    modification_regulations1.added_at,
+    modification_regulations1."national",
+    modification_regulations1.status,
+    modification_regulations1.workbasket_id,
+    modification_regulations1.workbasket_sequence_number
+   FROM public.modification_regulations_oplog modification_regulations1
+  WHERE ((modification_regulations1.oid IN ( SELECT max(modification_regulations2.oid) AS max
+           FROM public.modification_regulations_oplog modification_regulations2
+          WHERE (((modification_regulations1.modification_regulation_id)::text = (modification_regulations2.modification_regulation_id)::text) AND (modification_regulations1.modification_regulation_role = modification_regulations2.modification_regulation_role)))) AND ((modification_regulations1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: defra_ins_measures_base; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_measures_base AS
+ SELECT m.measure_sid,
+    "left"((m.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    m.goods_nomenclature_item_id,
+    m.additional_code_type_id,
+    m.additional_code_id,
+    m.measure_type_id,
+    m.geographical_area_id,
+    m.validity_start_date,
+    m.validity_end_date,
+    mc.duty_amount,
+    mc.measurement_unit_code,
+    mc.measurement_unit_qualifier_code
+   FROM public.goods_nomenclatures g,
+    public.base_regulations r,
+    (public.measures m
+     LEFT JOIN public.measure_components mc ON ((m.measure_sid = mc.measure_sid)))
+  WHERE (((m.measure_generating_regulation_id)::text = (r.base_regulation_id)::text) AND ((r.effective_end_date >= ('now'::text)::date) OR (((r.validity_end_date >= ('now'::text)::date) OR (r.validity_end_date IS NULL)) AND (r.effective_end_date IS NULL))) AND (r.explicit_abrogation_regulation_id IS NULL) AND (r.complete_abrogation_regulation_id IS NULL) AND ((m.validity_end_date IS NULL) OR (m.validity_end_date >= ('now'::text)::date)) AND ((m.measure_type_id)::text = ANY (ARRAY[('109'::character varying)::text, ('110'::character varying)::text, ('277'::character varying)::text, ('278'::character varying)::text, ('410'::character varying)::text, ('420'::character varying)::text, ('465'::character varying)::text, ('467'::character varying)::text, ('473'::character varying)::text, ('474'::character varying)::text, ('475'::character varying)::text, ('476'::character varying)::text, ('478'::character varying)::text, ('479'::character varying)::text, ('705'::character varying)::text, ('706'::character varying)::text, ('707'::character varying)::text, ('708'::character varying)::text, ('709'::character varying)::text, ('710'::character varying)::text, ('711'::character varying)::text, ('712'::character varying)::text, ('713'::character varying)::text, ('714'::character varying)::text, ('715'::character varying)::text, ('716'::character varying)::text, ('717'::character varying)::text, ('718'::character varying)::text, ('719'::character varying)::text, ('722'::character varying)::text, ('724'::character varying)::text, ('725'::character varying)::text, ('728'::character varying)::text, ('730'::character varying)::text, ('735'::character varying)::text, ('740'::character varying)::text, ('745'::character varying)::text, ('746'::character varying)::text, ('747'::character varying)::text, ('748'::character varying)::text, ('749'::character varying)::text, ('750'::character varying)::text, ('751'::character varying)::text, ('755'::character varying)::text, ('760'::character varying)::text])) AND ((g.goods_nomenclature_item_id)::text = (m.goods_nomenclature_item_id)::text) AND (g.validity_start_date < ('now'::text)::date) AND ((g.validity_end_date > ('now'::text)::date) OR (g.validity_end_date IS NULL)))
+UNION
+ SELECT m.measure_sid,
+    "left"((m.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    m.goods_nomenclature_item_id,
+    m.additional_code_type_id,
+    m.additional_code_id,
+    m.measure_type_id,
+    m.geographical_area_id,
+    m.validity_start_date,
+    m.validity_end_date,
+    mc.duty_amount,
+    mc.measurement_unit_code,
+    mc.measurement_unit_qualifier_code
+   FROM public.goods_nomenclatures g,
+    public.modification_regulations r,
+    (public.measures m
+     LEFT JOIN public.measure_components mc ON ((m.measure_sid = mc.measure_sid)))
+  WHERE (((m.measure_generating_regulation_id)::text = (r.modification_regulation_id)::text) AND ((r.effective_end_date >= ('now'::text)::date) OR (((r.validity_end_date >= ('now'::text)::date) OR (r.validity_end_date IS NULL)) AND (r.effective_end_date IS NULL))) AND (r.complete_abrogation_regulation_id IS NULL) AND (r.explicit_abrogation_regulation_id IS NULL) AND ((m.validity_end_date IS NULL) OR (m.validity_end_date >= ('now'::text)::date)) AND ((m.measure_type_id)::text = ANY (ARRAY[('109'::character varying)::text, ('110'::character varying)::text, ('277'::character varying)::text, ('278'::character varying)::text, ('410'::character varying)::text, ('420'::character varying)::text, ('465'::character varying)::text, ('467'::character varying)::text, ('473'::character varying)::text, ('474'::character varying)::text, ('475'::character varying)::text, ('476'::character varying)::text, ('478'::character varying)::text, ('479'::character varying)::text, ('705'::character varying)::text, ('706'::character varying)::text, ('707'::character varying)::text, ('708'::character varying)::text, ('709'::character varying)::text, ('710'::character varying)::text, ('711'::character varying)::text, ('712'::character varying)::text, ('713'::character varying)::text, ('714'::character varying)::text, ('715'::character varying)::text, ('716'::character varying)::text, ('717'::character varying)::text, ('718'::character varying)::text, ('719'::character varying)::text, ('722'::character varying)::text, ('724'::character varying)::text, ('725'::character varying)::text, ('728'::character varying)::text, ('730'::character varying)::text, ('735'::character varying)::text, ('740'::character varying)::text, ('745'::character varying)::text, ('746'::character varying)::text, ('747'::character varying)::text, ('748'::character varying)::text, ('749'::character varying)::text, ('750'::character varying)::text, ('751'::character varying)::text, ('755'::character varying)::text, ('760'::character varying)::text])) AND ((g.goods_nomenclature_item_id)::text = (m.goods_nomenclature_item_id)::text) AND (g.validity_start_date < ('now'::text)::date) AND ((g.validity_end_date > ('now'::text)::date) OR (g.validity_end_date IS NULL)))
+  ORDER BY 1, 2, 3, 4;
+
+
+--
+-- Name: certificate_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.certificate_descriptions_oplog (
+    certificate_description_period_sid integer,
+    language_id character varying(5),
+    certificate_type_code character varying(1),
+    certificate_code character varying(3),
+    description text,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    added_by_id integer,
+    added_at timestamp without time zone
+);
+
+
+--
+-- Name: certificate_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.certificate_descriptions AS
+ SELECT certificate_descriptions1.certificate_description_period_sid,
+    certificate_descriptions1.language_id,
+    certificate_descriptions1.certificate_type_code,
+    certificate_descriptions1.certificate_code,
+    certificate_descriptions1.description,
+    certificate_descriptions1."national",
+    certificate_descriptions1.oid,
+    certificate_descriptions1.operation,
+    certificate_descriptions1.operation_date,
+    certificate_descriptions1.status,
+    certificate_descriptions1.workbasket_id,
+    certificate_descriptions1.workbasket_sequence_number,
+    certificate_descriptions1.added_by_id,
+    certificate_descriptions1.added_at
+   FROM public.certificate_descriptions_oplog certificate_descriptions1
+  WHERE ((certificate_descriptions1.oid IN ( SELECT max(certificate_descriptions2.oid) AS max
+           FROM public.certificate_descriptions_oplog certificate_descriptions2
+          WHERE (certificate_descriptions1.certificate_description_period_sid = certificate_descriptions2.certificate_description_period_sid))) AND ((certificate_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: certificates_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.certificates_oplog (
+    certificate_type_code character varying(1),
+    certificate_code character varying(3),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    created_at timestamp without time zone,
+    "national" boolean,
+    national_abbrev text,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    added_by_id integer,
+    added_at timestamp without time zone
+);
+
+
+--
+-- Name: certificates; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.certificates AS
+ SELECT certificates1.certificate_type_code,
+    certificates1.certificate_code,
+    certificates1.validity_start_date,
+    certificates1.validity_end_date,
+    certificates1."national",
+    certificates1.national_abbrev,
+    certificates1.oid,
+    certificates1.operation,
+    certificates1.operation_date,
+    certificates1.status,
+    certificates1.workbasket_id,
+    certificates1.workbasket_sequence_number,
+    certificates1.added_by_id,
+    certificates1.added_at
+   FROM public.certificates_oplog certificates1
+  WHERE ((certificates1.oid IN ( SELECT max(certificates2.oid) AS max
+           FROM public.certificates_oplog certificates2
+          WHERE (((certificates1.certificate_code)::text = (certificates2.certificate_code)::text) AND ((certificates1.certificate_type_code)::text = (certificates2.certificate_type_code)::text)))) AND ((certificates1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: ml_certificate_codes; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_certificate_codes AS
+ SELECT cd1.certificate_type_code,
+    cd1.certificate_code,
+    ((cd1.certificate_type_code)::text || (cd1.certificate_code)::text) AS code,
+    cd1.description,
+    c.validity_start_date,
+    c.validity_end_date
+   FROM public.certificate_descriptions cd1,
+    public.certificates c
+  WHERE (((c.certificate_code)::text = (cd1.certificate_code)::text) AND ((c.certificate_type_code)::text = (cd1.certificate_type_code)::text) AND (cd1.oid IN ( SELECT max(cd2.oid) AS max
+           FROM public.certificate_descriptions cd2
+          WHERE (((cd1.certificate_type_code)::text = (cd2.certificate_type_code)::text) AND ((cd1.certificate_code)::text = (cd2.certificate_code)::text)))))
+  ORDER BY cd1.certificate_type_code;
+
+
+--
+-- Name: measure_conditions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measure_conditions_oplog (
+    measure_condition_sid integer,
+    measure_sid integer,
+    condition_code character varying(255),
+    component_sequence_number integer,
+    condition_duty_amount double precision,
+    condition_monetary_unit_code character varying(255),
+    condition_measurement_unit_code character varying(3),
+    condition_measurement_unit_qualifier_code character varying(1),
+    action_code character varying(255),
+    certificate_type_code character varying(1),
+    certificate_code character varying(3),
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    added_by_id integer,
+    added_at timestamp without time zone,
+    "national" boolean,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    original_measure_condition_code text
+);
+
+
+--
+-- Name: measure_conditions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measure_conditions AS
+ SELECT measure_conditions1.measure_condition_sid,
+    measure_conditions1.measure_sid,
+    measure_conditions1.condition_code,
+    measure_conditions1.component_sequence_number,
+    measure_conditions1.condition_duty_amount,
+    measure_conditions1.condition_monetary_unit_code,
+    measure_conditions1.condition_measurement_unit_code,
+    measure_conditions1.condition_measurement_unit_qualifier_code,
+    measure_conditions1.action_code,
+    measure_conditions1.certificate_type_code,
+    measure_conditions1.certificate_code,
+    measure_conditions1.oid,
+    measure_conditions1.operation,
+    measure_conditions1.operation_date,
+    measure_conditions1.added_by_id,
+    measure_conditions1.added_at,
+    measure_conditions1."national",
+    measure_conditions1.status,
+    measure_conditions1.workbasket_id,
+    measure_conditions1.workbasket_sequence_number,
+    measure_conditions1.original_measure_condition_code
+   FROM public.measure_conditions_oplog measure_conditions1
+  WHERE ((measure_conditions1.oid IN ( SELECT max(measure_conditions2.oid) AS max
+           FROM public.measure_conditions_oplog measure_conditions2
+          WHERE (measure_conditions1.measure_condition_sid = measure_conditions2.measure_condition_sid))) AND ((measure_conditions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: defra_ins_certificates; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_certificates AS
+ SELECT c.certificate_type_code,
+    c.certificate_code,
+    c.description
+   FROM ml.ml_certificate_codes c,
+    public.measure_conditions mc,
+    ml.defra_ins_measures_base m
+  WHERE (((c.certificate_type_code)::text = (mc.certificate_type_code)::text) AND ((c.certificate_code)::text = (mc.certificate_code)::text) AND (mc.measure_sid = m.measure_sid))
+  ORDER BY c.certificate_type_code, c.certificate_code;
+
+
+--
+-- Name: geographical_area_memberships_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.geographical_area_memberships_oplog (
+    geographical_area_sid integer,
+    geographical_area_group_sid integer,
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    added_by_id integer,
+    added_at timestamp without time zone
+);
+
+
+--
+-- Name: geographical_area_memberships; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.geographical_area_memberships AS
+ SELECT geographical_area_memberships1.geographical_area_sid,
+    geographical_area_memberships1.geographical_area_group_sid,
+    geographical_area_memberships1.validity_start_date,
+    geographical_area_memberships1.validity_end_date,
+    geographical_area_memberships1."national",
+    geographical_area_memberships1.oid,
+    geographical_area_memberships1.operation,
+    geographical_area_memberships1.operation_date,
+    geographical_area_memberships1.status,
+    geographical_area_memberships1.workbasket_id,
+    geographical_area_memberships1.workbasket_sequence_number,
+    geographical_area_memberships1.added_by_id,
+    geographical_area_memberships1.added_at
+   FROM public.geographical_area_memberships_oplog geographical_area_memberships1
+  WHERE ((geographical_area_memberships1.oid IN ( SELECT max(geographical_area_memberships2.oid) AS max
+           FROM public.geographical_area_memberships_oplog geographical_area_memberships2
+          WHERE ((geographical_area_memberships1.geographical_area_sid = geographical_area_memberships2.geographical_area_sid) AND (geographical_area_memberships1.geographical_area_group_sid = geographical_area_memberships2.geographical_area_group_sid) AND (geographical_area_memberships1.validity_start_date = geographical_area_memberships2.validity_start_date)))) AND ((geographical_area_memberships1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: geographical_areas_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.geographical_areas_oplog (
+    geographical_area_sid integer,
+    parent_geographical_area_group_sid integer,
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    geographical_code character varying(255),
+    geographical_area_id character varying(255),
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    added_by_id integer,
+    added_at timestamp without time zone
+);
+
+
+--
+-- Name: geographical_areas; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.geographical_areas AS
+ SELECT geographical_areas1.geographical_area_sid,
+    geographical_areas1.parent_geographical_area_group_sid,
+    geographical_areas1.validity_start_date,
+    geographical_areas1.validity_end_date,
+    geographical_areas1.geographical_code,
+    geographical_areas1.geographical_area_id,
+    geographical_areas1."national",
+    geographical_areas1.oid,
+    geographical_areas1.operation,
+    geographical_areas1.operation_date,
+    geographical_areas1.status,
+    geographical_areas1.workbasket_id,
+    geographical_areas1.workbasket_sequence_number,
+    geographical_areas1.added_by_id,
+    geographical_areas1.added_at
+   FROM public.geographical_areas_oplog geographical_areas1
+  WHERE ((geographical_areas1.oid IN ( SELECT max(geographical_areas2.oid) AS max
+           FROM public.geographical_areas_oplog geographical_areas2
+          WHERE (geographical_areas1.geographical_area_sid = geographical_areas2.geographical_area_sid))) AND ((geographical_areas1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: defra_ins_geographical_area_memberships; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_geographical_area_memberships AS
+ SELECT gachild.geographical_area_id,
+    gaparent.geographical_area_sid AS parent_sid,
+    gaparent.geographical_area_id AS parent_id,
+    gachild.geographical_area_sid AS child_sid,
+    gachild.geographical_area_id AS child_id,
+    gam.validity_start_date,
+    gam.validity_end_date
+   FROM public.geographical_area_memberships gam,
+    public.geographical_areas gachild,
+    public.geographical_areas gaparent
+  WHERE ((gachild.geographical_area_sid = gam.geographical_area_sid) AND (gaparent.geographical_area_sid = gam.geographical_area_group_sid) AND (gaparent.geographical_area_sid > 0) AND (gachild.geographical_area_sid > 0))
+  ORDER BY gachild.geographical_area_id;
+
+
+--
+-- Name: geographical_area_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.geographical_area_descriptions_oplog (
+    geographical_area_description_period_sid integer,
+    language_id character varying(5),
+    geographical_area_sid integer,
+    geographical_area_id character varying(255),
+    description text,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    added_by_id integer,
+    added_at timestamp without time zone
+);
+
+
+--
+-- Name: geographical_area_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.geographical_area_descriptions AS
+ SELECT geographical_area_descriptions1.geographical_area_description_period_sid,
+    geographical_area_descriptions1.language_id,
+    geographical_area_descriptions1.geographical_area_sid,
+    geographical_area_descriptions1.geographical_area_id,
+    geographical_area_descriptions1.description,
+    geographical_area_descriptions1."national",
+    geographical_area_descriptions1.oid,
+    geographical_area_descriptions1.operation,
+    geographical_area_descriptions1.operation_date,
+    geographical_area_descriptions1.status,
+    geographical_area_descriptions1.workbasket_id,
+    geographical_area_descriptions1.workbasket_sequence_number,
+    geographical_area_descriptions1.added_by_id,
+    geographical_area_descriptions1.added_at
+   FROM public.geographical_area_descriptions_oplog geographical_area_descriptions1
+  WHERE ((geographical_area_descriptions1.oid IN ( SELECT max(geographical_area_descriptions2.oid) AS max
+           FROM public.geographical_area_descriptions_oplog geographical_area_descriptions2
+          WHERE ((geographical_area_descriptions1.geographical_area_description_period_sid = geographical_area_descriptions2.geographical_area_description_period_sid) AND (geographical_area_descriptions1.geographical_area_sid = geographical_area_descriptions2.geographical_area_sid)))) AND ((geographical_area_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: defra_ins_geographical_areas; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_geographical_areas AS
+ SELECT g.geographical_area_sid,
+    g.parent_geographical_area_group_sid,
+    geo1.geographical_area_id,
+    g.geographical_code,
+    g.validity_start_date,
+    g.validity_end_date,
+    geo1.description
+   FROM public.geographical_area_descriptions geo1,
+    public.geographical_areas g
+  WHERE (((g.geographical_area_id)::text = (geo1.geographical_area_id)::text) AND (geo1.geographical_area_description_period_sid IN ( SELECT max(geo2.geographical_area_description_period_sid) AS max
+           FROM public.geographical_area_descriptions geo2
+          WHERE ((geo1.geographical_area_id)::text = (geo2.geographical_area_id)::text))))
+  ORDER BY geo1.geographical_area_id
+ LIMIT 10;
+
+
+--
+-- Name: measure_condition_code_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measure_condition_code_descriptions_oplog (
+    condition_code character varying(255),
+    language_id character varying(5),
+    description text,
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: measure_condition_code_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measure_condition_code_descriptions AS
+ SELECT measure_condition_code_descriptions1.condition_code,
+    measure_condition_code_descriptions1.language_id,
+    measure_condition_code_descriptions1.description,
+    measure_condition_code_descriptions1.oid,
+    measure_condition_code_descriptions1.operation,
+    measure_condition_code_descriptions1.operation_date,
+    measure_condition_code_descriptions1.status,
+    measure_condition_code_descriptions1.workbasket_id,
+    measure_condition_code_descriptions1.workbasket_sequence_number
+   FROM public.measure_condition_code_descriptions_oplog measure_condition_code_descriptions1
+  WHERE ((measure_condition_code_descriptions1.oid IN ( SELECT max(measure_condition_code_descriptions2.oid) AS max
+           FROM public.measure_condition_code_descriptions_oplog measure_condition_code_descriptions2
+          WHERE ((measure_condition_code_descriptions1.condition_code)::text = (measure_condition_code_descriptions2.condition_code)::text))) AND ((measure_condition_code_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: measure_condition_codes_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measure_condition_codes_oplog (
+    condition_code character varying(255),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: measure_condition_codes; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measure_condition_codes AS
+ SELECT measure_condition_codes1.condition_code,
+    measure_condition_codes1.validity_start_date,
+    measure_condition_codes1.validity_end_date,
+    measure_condition_codes1.oid,
+    measure_condition_codes1.operation,
+    measure_condition_codes1.operation_date,
+    measure_condition_codes1.status,
+    measure_condition_codes1.workbasket_id,
+    measure_condition_codes1.workbasket_sequence_number
+   FROM public.measure_condition_codes_oplog measure_condition_codes1
+  WHERE ((measure_condition_codes1.oid IN ( SELECT max(measure_condition_codes2.oid) AS max
+           FROM public.measure_condition_codes_oplog measure_condition_codes2
+          WHERE ((measure_condition_codes1.condition_code)::text = (measure_condition_codes2.condition_code)::text))) AND ((measure_condition_codes1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: defra_ins_measure_condition_codes; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_measure_condition_codes AS
+ SELECT mcc.condition_code,
+    mccd.description
+   FROM public.measure_condition_codes mcc,
+    public.measure_condition_code_descriptions mccd
+  WHERE (((mcc.condition_code)::text = (mccd.condition_code)::text) AND (mcc.validity_end_date IS NULL))
+  ORDER BY mcc.condition_code;
+
+
+--
+-- Name: defra_ins_measure_conditions; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_measure_conditions AS
+ SELECT mc.measure_sid,
+    mc.condition_code,
+    mc.action_code,
+    mc.certificate_type_code,
+    mc.certificate_code,
+    mc.component_sequence_number
+   FROM public.measure_conditions mc,
+    ml.defra_ins_measures_base m
+  WHERE ((mc.measure_sid = m.measure_sid) AND (mc.certificate_type_code IS NOT NULL) AND (mc.certificate_code IS NOT NULL))
+  ORDER BY mc.measure_sid, mc.component_sequence_number;
+
+
+--
+-- Name: measure_type_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measure_type_descriptions_oplog (
+    measure_type_id character varying(3),
+    language_id character varying(5),
+    description text,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: measure_type_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measure_type_descriptions AS
+ SELECT measure_type_descriptions1.measure_type_id,
+    measure_type_descriptions1.language_id,
+    measure_type_descriptions1.description,
+    measure_type_descriptions1."national",
+    measure_type_descriptions1.oid,
+    measure_type_descriptions1.operation,
+    measure_type_descriptions1.operation_date,
+    measure_type_descriptions1.status,
+    measure_type_descriptions1.workbasket_id,
+    measure_type_descriptions1.workbasket_sequence_number
+   FROM public.measure_type_descriptions_oplog measure_type_descriptions1
+  WHERE ((measure_type_descriptions1.oid IN ( SELECT max(measure_type_descriptions2.oid) AS max
+           FROM public.measure_type_descriptions_oplog measure_type_descriptions2
+          WHERE ((measure_type_descriptions1.measure_type_id)::text = (measure_type_descriptions2.measure_type_id)::text))) AND ((measure_type_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: measure_types_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.measure_types_oplog (
+    measure_type_id character varying(3),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    trade_movement_code integer,
+    priority_code integer,
+    measure_component_applicable_code integer,
+    origin_dest_code integer,
+    order_number_capture_code integer,
+    measure_explosion_level integer,
+    measure_type_series_id character varying(255),
+    created_at timestamp without time zone,
+    "national" boolean,
+    measure_type_acronym character varying(3),
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: measure_types; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.measure_types AS
+ SELECT measure_types1.measure_type_id,
+    measure_types1.validity_start_date,
+    measure_types1.validity_end_date,
+    measure_types1.trade_movement_code,
+    measure_types1.priority_code,
+    measure_types1.measure_component_applicable_code,
+    measure_types1.origin_dest_code,
+    measure_types1.order_number_capture_code,
+    measure_types1.measure_explosion_level,
+    measure_types1.measure_type_series_id,
+    measure_types1."national",
+    measure_types1.measure_type_acronym,
+    measure_types1.oid,
+    measure_types1.operation,
+    measure_types1.operation_date,
+    measure_types1.status,
+    measure_types1.workbasket_id,
+    measure_types1.workbasket_sequence_number
+   FROM public.measure_types_oplog measure_types1
+  WHERE ((measure_types1.oid IN ( SELECT max(measure_types2.oid) AS max
+           FROM public.measure_types_oplog measure_types2
+          WHERE ((measure_types1.measure_type_id)::text = (measure_types2.measure_type_id)::text))) AND ((measure_types1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: defra_ins_measure_types; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_measure_types AS
+ SELECT mt.measure_type_id,
+    mt.validity_start_date,
+    mt.validity_end_date,
+    mt.trade_movement_code,
+    mtd.description
+   FROM public.measure_types mt,
+    public.measure_type_descriptions mtd
+  WHERE ((mt.measure_type_id)::text = (mtd.measure_type_id)::text)
+  ORDER BY mt.measure_type_id;
+
+
+--
+-- Name: defra_ins_measures; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.defra_ins_measures AS
+ SELECT m.measure_sid,
+    m.measure_type_id,
+    m.geographical_area_id,
+    m.goods_nomenclature_item_id,
+    m.validity_start_date,
+    m.validity_end_date
+   FROM ml.defra_ins_measures_base m;
+
+
+--
+-- Name: extended_trade_agreement_information; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.extended_trade_agreement_information (
+    fta_name character varying(50) NOT NULL,
+    geographical_area_name character varying(50),
+    agreement_title text,
+    agreement_date character varying(20),
+    version character varying(10),
+    country_codes character varying(50),
+    origin_quotas text,
+    licensed_quota_volumes text,
+    quota_scope text,
+    quota_staging text
+);
+
+
+--
+-- Name: get_current_measures; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.get_current_measures AS
+ SELECT measures.measure_sid,
+    'test'::text AS reformat_regulation_id,
+    "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    (measures.measure_generating_regulation_id)::text AS regulation_id_full,
+    measures.goods_nomenclature_item_id,
+    measures.additional_code_type_id,
+    measures.additional_code_id,
+    measures.measure_type_id,
+    measures.geographical_area_id,
+    measures.validity_start_date,
+    measures.validity_end_date,
+    base_regulations.effective_end_date,
+    measures.ordernumber,
+    measures."national",
+    measures.reduction_indicator,
+    measures.measure_generating_regulation_role,
+    measures.measure_generating_regulation_id,
+    measures.justification_regulation_role,
+    measures.justification_regulation_id,
+    measures.stopped_flag,
+    measures.geographical_area_sid,
+    measures.goods_nomenclature_sid,
+    measures.additional_code_sid,
+    measures.export_refund_nomenclature_sid,
+    base_regulations.regulation_group_id
+   FROM public.measures,
+    public.base_regulations
+  WHERE (((measures.measure_generating_regulation_id)::text = (base_regulations.base_regulation_id)::text) AND ((base_regulations.effective_end_date IS NULL) OR (base_regulations.effective_end_date > ('now'::text)::date)) AND ((base_regulations.validity_end_date IS NULL) OR (base_regulations.validity_end_date > ('now'::text)::date)) AND (base_regulations.explicit_abrogation_regulation_id IS NULL) AND (base_regulations.complete_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= ('now'::text)::date)))
+UNION
+ SELECT measures.measure_sid,
+    'test'::text AS reformat_regulation_id,
+    "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    (measures.measure_generating_regulation_id)::text AS regulation_id_full,
+    measures.goods_nomenclature_item_id,
+    measures.additional_code_type_id,
+    measures.additional_code_id,
+    measures.measure_type_id,
+    measures.geographical_area_id,
+    measures.validity_start_date,
+    measures.validity_end_date,
+    modification_regulations.effective_end_date,
+    measures.ordernumber,
+    measures."national",
+    measures.reduction_indicator,
+    measures.measure_generating_regulation_role,
+    measures.measure_generating_regulation_id,
+    measures.justification_regulation_role,
+    measures.justification_regulation_id,
+    measures.stopped_flag,
+    measures.geographical_area_sid,
+    measures.goods_nomenclature_sid,
+    measures.additional_code_sid,
+    measures.export_refund_nomenclature_sid,
+    base_regulations.regulation_group_id
+   FROM public.measures,
+    (public.modification_regulations
+     LEFT JOIN public.base_regulations ON (((modification_regulations.base_regulation_id)::text = (base_regulations.base_regulation_id)::text)))
+  WHERE (((measures.measure_generating_regulation_id)::text = (modification_regulations.modification_regulation_id)::text) AND ((modification_regulations.validity_end_date >= ('now'::text)::date) OR (modification_regulations.validity_end_date IS NULL)) AND ((modification_regulations.effective_end_date >= ('now'::text)::date) OR (modification_regulations.effective_end_date IS NULL)) AND (modification_regulations.complete_abrogation_regulation_id IS NULL) AND (modification_regulations.explicit_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= ('now'::text)::date)))
+  ORDER BY 1, 2, 3, 4;
+
+
+--
+-- Name: goods_nomenclatures; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.goods_nomenclatures AS
+ SELECT gn1.goods_nomenclature_item_id,
+    gn1.validity_start_date,
+    gn1.validity_end_date
+   FROM public.goods_nomenclatures gn1
+  WHERE (((gn1.producline_suffix)::text = '80'::text) AND (gn1.validity_start_date IN ( SELECT max(gn2.validity_start_date) AS max
+           FROM public.goods_nomenclatures gn2
+          WHERE (((gn1.goods_nomenclature_item_id)::text = (gn2.goods_nomenclature_item_id)::text) AND ((gn1.producline_suffix)::text = (gn2.producline_suffix)::text)))))
+  ORDER BY gn1.goods_nomenclature_item_id;
+
+
+--
+-- Name: import_files; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.import_files (
+    import_file character varying(255)
+);
+
+
+--
+-- Name: meursing; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.meursing (
+    measure_sid integer,
+    measure_type_id character varying(3),
+    additional_code_id character varying(3),
+    duty_amount double precision,
+    geographical_area_id character varying(255),
+    reduction_indicator integer
+);
+
+
+--
+-- Name: meursing_components; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.meursing_components AS
+ SELECT m.measure_sid,
+    m.measure_type_id,
+    m.additional_code_id,
+    mc.duty_amount,
+    m.validity_start_date,
+    m.validity_end_date,
+    m.geographical_area_id,
+    m.reduction_indicator
+   FROM public.measures m,
+    public.measure_components mc,
+    public.base_regulations r
+  WHERE ((m.measure_sid = mc.measure_sid) AND ((m.measure_generating_regulation_id)::text = (r.base_regulation_id)::text) AND (m.additional_code_type_id = '7'::text) AND (m.validity_end_date IS NULL) AND (r.validity_end_date IS NULL))
+UNION
+ SELECT m.measure_sid,
+    m.measure_type_id,
+    m.additional_code_id,
+    mc.duty_amount,
+    m.validity_start_date,
+    m.validity_end_date,
+    m.geographical_area_id,
+    m.reduction_indicator
+   FROM public.measures m,
+    public.measure_components mc,
+    public.modification_regulations r
+  WHERE ((m.measure_sid = mc.measure_sid) AND ((m.measure_generating_regulation_id)::text = (r.modification_regulation_id)::text) AND (m.additional_code_type_id = '7'::text) AND (m.validity_end_date IS NULL) AND (r.validity_end_date IS NULL))
+  ORDER BY 2, 3, 5 DESC;
+
+
+--
+-- Name: meursing_components_latest; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.meursing_components_latest AS
+ SELECT mc1.measure_sid,
+    mc1.measure_type_id,
+    mc1.additional_code_id,
+    mc1.duty_amount,
+    mc1.validity_start_date,
+    mc1.validity_end_date,
+    mc1.geographical_area_id,
+    mc1.reduction_indicator
+   FROM ml.meursing_components mc1
+  WHERE (mc1.validity_start_date IN ( SELECT max(mc2.validity_start_date) AS max
+           FROM ml.meursing_components mc2
+          WHERE (((mc1.measure_type_id)::text = (mc2.measure_type_id)::text) AND ((mc1.additional_code_id)::text = (mc2.additional_code_id)::text) AND ((mc1.reduction_indicator)::text = (mc2.reduction_indicator)::text) AND ((mc1.reduction_indicator)::text = (mc2.reduction_indicator)::text))));
+
+
+--
+-- Name: additional_code_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.additional_code_descriptions_oplog (
+    additional_code_description_period_sid integer,
+    language_id character varying(5),
+    additional_code_sid integer,
+    additional_code_type_id character varying(1),
+    additional_code character varying(3),
+    description text,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    added_by_id integer,
+    added_at timestamp without time zone
+);
+
+
+--
+-- Name: additional_code_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.additional_code_descriptions AS
+ SELECT additional_code_descriptions1.additional_code_description_period_sid,
+    additional_code_descriptions1.language_id,
+    additional_code_descriptions1.additional_code_sid,
+    additional_code_descriptions1.additional_code_type_id,
+    additional_code_descriptions1.additional_code,
+    additional_code_descriptions1.description,
+    additional_code_descriptions1."national",
+    additional_code_descriptions1.oid,
+    additional_code_descriptions1.operation,
+    additional_code_descriptions1.operation_date,
+    additional_code_descriptions1.status,
+    additional_code_descriptions1.workbasket_id,
+    additional_code_descriptions1.workbasket_sequence_number,
+    additional_code_descriptions1.added_by_id,
+    additional_code_descriptions1.added_at
+   FROM public.additional_code_descriptions_oplog additional_code_descriptions1
+  WHERE ((additional_code_descriptions1.oid IN ( SELECT max(additional_code_descriptions2.oid) AS max
+           FROM public.additional_code_descriptions_oplog additional_code_descriptions2
+          WHERE ((additional_code_descriptions1.additional_code_description_period_sid = additional_code_descriptions2.additional_code_description_period_sid) AND (additional_code_descriptions1.additional_code_sid = additional_code_descriptions2.additional_code_sid)))) AND ((additional_code_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: additional_codes_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.additional_codes_oplog (
+    additional_code_sid integer,
+    additional_code_type_id character varying(1),
+    additional_code character varying(3),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer,
+    added_by_id integer,
+    added_at timestamp without time zone
+);
+
+
+--
+-- Name: additional_codes; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.additional_codes AS
+ SELECT additional_codes1.additional_code_sid,
+    additional_codes1.additional_code_type_id,
+    additional_codes1.additional_code,
+    additional_codes1.validity_start_date,
+    additional_codes1.validity_end_date,
+    additional_codes1."national",
+    additional_codes1.oid,
+    additional_codes1.operation,
+    additional_codes1.operation_date,
+    additional_codes1.status,
+    additional_codes1.workbasket_id,
+    additional_codes1.workbasket_sequence_number,
+    additional_codes1.added_by_id,
+    additional_codes1.added_at
+   FROM public.additional_codes_oplog additional_codes1
+  WHERE ((additional_codes1.oid IN ( SELECT max(additional_codes2.oid) AS max
+           FROM public.additional_codes_oplog additional_codes2
+          WHERE (additional_codes1.additional_code_sid = additional_codes2.additional_code_sid))) AND ((additional_codes1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: ml_additional_codes; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_additional_codes AS
+ SELECT acd1.additional_code_type_id,
+    acd1.additional_code,
+    ac.validity_start_date,
+    ac.validity_end_date,
+    ((acd1.additional_code_type_id)::text || (acd1.additional_code)::text) AS code,
+    acd1.description
+   FROM public.additional_code_descriptions acd1,
+    public.additional_codes ac
+  WHERE ((ac.additional_code_sid = acd1.additional_code_sid) AND (acd1.oid IN ( SELECT max(acd2.oid) AS max
+           FROM public.additional_code_descriptions acd2
+          WHERE (((acd1.additional_code_type_id)::text = (acd2.additional_code_type_id)::text) AND ((acd1.additional_code)::text = (acd2.additional_code)::text)))))
+  ORDER BY ((acd1.additional_code_type_id)::text || (acd1.additional_code)::text);
+
+
+--
+-- Name: ml_nomenclature_flat; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.ml_nomenclature_flat (
+    goods_nomenclature_item_id character varying(255),
+    product_line_suffix character varying(255),
+    description text,
+    number_indents integer
+);
+
+
+--
+-- Name: v5; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.v5 AS
+ SELECT measures.measure_sid,
+    ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
+    "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    (measures.measure_generating_regulation_id)::text AS regulation_id_full,
+    measures.goods_nomenclature_item_id,
+    measures.additional_code_type_id,
+    measures.additional_code_id,
+    measures.measure_type_id,
+    measures.geographical_area_id,
+    measures.validity_start_date,
+    measures.validity_end_date,
+    base_regulations.effective_end_date,
+    measures.ordernumber,
+    measures."national"
+   FROM public.measures,
+    public.base_regulations
+  WHERE (((measures.measure_generating_regulation_id)::text = (base_regulations.base_regulation_id)::text) AND (base_regulations.validity_start_date <= ('now'::text)::date) AND ((base_regulations.effective_end_date >= ('now'::text)::date) OR (((base_regulations.validity_end_date >= ('now'::text)::date) OR (base_regulations.validity_end_date IS NULL)) AND (base_regulations.effective_end_date IS NULL))) AND (base_regulations.explicit_abrogation_regulation_id IS NULL) AND (base_regulations.complete_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= ('now'::text)::date)) AND (measures.validity_start_date <= ('now'::text)::date))
+UNION
+ SELECT measures.measure_sid,
+    ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
+    "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    (measures.measure_generating_regulation_id)::text AS regulation_id_full,
+    measures.goods_nomenclature_item_id,
+    measures.additional_code_type_id,
+    measures.additional_code_id,
+    measures.measure_type_id,
+    measures.geographical_area_id,
+    measures.validity_start_date,
+    measures.validity_end_date,
+    modification_regulations.effective_end_date,
+    measures.ordernumber,
+    measures."national"
+   FROM public.measures,
+    public.modification_regulations
+  WHERE (((measures.measure_generating_regulation_id)::text = (modification_regulations.modification_regulation_id)::text) AND (modification_regulations.validity_start_date <= ('now'::text)::date) AND ((modification_regulations.effective_end_date >= ('now'::text)::date) OR (((modification_regulations.validity_end_date >= ('now'::text)::date) OR (modification_regulations.validity_end_date IS NULL)) AND (modification_regulations.effective_end_date IS NULL))) AND (modification_regulations.complete_abrogation_regulation_id IS NULL) AND (modification_regulations.explicit_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= ('now'::text)::date)) AND (measures.validity_start_date <= ('now'::text)::date))
+  ORDER BY 1, 2, 3, 4;
+
+
+--
+-- Name: ml_certificates_in_use; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_certificates_in_use AS
+ SELECT m.goods_nomenclature_item_id,
+    c.certificate_type_code,
+    c.certificate_code,
+    c.code,
+    n.description AS goods_nomenclature_description,
+    n.number_indents,
+    regexp_replace(c.description, '[\n\r]+'::text, ' '::text, 'g'::text) AS certificate_description,
+    ctd.description AS certificate_type_description
+   FROM ml.v5 m,
+    public.measure_conditions mc,
+    ml.ml_certificate_codes c,
+    ml.ml_nomenclature_flat n,
+    public.certificate_type_descriptions ctd
+  WHERE ((m.measure_sid = mc.measure_sid) AND ((mc.certificate_type_code)::text = (c.certificate_type_code)::text) AND ((mc.certificate_code)::text = (c.certificate_code)::text) AND ((n.goods_nomenclature_item_id)::text = (m.goods_nomenclature_item_id)::text) AND ((ctd.certificate_type_code)::text = (c.certificate_type_code)::text))
+  ORDER BY c.code;
+
+
+--
+-- Name: ml_regulation_titles; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.ml_regulation_titles (
+    regulation_id character varying,
+    title text,
+    regulation_type character varying,
+    primary_owner character varying,
+    keywords character varying,
+    geography character varying,
+    comments character varying,
+    prognosis character varying,
+    uk_base_regulation_id character varying
+);
+
+
+--
+-- Name: ml_certificates_in_use_with_regulation; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_certificates_in_use_with_regulation AS
+ SELECT m.goods_nomenclature_item_id,
+    c.certificate_type_code,
+    c.certificate_code,
+    c.code,
+    regexp_replace(c.description, '[\n\r]+'::text, ' '::text, 'g'::text) AS certificate_description,
+    ctd.description AS certificate_type_description,
+    m.reformat_regulation_id,
+    r.title
+   FROM ml.v5 m,
+    public.measure_conditions mc,
+    ml.ml_certificate_codes c,
+    public.certificate_type_descriptions ctd,
+    ml.ml_regulation_titles r
+  WHERE ((m.measure_sid = mc.measure_sid) AND ((mc.certificate_type_code)::text = (c.certificate_type_code)::text) AND ((mc.certificate_code)::text = (c.certificate_code)::text) AND ((ctd.certificate_type_code)::text = (c.certificate_type_code)::text) AND ((r.regulation_id)::text = m.regulation_id))
+  ORDER BY c.code;
+
+
+--
+-- Name: ml_geographical_areas; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_geographical_areas AS
+ SELECT g.geographical_area_sid,
+    g.parent_geographical_area_group_sid,
+    geo1.geographical_area_id,
+    geo1.description,
+    g.geographical_code,
+    g.validity_start_date,
+    g.validity_end_date
+   FROM public.geographical_area_descriptions geo1,
+    public.geographical_areas g
+  WHERE (((g.geographical_area_id)::text = (geo1.geographical_area_id)::text) AND (geo1.geographical_area_description_period_sid IN ( SELECT max(geo2.geographical_area_description_period_sid) AS max
+           FROM public.geographical_area_descriptions geo2
+          WHERE ((geo1.geographical_area_id)::text = (geo2.geographical_area_id)::text))))
+  ORDER BY geo1.geographical_area_id;
+
+
+--
+-- Name: ml_constituent_countries; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_constituent_countries AS
+ SELECT gachild.geographical_area_id,
+    gachild.geographical_area_sid,
+    gd1.description,
+    gaparent.geographical_area_id AS parent,
+    gd2.description AS parent_description
+   FROM public.geographical_area_memberships gam,
+    public.geographical_areas gachild,
+    public.geographical_areas gaparent,
+    ml.ml_geographical_areas gd1,
+    ml.ml_geographical_areas gd2
+  WHERE ((gachild.geographical_area_sid = gam.geographical_area_sid) AND (gaparent.geographical_area_sid = gam.geographical_area_group_sid) AND ((gachild.geographical_area_id)::text = (gd1.geographical_area_id)::text) AND ((gaparent.geographical_area_id)::text = (gd2.geographical_area_id)::text))
+  ORDER BY gachild.geographical_area_id;
+
+
+--
+-- Name: footnote_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.footnote_descriptions_oplog (
+    footnote_description_period_sid integer,
+    footnote_type_id character varying(2),
+    footnote_id character varying(5),
+    language_id character varying(5),
+    description text,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    added_by_id integer,
+    added_at timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: footnote_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.footnote_descriptions AS
+ SELECT footnote_descriptions1.footnote_description_period_sid,
+    footnote_descriptions1.footnote_type_id,
+    footnote_descriptions1.footnote_id,
+    footnote_descriptions1.language_id,
+    footnote_descriptions1.description,
+    footnote_descriptions1."national",
+    footnote_descriptions1.oid,
+    footnote_descriptions1.operation,
+    footnote_descriptions1.operation_date,
+    footnote_descriptions1.added_by_id,
+    footnote_descriptions1.added_at,
+    footnote_descriptions1.status,
+    footnote_descriptions1.workbasket_id,
+    footnote_descriptions1.workbasket_sequence_number
+   FROM public.footnote_descriptions_oplog footnote_descriptions1
+  WHERE ((footnote_descriptions1.oid IN ( SELECT max(footnote_descriptions2.oid) AS max
+           FROM public.footnote_descriptions_oplog footnote_descriptions2
+          WHERE ((footnote_descriptions1.footnote_description_period_sid = footnote_descriptions2.footnote_description_period_sid) AND ((footnote_descriptions1.footnote_id)::text = (footnote_descriptions2.footnote_id)::text) AND ((footnote_descriptions1.footnote_type_id)::text = (footnote_descriptions2.footnote_type_id)::text)))) AND ((footnote_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: footnotes_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.footnotes_oplog (
+    footnote_id character varying(5),
+    footnote_type_id character varying(2),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    created_at timestamp without time zone,
+    "national" boolean,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    added_by_id integer,
+    added_at timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: footnotes; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.footnotes AS
+ SELECT footnotes1.footnote_id,
+    footnotes1.footnote_type_id,
+    footnotes1.validity_start_date,
+    footnotes1.validity_end_date,
+    footnotes1."national",
+    footnotes1.oid,
+    footnotes1.operation,
+    footnotes1.operation_date,
+    footnotes1.added_by_id,
+    footnotes1.added_at,
+    footnotes1.status,
+    footnotes1.workbasket_id,
+    footnotes1.workbasket_sequence_number
+   FROM public.footnotes_oplog footnotes1
+  WHERE ((footnotes1.oid IN ( SELECT max(footnotes2.oid) AS max
+           FROM public.footnotes_oplog footnotes2
+          WHERE (((footnotes1.footnote_type_id)::text = (footnotes2.footnote_type_id)::text) AND ((footnotes1.footnote_id)::text = (footnotes2.footnote_id)::text)))) AND ((footnotes1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: ml_footnotes; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_footnotes AS
+ SELECT ft1.footnote_type_id,
+    ft1.footnote_id,
+    ft1.description,
+    f1.validity_start_date,
+    f1.validity_end_date,
+    f1."national"
+   FROM public.footnote_descriptions ft1,
+    public.footnotes f1
+  WHERE (((ft1.footnote_id)::text = (f1.footnote_id)::text) AND ((ft1.footnote_type_id)::text = (f1.footnote_type_id)::text) AND (ft1.footnote_description_period_sid IN ( SELECT max(ft2.footnote_description_period_sid) AS max
+           FROM public.footnote_descriptions ft2
+          WHERE (((ft1.footnote_type_id)::text = (ft2.footnote_type_id)::text) AND ((ft1.footnote_id)::text = (ft2.footnote_id)::text)))))
+  ORDER BY ft1.footnote_type_id, ft1.footnote_id;
+
+
+--
+-- Name: ml_geo_memberships; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_geo_memberships AS
+ SELECT ga1.geographical_area_sid AS parent_sid,
+    ga1.geographical_area_id AS parent_id,
+    ga1.description AS parent_description,
+    ga2.geographical_area_sid AS child_sid,
+    ga2.geographical_area_id AS child_id,
+    ga2.description AS child_description,
+    gam.validity_start_date,
+    gam.validity_end_date
+   FROM public.geographical_area_memberships gam,
+    ml.ml_geographical_areas ga1,
+    ml.ml_geographical_areas ga2
+  WHERE ((gam.validity_end_date IS NULL) AND (ga1.geographical_area_sid = gam.geographical_area_group_sid) AND (ga2.geographical_area_sid = gam.geographical_area_sid))
+  ORDER BY ga1.geographical_area_id, ga2.geographical_area_id;
+
+
+--
+-- Name: goods_nomenclature_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.goods_nomenclature_descriptions_oplog (
+    goods_nomenclature_description_period_sid integer,
+    language_id character varying(5),
+    goods_nomenclature_sid integer,
+    goods_nomenclature_item_id character varying(10),
+    productline_suffix character varying(2),
+    description text,
+    created_at timestamp without time zone,
+    oid integer NOT NULL,
+    operation character varying(1) DEFAULT 'C'::character varying,
+    operation_date timestamp without time zone,
+    status text,
+    workbasket_id integer,
+    workbasket_sequence_number integer
+);
+
+
+--
+-- Name: goods_nomenclature_descriptions; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.goods_nomenclature_descriptions AS
+ SELECT goods_nomenclature_descriptions1.goods_nomenclature_description_period_sid,
+    goods_nomenclature_descriptions1.language_id,
+    goods_nomenclature_descriptions1.goods_nomenclature_sid,
+    goods_nomenclature_descriptions1.goods_nomenclature_item_id,
+    goods_nomenclature_descriptions1.productline_suffix,
+    goods_nomenclature_descriptions1.description,
+    goods_nomenclature_descriptions1.oid,
+    goods_nomenclature_descriptions1.operation,
+    goods_nomenclature_descriptions1.operation_date,
+    goods_nomenclature_descriptions1.status,
+    goods_nomenclature_descriptions1.workbasket_id,
+    goods_nomenclature_descriptions1.workbasket_sequence_number
+   FROM public.goods_nomenclature_descriptions_oplog goods_nomenclature_descriptions1
+  WHERE ((goods_nomenclature_descriptions1.oid IN ( SELECT max(goods_nomenclature_descriptions2.oid) AS max
+           FROM public.goods_nomenclature_descriptions_oplog goods_nomenclature_descriptions2
+          WHERE ((goods_nomenclature_descriptions1.goods_nomenclature_sid = goods_nomenclature_descriptions2.goods_nomenclature_sid) AND (goods_nomenclature_descriptions1.goods_nomenclature_description_period_sid = goods_nomenclature_descriptions2.goods_nomenclature_description_period_sid)))) AND ((goods_nomenclature_descriptions1.operation)::text <> 'D'::text));
+
+
+--
+-- Name: ml_goods_nomenclatures; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_goods_nomenclatures AS
+ SELECT gn1.goods_nomenclature_item_id,
+    gn1.description
+   FROM public.goods_nomenclature_descriptions gn1
+  WHERE (((gn1.productline_suffix)::text = '80'::text) AND (gn1.oid IN ( SELECT max(gn2.oid) AS max
+           FROM public.goods_nomenclature_descriptions gn2
+          WHERE (((gn1.goods_nomenclature_item_id)::text = (gn2.goods_nomenclature_item_id)::text) AND ((gn1.productline_suffix)::text = (gn2.productline_suffix)::text)))))
+  ORDER BY gn1.goods_nomenclature_item_id;
+
+
+--
+-- Name: ml_parent_countries; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.ml_parent_countries AS
+ SELECT gd.geographical_area_sid,
+    gd.geographical_area_id,
+    gd.description,
+    gachild.geographical_area_id AS child
+   FROM public.geographical_area_memberships gam,
+    public.geographical_areas gachild,
+    public.geographical_areas gaparent,
+    ml.ml_geographical_areas gd
+  WHERE ((gachild.geographical_area_sid = gam.geographical_area_sid) AND (gaparent.geographical_area_sid = gam.geographical_area_group_sid) AND ((gd.geographical_area_id)::text = (gaparent.geographical_area_id)::text) AND (gd.geographical_area_sid > 0))
+  ORDER BY gd.geographical_area_id;
+
+
+--
+-- Name: staging_category_association_goods_nomenclatures; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.staging_category_association_goods_nomenclatures (
+    staging_category_association_goods_nomenclatures_sid integer NOT NULL,
+    staging_phase_id character varying(10),
+    base_regulation_id character varying(255),
+    goods_nomenclature_item_id character varying(10),
+    productline_suffix character varying(255)
+);
+
+
+--
+-- Name: staging_phases; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.staging_phases (
+    staging_phase_sid integer NOT NULL,
+    staging_phase_id character varying(10),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone,
+    staging_relation_type_id character varying(10),
+    base_regulation_id character varying(255),
+    reduction numeric(10,2)
+);
+
+
+--
+-- Name: staging_relation_types; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.staging_relation_types (
+    staging_relation_type_id character varying(10) NOT NULL,
+    description character varying(10),
+    validity_start_date timestamp without time zone,
+    validity_end_date timestamp without time zone
+);
+
+
+--
+-- Name: uk_regulations; Type: TABLE; Schema: ml; Owner: -
+--
+
+CREATE TABLE ml.uk_regulations (
+    uk_base_regulation_id character varying(8),
+    title text,
+    notes text,
+    url text,
+    uk_identifier text
+);
+
+
+--
+-- Name: v5_2019; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.v5_2019 AS
+ SELECT measures.measure_sid,
+    ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
+    "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    (measures.measure_generating_regulation_id)::text AS regulation_id_full,
+    measures.goods_nomenclature_item_id,
+    measures.additional_code_type_id,
+    measures.additional_code_id,
+    measures.measure_type_id,
+    measures.geographical_area_id,
+    measures.validity_start_date,
+    measures.validity_end_date,
+    base_regulations.effective_end_date,
+    measures.ordernumber,
+    measures."national",
+    measures.reduction_indicator,
+    measures.measure_generating_regulation_role,
+    measures.measure_generating_regulation_id,
+    measures.justification_regulation_role,
+    measures.justification_regulation_id,
+    measures.stopped_flag,
+    measures.geographical_area_sid,
+    measures.goods_nomenclature_sid,
+    measures.additional_code_sid,
+    measures.export_refund_nomenclature_sid,
+    base_regulations.regulation_group_id
+   FROM public.measures,
+    public.base_regulations
+  WHERE (((measures.measure_generating_regulation_id)::text = (base_regulations.base_regulation_id)::text) AND (base_regulations.validity_start_date <= '2019-12-31 00:00:00'::timestamp without time zone) AND ((base_regulations.effective_end_date >= '2018-01-01 00:00:00'::timestamp without time zone) OR (((base_regulations.validity_end_date >= '2018-01-01 00:00:00'::timestamp without time zone) OR (base_regulations.validity_end_date IS NULL)) AND (base_regulations.effective_end_date IS NULL))) AND (base_regulations.explicit_abrogation_regulation_id IS NULL) AND (base_regulations.complete_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= '2018-01-01 00:00:00'::timestamp without time zone)) AND (measures.validity_start_date <= '2019-12-31 00:00:00'::timestamp without time zone))
+UNION
+ SELECT measures.measure_sid,
+    ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
+    "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    (measures.measure_generating_regulation_id)::text AS regulation_id_full,
+    measures.goods_nomenclature_item_id,
+    measures.additional_code_type_id,
+    measures.additional_code_id,
+    measures.measure_type_id,
+    measures.geographical_area_id,
+    measures.validity_start_date,
+    measures.validity_end_date,
+    modification_regulations.effective_end_date,
+    measures.ordernumber,
+    measures."national",
+    measures.reduction_indicator,
+    measures.measure_generating_regulation_role,
+    measures.measure_generating_regulation_id,
+    measures.justification_regulation_role,
+    measures.justification_regulation_id,
+    measures.stopped_flag,
+    measures.geographical_area_sid,
+    measures.goods_nomenclature_sid,
+    measures.additional_code_sid,
+    measures.export_refund_nomenclature_sid,
+    base_regulations.regulation_group_id
+   FROM public.measures,
+    (public.modification_regulations
+     LEFT JOIN public.base_regulations ON (((modification_regulations.base_regulation_id)::text = (base_regulations.base_regulation_id)::text)))
+  WHERE (((measures.measure_generating_regulation_id)::text = (modification_regulations.modification_regulation_id)::text) AND (modification_regulations.validity_start_date <= '2019-12-31 00:00:00'::timestamp without time zone) AND ((modification_regulations.effective_end_date >= '2018-01-01 00:00:00'::timestamp without time zone) OR (((modification_regulations.validity_end_date >= '2018-01-01 00:00:00'::timestamp without time zone) OR (modification_regulations.validity_end_date IS NULL)) AND (modification_regulations.effective_end_date IS NULL))) AND (modification_regulations.complete_abrogation_regulation_id IS NULL) AND (modification_regulations.explicit_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= '2018-01-01 00:00:00'::timestamp without time zone)) AND (measures.validity_start_date <= '2019-12-31 00:00:00'::timestamp without time zone))
+  ORDER BY 1, 2, 3, 4;
+
+
+--
+-- Name: v5_brexit_day; Type: VIEW; Schema: ml; Owner: -
+--
+
+CREATE VIEW ml.v5_brexit_day AS
+ SELECT measures.measure_sid,
+    ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
+    "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    (measures.measure_generating_regulation_id)::text AS regulation_id_full,
+    measures.goods_nomenclature_item_id,
+    measures.additional_code_type_id,
+    measures.additional_code_id,
+    measures.measure_type_id,
+    measures.geographical_area_id,
+    measures.validity_start_date,
+    measures.validity_end_date,
+    base_regulations.effective_end_date,
+    measures.ordernumber,
+    measures."national",
+    measures.reduction_indicator,
+    measures.measure_generating_regulation_role,
+    measures.measure_generating_regulation_id,
+    measures.justification_regulation_role,
+    measures.justification_regulation_id,
+    measures.stopped_flag,
+    measures.geographical_area_sid,
+    measures.goods_nomenclature_sid,
+    measures.additional_code_sid,
+    measures.export_refund_nomenclature_sid,
+    base_regulations.regulation_group_id
+   FROM public.measures,
+    public.base_regulations
+  WHERE (((measures.measure_generating_regulation_id)::text = (base_regulations.base_regulation_id)::text) AND (base_regulations.validity_start_date <= '2019-04-13 00:00:00'::timestamp without time zone) AND ((base_regulations.effective_end_date >= '2019-04-13 00:00:00'::timestamp without time zone) OR (((base_regulations.validity_end_date >= '2019-04-13 00:00:00'::timestamp without time zone) OR (base_regulations.validity_end_date IS NULL)) AND (base_regulations.effective_end_date IS NULL))) AND (base_regulations.explicit_abrogation_regulation_id IS NULL) AND (base_regulations.complete_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= '2019-04-13 00:00:00'::timestamp without time zone)) AND (measures.validity_start_date <= '2019-04-13 00:00:00'::timestamp without time zone))
+UNION
+ SELECT measures.measure_sid,
+    ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
+    "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
+    (measures.measure_generating_regulation_id)::text AS regulation_id_full,
+    measures.goods_nomenclature_item_id,
+    measures.additional_code_type_id,
+    measures.additional_code_id,
+    measures.measure_type_id,
+    measures.geographical_area_id,
+    measures.validity_start_date,
+    measures.validity_end_date,
+    modification_regulations.effective_end_date,
+    measures.ordernumber,
+    measures."national",
+    measures.reduction_indicator,
+    measures.measure_generating_regulation_role,
+    measures.measure_generating_regulation_id,
+    measures.justification_regulation_role,
+    measures.justification_regulation_id,
+    measures.stopped_flag,
+    measures.geographical_area_sid,
+    measures.goods_nomenclature_sid,
+    measures.additional_code_sid,
+    measures.export_refund_nomenclature_sid,
+    base_regulations.regulation_group_id
+   FROM public.measures,
+    (public.modification_regulations
+     LEFT JOIN public.base_regulations ON (((modification_regulations.base_regulation_id)::text = (base_regulations.base_regulation_id)::text)))
+  WHERE (((measures.measure_generating_regulation_id)::text = (modification_regulations.modification_regulation_id)::text) AND (modification_regulations.validity_start_date <= '2019-04-13 00:00:00'::timestamp without time zone) AND ((modification_regulations.effective_end_date >= '2019-04-13 00:00:00'::timestamp without time zone) OR (((modification_regulations.validity_end_date >= '2019-04-13 00:00:00'::timestamp without time zone) OR (modification_regulations.validity_end_date IS NULL)) AND (modification_regulations.effective_end_date IS NULL))) AND (modification_regulations.complete_abrogation_regulation_id IS NULL) AND (modification_regulations.explicit_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= '2019-04-13 00:00:00'::timestamp without time zone)) AND (measures.validity_start_date <= '2019-04-13 00:00:00'::timestamp without time zone))
+  ORDER BY 1, 2, 3, 4;
+
 
 --
 -- Name: additional_code_description_periods_oplog; Type: TABLE; Schema: public; Owner: -
@@ -144,56 +2985,6 @@ CREATE SEQUENCE public.additional_code_description_periods_oid_seq
 --
 
 ALTER SEQUENCE public.additional_code_description_periods_oid_seq OWNED BY public.additional_code_description_periods_oplog.oid;
-
-
---
--- Name: additional_code_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.additional_code_descriptions_oplog (
-    additional_code_description_period_sid integer,
-    language_id character varying(5),
-    additional_code_sid integer,
-    additional_code_type_id character varying(1),
-    additional_code character varying(3),
-    description text,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    added_by_id integer,
-    added_at timestamp without time zone
-);
-
-
---
--- Name: additional_code_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.additional_code_descriptions AS
- SELECT additional_code_descriptions1.additional_code_description_period_sid,
-    additional_code_descriptions1.language_id,
-    additional_code_descriptions1.additional_code_sid,
-    additional_code_descriptions1.additional_code_type_id,
-    additional_code_descriptions1.additional_code,
-    additional_code_descriptions1.description,
-    additional_code_descriptions1."national",
-    additional_code_descriptions1.oid,
-    additional_code_descriptions1.operation,
-    additional_code_descriptions1.operation_date,
-    additional_code_descriptions1.status,
-    additional_code_descriptions1.workbasket_id,
-    additional_code_descriptions1.workbasket_sequence_number,
-    additional_code_descriptions1.added_by_id,
-    additional_code_descriptions1.added_at
-   FROM public.additional_code_descriptions_oplog additional_code_descriptions1
-  WHERE ((additional_code_descriptions1.oid IN ( SELECT max(additional_code_descriptions2.oid) AS max
-           FROM public.additional_code_descriptions_oplog additional_code_descriptions2
-          WHERE ((additional_code_descriptions1.additional_code_description_period_sid = additional_code_descriptions2.additional_code_description_period_sid) AND (additional_code_descriptions1.additional_code_sid = additional_code_descriptions2.additional_code_sid)))) AND ((additional_code_descriptions1.operation)::text <> 'D'::text));
 
 
 --
@@ -399,54 +3190,6 @@ ALTER SEQUENCE public.additional_code_types_oid_seq OWNED BY public.additional_c
 
 
 --
--- Name: additional_codes_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.additional_codes_oplog (
-    additional_code_sid integer,
-    additional_code_type_id character varying(1),
-    additional_code character varying(3),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    added_by_id integer,
-    added_at timestamp without time zone
-);
-
-
---
--- Name: additional_codes; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.additional_codes AS
- SELECT additional_codes1.additional_code_sid,
-    additional_codes1.additional_code_type_id,
-    additional_codes1.additional_code,
-    additional_codes1.validity_start_date,
-    additional_codes1.validity_end_date,
-    additional_codes1."national",
-    additional_codes1.oid,
-    additional_codes1.operation,
-    additional_codes1.operation_date,
-    additional_codes1.status,
-    additional_codes1.workbasket_id,
-    additional_codes1.workbasket_sequence_number,
-    additional_codes1.added_by_id,
-    additional_codes1.added_at
-   FROM public.additional_codes_oplog additional_codes1
-  WHERE ((additional_codes1.oid IN ( SELECT max(additional_codes2.oid) AS max
-           FROM public.additional_codes_oplog additional_codes2
-          WHERE (additional_codes1.additional_code_sid = additional_codes2.additional_code_sid))) AND ((additional_codes1.operation)::text <> 'D'::text));
-
-
---
 -- Name: additional_codes_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -599,84 +3342,6 @@ CREATE SEQUENCE public.audits_id_seq
 --
 
 ALTER SEQUENCE public.audits_id_seq OWNED BY public.audits.id;
-
-
---
--- Name: base_regulations_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.base_regulations_oplog (
-    base_regulation_role integer,
-    base_regulation_id character varying(255),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    community_code integer,
-    regulation_group_id character varying(255),
-    replacement_indicator integer,
-    stopped_flag boolean,
-    information_text text,
-    approved_flag boolean,
-    published_date date,
-    officialjournal_number character varying(255),
-    officialjournal_page integer,
-    effective_end_date timestamp without time zone,
-    antidumping_regulation_role integer,
-    related_antidumping_regulation_id character varying(255),
-    complete_abrogation_regulation_role integer,
-    complete_abrogation_regulation_id character varying(255),
-    explicit_abrogation_regulation_role integer,
-    explicit_abrogation_regulation_id character varying(255),
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    added_by_id integer,
-    added_at timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: base_regulations; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.base_regulations AS
- SELECT base_regulations1.base_regulation_role,
-    base_regulations1.base_regulation_id,
-    base_regulations1.validity_start_date,
-    base_regulations1.validity_end_date,
-    base_regulations1.community_code,
-    base_regulations1.regulation_group_id,
-    base_regulations1.replacement_indicator,
-    base_regulations1.stopped_flag,
-    base_regulations1.information_text,
-    base_regulations1.approved_flag,
-    base_regulations1.published_date,
-    base_regulations1.officialjournal_number,
-    base_regulations1.officialjournal_page,
-    base_regulations1.effective_end_date,
-    base_regulations1.antidumping_regulation_role,
-    base_regulations1.related_antidumping_regulation_id,
-    base_regulations1.complete_abrogation_regulation_role,
-    base_regulations1.complete_abrogation_regulation_id,
-    base_regulations1.explicit_abrogation_regulation_role,
-    base_regulations1.explicit_abrogation_regulation_id,
-    base_regulations1."national",
-    base_regulations1.oid,
-    base_regulations1.operation,
-    base_regulations1.operation_date,
-    base_regulations1.added_by_id,
-    base_regulations1.added_at,
-    base_regulations1.status,
-    base_regulations1.workbasket_id,
-    base_regulations1.workbasket_sequence_number
-   FROM public.base_regulations_oplog base_regulations1
-  WHERE ((base_regulations1.oid IN ( SELECT max(base_regulations2.oid) AS max
-           FROM public.base_regulations_oplog base_regulations2
-          WHERE (((base_regulations1.base_regulation_id)::text = (base_regulations2.base_regulation_id)::text) AND (base_regulations1.base_regulation_role = base_regulations2.base_regulation_role)))) AND ((base_regulations1.operation)::text <> 'D'::text));
 
 
 --
@@ -887,54 +3552,6 @@ ALTER SEQUENCE public.certificate_description_periods_oid_seq OWNED BY public.ce
 
 
 --
--- Name: certificate_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.certificate_descriptions_oplog (
-    certificate_description_period_sid integer,
-    language_id character varying(5),
-    certificate_type_code character varying(1),
-    certificate_code character varying(3),
-    description text,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    added_by_id integer,
-    added_at timestamp without time zone
-);
-
-
---
--- Name: certificate_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.certificate_descriptions AS
- SELECT certificate_descriptions1.certificate_description_period_sid,
-    certificate_descriptions1.language_id,
-    certificate_descriptions1.certificate_type_code,
-    certificate_descriptions1.certificate_code,
-    certificate_descriptions1.description,
-    certificate_descriptions1."national",
-    certificate_descriptions1.oid,
-    certificate_descriptions1.operation,
-    certificate_descriptions1.operation_date,
-    certificate_descriptions1.status,
-    certificate_descriptions1.workbasket_id,
-    certificate_descriptions1.workbasket_sequence_number,
-    certificate_descriptions1.added_by_id,
-    certificate_descriptions1.added_at
-   FROM public.certificate_descriptions_oplog certificate_descriptions1
-  WHERE ((certificate_descriptions1.oid IN ( SELECT max(certificate_descriptions2.oid) AS max
-           FROM public.certificate_descriptions_oplog certificate_descriptions2
-          WHERE (certificate_descriptions1.certificate_description_period_sid = certificate_descriptions2.certificate_description_period_sid))) AND ((certificate_descriptions1.operation)::text <> 'D'::text));
-
-
---
 -- Name: certificate_descriptions_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -951,46 +3568,6 @@ CREATE SEQUENCE public.certificate_descriptions_oid_seq
 --
 
 ALTER SEQUENCE public.certificate_descriptions_oid_seq OWNED BY public.certificate_descriptions_oplog.oid;
-
-
---
--- Name: certificate_type_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.certificate_type_descriptions_oplog (
-    certificate_type_code character varying(1),
-    language_id character varying(5),
-    description text,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: certificate_type_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.certificate_type_descriptions AS
- SELECT certificate_type_descriptions1.certificate_type_code,
-    certificate_type_descriptions1.language_id,
-    certificate_type_descriptions1.description,
-    certificate_type_descriptions1."national",
-    certificate_type_descriptions1.oid,
-    certificate_type_descriptions1.operation,
-    certificate_type_descriptions1.operation_date,
-    certificate_type_descriptions1.status,
-    certificate_type_descriptions1.workbasket_id,
-    certificate_type_descriptions1.workbasket_sequence_number
-   FROM public.certificate_type_descriptions_oplog certificate_type_descriptions1
-  WHERE ((certificate_type_descriptions1.oid IN ( SELECT max(certificate_type_descriptions2.oid) AS max
-           FROM public.certificate_type_descriptions_oplog certificate_type_descriptions2
-          WHERE ((certificate_type_descriptions1.certificate_type_code)::text = (certificate_type_descriptions2.certificate_type_code)::text))) AND ((certificate_type_descriptions1.operation)::text <> 'D'::text));
 
 
 --
@@ -1013,46 +3590,6 @@ ALTER SEQUENCE public.certificate_type_descriptions_oid_seq OWNED BY public.cert
 
 
 --
--- Name: certificate_types_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.certificate_types_oplog (
-    certificate_type_code character varying(1),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: certificate_types; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.certificate_types AS
- SELECT certificate_types1.certificate_type_code,
-    certificate_types1.validity_start_date,
-    certificate_types1.validity_end_date,
-    certificate_types1."national",
-    certificate_types1.oid,
-    certificate_types1.operation,
-    certificate_types1.operation_date,
-    certificate_types1.status,
-    certificate_types1.workbasket_id,
-    certificate_types1.workbasket_sequence_number
-   FROM public.certificate_types_oplog certificate_types1
-  WHERE ((certificate_types1.oid IN ( SELECT max(certificate_types2.oid) AS max
-           FROM public.certificate_types_oplog certificate_types2
-          WHERE ((certificate_types1.certificate_type_code)::text = (certificate_types2.certificate_type_code)::text))) AND ((certificate_types1.operation)::text <> 'D'::text));
-
-
---
 -- Name: certificate_types_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1069,54 +3606,6 @@ CREATE SEQUENCE public.certificate_types_oid_seq
 --
 
 ALTER SEQUENCE public.certificate_types_oid_seq OWNED BY public.certificate_types_oplog.oid;
-
-
---
--- Name: certificates_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.certificates_oplog (
-    certificate_type_code character varying(1),
-    certificate_code character varying(3),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    created_at timestamp without time zone,
-    "national" boolean,
-    national_abbrev text,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    added_by_id integer,
-    added_at timestamp without time zone
-);
-
-
---
--- Name: certificates; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.certificates AS
- SELECT certificates1.certificate_type_code,
-    certificates1.certificate_code,
-    certificates1.validity_start_date,
-    certificates1.validity_end_date,
-    certificates1."national",
-    certificates1.national_abbrev,
-    certificates1.oid,
-    certificates1.operation,
-    certificates1.operation_date,
-    certificates1.status,
-    certificates1.workbasket_id,
-    certificates1.workbasket_sequence_number,
-    certificates1.added_by_id,
-    certificates1.added_at
-   FROM public.certificates_oplog certificates1
-  WHERE ((certificates1.oid IN ( SELECT max(certificates2.oid) AS max
-           FROM public.certificates_oplog certificates2
-          WHERE (((certificates1.certificate_code)::text = (certificates2.certificate_code)::text) AND ((certificates1.certificate_type_code)::text = (certificates2.certificate_type_code)::text)))) AND ((certificates1.operation)::text <> 'D'::text));
 
 
 --
@@ -2867,54 +5356,6 @@ ALTER SEQUENCE public.footnote_description_periods_oid_seq OWNED BY public.footn
 
 
 --
--- Name: footnote_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.footnote_descriptions_oplog (
-    footnote_description_period_sid integer,
-    footnote_type_id character varying(2),
-    footnote_id character varying(5),
-    language_id character varying(5),
-    description text,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    added_by_id integer,
-    added_at timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: footnote_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.footnote_descriptions AS
- SELECT footnote_descriptions1.footnote_description_period_sid,
-    footnote_descriptions1.footnote_type_id,
-    footnote_descriptions1.footnote_id,
-    footnote_descriptions1.language_id,
-    footnote_descriptions1.description,
-    footnote_descriptions1."national",
-    footnote_descriptions1.oid,
-    footnote_descriptions1.operation,
-    footnote_descriptions1.operation_date,
-    footnote_descriptions1.added_by_id,
-    footnote_descriptions1.added_at,
-    footnote_descriptions1.status,
-    footnote_descriptions1.workbasket_id,
-    footnote_descriptions1.workbasket_sequence_number
-   FROM public.footnote_descriptions_oplog footnote_descriptions1
-  WHERE ((footnote_descriptions1.oid IN ( SELECT max(footnote_descriptions2.oid) AS max
-           FROM public.footnote_descriptions_oplog footnote_descriptions2
-          WHERE ((footnote_descriptions1.footnote_description_period_sid = footnote_descriptions2.footnote_description_period_sid) AND ((footnote_descriptions1.footnote_id)::text = (footnote_descriptions2.footnote_id)::text) AND ((footnote_descriptions1.footnote_type_id)::text = (footnote_descriptions2.footnote_type_id)::text)))) AND ((footnote_descriptions1.operation)::text <> 'D'::text));
-
-
---
 -- Name: footnote_descriptions_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -3051,52 +5492,6 @@ CREATE SEQUENCE public.footnote_types_oid_seq
 --
 
 ALTER SEQUENCE public.footnote_types_oid_seq OWNED BY public.footnote_types_oplog.oid;
-
-
---
--- Name: footnotes_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.footnotes_oplog (
-    footnote_id character varying(5),
-    footnote_type_id character varying(2),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    added_by_id integer,
-    added_at timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: footnotes; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.footnotes AS
- SELECT footnotes1.footnote_id,
-    footnotes1.footnote_type_id,
-    footnotes1.validity_start_date,
-    footnotes1.validity_end_date,
-    footnotes1."national",
-    footnotes1.oid,
-    footnotes1.operation,
-    footnotes1.operation_date,
-    footnotes1.added_by_id,
-    footnotes1.added_at,
-    footnotes1.status,
-    footnotes1.workbasket_id,
-    footnotes1.workbasket_sequence_number
-   FROM public.footnotes_oplog footnotes1
-  WHERE ((footnotes1.oid IN ( SELECT max(footnotes2.oid) AS max
-           FROM public.footnotes_oplog footnotes2
-          WHERE (((footnotes1.footnote_type_id)::text = (footnotes2.footnote_type_id)::text) AND ((footnotes1.footnote_id)::text = (footnotes2.footnote_id)::text)))) AND ((footnotes1.operation)::text <> 'D'::text));
 
 
 --
@@ -3332,54 +5727,6 @@ ALTER SEQUENCE public.geographical_area_description_periods_oid_seq OWNED BY pub
 
 
 --
--- Name: geographical_area_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.geographical_area_descriptions_oplog (
-    geographical_area_description_period_sid integer,
-    language_id character varying(5),
-    geographical_area_sid integer,
-    geographical_area_id character varying(255),
-    description text,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    added_by_id integer,
-    added_at timestamp without time zone
-);
-
-
---
--- Name: geographical_area_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.geographical_area_descriptions AS
- SELECT geographical_area_descriptions1.geographical_area_description_period_sid,
-    geographical_area_descriptions1.language_id,
-    geographical_area_descriptions1.geographical_area_sid,
-    geographical_area_descriptions1.geographical_area_id,
-    geographical_area_descriptions1.description,
-    geographical_area_descriptions1."national",
-    geographical_area_descriptions1.oid,
-    geographical_area_descriptions1.operation,
-    geographical_area_descriptions1.operation_date,
-    geographical_area_descriptions1.status,
-    geographical_area_descriptions1.workbasket_id,
-    geographical_area_descriptions1.workbasket_sequence_number,
-    geographical_area_descriptions1.added_by_id,
-    geographical_area_descriptions1.added_at
-   FROM public.geographical_area_descriptions_oplog geographical_area_descriptions1
-  WHERE ((geographical_area_descriptions1.oid IN ( SELECT max(geographical_area_descriptions2.oid) AS max
-           FROM public.geographical_area_descriptions_oplog geographical_area_descriptions2
-          WHERE ((geographical_area_descriptions1.geographical_area_description_period_sid = geographical_area_descriptions2.geographical_area_description_period_sid) AND (geographical_area_descriptions1.geographical_area_sid = geographical_area_descriptions2.geographical_area_sid)))) AND ((geographical_area_descriptions1.operation)::text <> 'D'::text));
-
-
---
 -- Name: geographical_area_descriptions_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -3399,52 +5746,6 @@ ALTER SEQUENCE public.geographical_area_descriptions_oid_seq OWNED BY public.geo
 
 
 --
--- Name: geographical_area_memberships_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.geographical_area_memberships_oplog (
-    geographical_area_sid integer,
-    geographical_area_group_sid integer,
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    added_by_id integer,
-    added_at timestamp without time zone
-);
-
-
---
--- Name: geographical_area_memberships; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.geographical_area_memberships AS
- SELECT geographical_area_memberships1.geographical_area_sid,
-    geographical_area_memberships1.geographical_area_group_sid,
-    geographical_area_memberships1.validity_start_date,
-    geographical_area_memberships1.validity_end_date,
-    geographical_area_memberships1."national",
-    geographical_area_memberships1.oid,
-    geographical_area_memberships1.operation,
-    geographical_area_memberships1.operation_date,
-    geographical_area_memberships1.status,
-    geographical_area_memberships1.workbasket_id,
-    geographical_area_memberships1.workbasket_sequence_number,
-    geographical_area_memberships1.added_by_id,
-    geographical_area_memberships1.added_at
-   FROM public.geographical_area_memberships_oplog geographical_area_memberships1
-  WHERE ((geographical_area_memberships1.oid IN ( SELECT max(geographical_area_memberships2.oid) AS max
-           FROM public.geographical_area_memberships_oplog geographical_area_memberships2
-          WHERE ((geographical_area_memberships1.geographical_area_sid = geographical_area_memberships2.geographical_area_sid) AND (geographical_area_memberships1.geographical_area_group_sid = geographical_area_memberships2.geographical_area_group_sid) AND (geographical_area_memberships1.validity_start_date = geographical_area_memberships2.validity_start_date)))) AND ((geographical_area_memberships1.operation)::text <> 'D'::text));
-
-
---
 -- Name: geographical_area_memberships_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -3461,56 +5762,6 @@ CREATE SEQUENCE public.geographical_area_memberships_oid_seq
 --
 
 ALTER SEQUENCE public.geographical_area_memberships_oid_seq OWNED BY public.geographical_area_memberships_oplog.oid;
-
-
---
--- Name: geographical_areas_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.geographical_areas_oplog (
-    geographical_area_sid integer,
-    parent_geographical_area_group_sid integer,
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    geographical_code character varying(255),
-    geographical_area_id character varying(255),
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    added_by_id integer,
-    added_at timestamp without time zone
-);
-
-
---
--- Name: geographical_areas; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.geographical_areas AS
- SELECT geographical_areas1.geographical_area_sid,
-    geographical_areas1.parent_geographical_area_group_sid,
-    geographical_areas1.validity_start_date,
-    geographical_areas1.validity_end_date,
-    geographical_areas1.geographical_code,
-    geographical_areas1.geographical_area_id,
-    geographical_areas1."national",
-    geographical_areas1.oid,
-    geographical_areas1.operation,
-    geographical_areas1.operation_date,
-    geographical_areas1.status,
-    geographical_areas1.workbasket_id,
-    geographical_areas1.workbasket_sequence_number,
-    geographical_areas1.added_by_id,
-    geographical_areas1.added_at
-   FROM public.geographical_areas_oplog geographical_areas1
-  WHERE ((geographical_areas1.oid IN ( SELECT max(geographical_areas2.oid) AS max
-           FROM public.geographical_areas_oplog geographical_areas2
-          WHERE (geographical_areas1.geographical_area_sid = geographical_areas2.geographical_area_sid))) AND ((geographical_areas1.operation)::text <> 'D'::text));
 
 
 --
@@ -3593,50 +5844,6 @@ CREATE SEQUENCE public.goods_nomenclature_description_periods_oid_seq
 --
 
 ALTER SEQUENCE public.goods_nomenclature_description_periods_oid_seq OWNED BY public.goods_nomenclature_description_periods_oplog.oid;
-
-
---
--- Name: goods_nomenclature_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.goods_nomenclature_descriptions_oplog (
-    goods_nomenclature_description_period_sid integer,
-    language_id character varying(5),
-    goods_nomenclature_sid integer,
-    goods_nomenclature_item_id character varying(10),
-    productline_suffix character varying(2),
-    description text,
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: goods_nomenclature_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.goods_nomenclature_descriptions AS
- SELECT goods_nomenclature_descriptions1.goods_nomenclature_description_period_sid,
-    goods_nomenclature_descriptions1.language_id,
-    goods_nomenclature_descriptions1.goods_nomenclature_sid,
-    goods_nomenclature_descriptions1.goods_nomenclature_item_id,
-    goods_nomenclature_descriptions1.productline_suffix,
-    goods_nomenclature_descriptions1.description,
-    goods_nomenclature_descriptions1.oid,
-    goods_nomenclature_descriptions1.operation,
-    goods_nomenclature_descriptions1.operation_date,
-    goods_nomenclature_descriptions1.status,
-    goods_nomenclature_descriptions1.workbasket_id,
-    goods_nomenclature_descriptions1.workbasket_sequence_number
-   FROM public.goods_nomenclature_descriptions_oplog goods_nomenclature_descriptions1
-  WHERE ((goods_nomenclature_descriptions1.oid IN ( SELECT max(goods_nomenclature_descriptions2.oid) AS max
-           FROM public.goods_nomenclature_descriptions_oplog goods_nomenclature_descriptions2
-          WHERE ((goods_nomenclature_descriptions1.goods_nomenclature_sid = goods_nomenclature_descriptions2.goods_nomenclature_sid) AND (goods_nomenclature_descriptions1.goods_nomenclature_description_period_sid = goods_nomenclature_descriptions2.goods_nomenclature_description_period_sid)))) AND ((goods_nomenclature_descriptions1.operation)::text <> 'D'::text));
 
 
 --
@@ -3966,50 +6173,6 @@ ALTER SEQUENCE public.goods_nomenclature_successors_oid_seq OWNED BY public.good
 
 
 --
--- Name: goods_nomenclatures_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.goods_nomenclatures_oplog (
-    goods_nomenclature_sid integer,
-    goods_nomenclature_item_id character varying(10),
-    producline_suffix character varying(255),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    statistical_indicator integer,
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: goods_nomenclatures; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.goods_nomenclatures AS
- SELECT goods_nomenclatures1.goods_nomenclature_sid,
-    goods_nomenclatures1.goods_nomenclature_item_id,
-    goods_nomenclatures1.producline_suffix,
-    goods_nomenclatures1.validity_start_date,
-    goods_nomenclatures1.validity_end_date,
-    goods_nomenclatures1.statistical_indicator,
-    goods_nomenclatures1.oid,
-    goods_nomenclatures1.operation,
-    goods_nomenclatures1.operation_date,
-    goods_nomenclatures1.status,
-    goods_nomenclatures1.workbasket_id,
-    goods_nomenclatures1.workbasket_sequence_number
-   FROM public.goods_nomenclatures_oplog goods_nomenclatures1
-  WHERE ((goods_nomenclatures1.oid IN ( SELECT max(goods_nomenclatures2.oid) AS max
-           FROM public.goods_nomenclatures_oplog goods_nomenclatures2
-          WHERE (goods_nomenclatures1.goods_nomenclature_sid = goods_nomenclatures2.goods_nomenclature_sid))) AND ((goods_nomenclatures1.operation)::text <> 'D'::text));
-
-
---
 -- Name: goods_nomenclatures_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -4153,44 +6316,6 @@ ALTER SEQUENCE public.languages_oid_seq OWNED BY public.languages_oplog.oid;
 
 
 --
--- Name: measure_action_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measure_action_descriptions_oplog (
-    action_code character varying(255),
-    language_id character varying(5),
-    description text,
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: measure_action_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measure_action_descriptions AS
- SELECT measure_action_descriptions1.action_code,
-    measure_action_descriptions1.language_id,
-    measure_action_descriptions1.description,
-    measure_action_descriptions1.oid,
-    measure_action_descriptions1.operation,
-    measure_action_descriptions1.operation_date,
-    measure_action_descriptions1.status,
-    measure_action_descriptions1.workbasket_id,
-    measure_action_descriptions1.workbasket_sequence_number
-   FROM public.measure_action_descriptions_oplog measure_action_descriptions1
-  WHERE ((measure_action_descriptions1.oid IN ( SELECT max(measure_action_descriptions2.oid) AS max
-           FROM public.measure_action_descriptions_oplog measure_action_descriptions2
-          WHERE ((measure_action_descriptions1.action_code)::text = (measure_action_descriptions2.action_code)::text))) AND ((measure_action_descriptions1.operation)::text <> 'D'::text));
-
-
---
 -- Name: measure_action_descriptions_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -4207,44 +6332,6 @@ CREATE SEQUENCE public.measure_action_descriptions_oid_seq
 --
 
 ALTER SEQUENCE public.measure_action_descriptions_oid_seq OWNED BY public.measure_action_descriptions_oplog.oid;
-
-
---
--- Name: measure_actions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measure_actions_oplog (
-    action_code character varying(255),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: measure_actions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measure_actions AS
- SELECT measure_actions1.action_code,
-    measure_actions1.validity_start_date,
-    measure_actions1.validity_end_date,
-    measure_actions1.oid,
-    measure_actions1.operation,
-    measure_actions1.operation_date,
-    measure_actions1.status,
-    measure_actions1.workbasket_id,
-    measure_actions1.workbasket_sequence_number
-   FROM public.measure_actions_oplog measure_actions1
-  WHERE ((measure_actions1.oid IN ( SELECT max(measure_actions2.oid) AS max
-           FROM public.measure_actions_oplog measure_actions2
-          WHERE ((measure_actions1.action_code)::text = (measure_actions2.action_code)::text))) AND ((measure_actions1.operation)::text <> 'D'::text));
 
 
 --
@@ -4267,58 +6354,6 @@ ALTER SEQUENCE public.measure_actions_oid_seq OWNED BY public.measure_actions_op
 
 
 --
--- Name: measure_components_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measure_components_oplog (
-    measure_sid integer,
-    duty_expression_id character varying(255),
-    duty_amount double precision,
-    monetary_unit_code character varying(255),
-    measurement_unit_code character varying(3),
-    measurement_unit_qualifier_code character varying(1),
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    added_by_id integer,
-    added_at timestamp without time zone,
-    "national" boolean,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    original_duty_expression_id text
-);
-
-
---
--- Name: measure_components; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measure_components AS
- SELECT measure_components1.measure_sid,
-    measure_components1.duty_expression_id,
-    measure_components1.duty_amount,
-    measure_components1.monetary_unit_code,
-    measure_components1.measurement_unit_code,
-    measure_components1.measurement_unit_qualifier_code,
-    measure_components1.oid,
-    measure_components1.operation,
-    measure_components1.operation_date,
-    measure_components1.added_by_id,
-    measure_components1.added_at,
-    measure_components1."national",
-    measure_components1.status,
-    measure_components1.workbasket_id,
-    measure_components1.workbasket_sequence_number,
-    measure_components1.original_duty_expression_id
-   FROM public.measure_components_oplog measure_components1
-  WHERE ((measure_components1.oid IN ( SELECT max(measure_components2.oid) AS max
-           FROM public.measure_components_oplog measure_components2
-          WHERE ((measure_components1.measure_sid = measure_components2.measure_sid) AND ((measure_components1.duty_expression_id)::text = (measure_components2.duty_expression_id)::text)))) AND ((measure_components1.operation)::text <> 'D'::text));
-
-
---
 -- Name: measure_components_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -4338,44 +6373,6 @@ ALTER SEQUENCE public.measure_components_oid_seq OWNED BY public.measure_compone
 
 
 --
--- Name: measure_condition_code_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measure_condition_code_descriptions_oplog (
-    condition_code character varying(255),
-    language_id character varying(5),
-    description text,
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: measure_condition_code_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measure_condition_code_descriptions AS
- SELECT measure_condition_code_descriptions1.condition_code,
-    measure_condition_code_descriptions1.language_id,
-    measure_condition_code_descriptions1.description,
-    measure_condition_code_descriptions1.oid,
-    measure_condition_code_descriptions1.operation,
-    measure_condition_code_descriptions1.operation_date,
-    measure_condition_code_descriptions1.status,
-    measure_condition_code_descriptions1.workbasket_id,
-    measure_condition_code_descriptions1.workbasket_sequence_number
-   FROM public.measure_condition_code_descriptions_oplog measure_condition_code_descriptions1
-  WHERE ((measure_condition_code_descriptions1.oid IN ( SELECT max(measure_condition_code_descriptions2.oid) AS max
-           FROM public.measure_condition_code_descriptions_oplog measure_condition_code_descriptions2
-          WHERE ((measure_condition_code_descriptions1.condition_code)::text = (measure_condition_code_descriptions2.condition_code)::text))) AND ((measure_condition_code_descriptions1.operation)::text <> 'D'::text));
-
-
---
 -- Name: measure_condition_code_descriptions_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -4392,44 +6389,6 @@ CREATE SEQUENCE public.measure_condition_code_descriptions_oid_seq
 --
 
 ALTER SEQUENCE public.measure_condition_code_descriptions_oid_seq OWNED BY public.measure_condition_code_descriptions_oplog.oid;
-
-
---
--- Name: measure_condition_codes_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measure_condition_codes_oplog (
-    condition_code character varying(255),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: measure_condition_codes; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measure_condition_codes AS
- SELECT measure_condition_codes1.condition_code,
-    measure_condition_codes1.validity_start_date,
-    measure_condition_codes1.validity_end_date,
-    measure_condition_codes1.oid,
-    measure_condition_codes1.operation,
-    measure_condition_codes1.operation_date,
-    measure_condition_codes1.status,
-    measure_condition_codes1.workbasket_id,
-    measure_condition_codes1.workbasket_sequence_number
-   FROM public.measure_condition_codes_oplog measure_condition_codes1
-  WHERE ((measure_condition_codes1.oid IN ( SELECT max(measure_condition_codes2.oid) AS max
-           FROM public.measure_condition_codes_oplog measure_condition_codes2
-          WHERE ((measure_condition_codes1.condition_code)::text = (measure_condition_codes2.condition_code)::text))) AND ((measure_condition_codes1.operation)::text <> 'D'::text));
 
 
 --
@@ -4520,68 +6479,6 @@ CREATE SEQUENCE public.measure_condition_components_oid_seq
 --
 
 ALTER SEQUENCE public.measure_condition_components_oid_seq OWNED BY public.measure_condition_components_oplog.oid;
-
-
---
--- Name: measure_conditions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measure_conditions_oplog (
-    measure_condition_sid integer,
-    measure_sid integer,
-    condition_code character varying(255),
-    component_sequence_number integer,
-    condition_duty_amount double precision,
-    condition_monetary_unit_code character varying(255),
-    condition_measurement_unit_code character varying(3),
-    condition_measurement_unit_qualifier_code character varying(1),
-    action_code character varying(255),
-    certificate_type_code character varying(1),
-    certificate_code character varying(3),
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    added_by_id integer,
-    added_at timestamp without time zone,
-    "national" boolean,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer,
-    original_measure_condition_code text
-);
-
-
---
--- Name: measure_conditions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measure_conditions AS
- SELECT measure_conditions1.measure_condition_sid,
-    measure_conditions1.measure_sid,
-    measure_conditions1.condition_code,
-    measure_conditions1.component_sequence_number,
-    measure_conditions1.condition_duty_amount,
-    measure_conditions1.condition_monetary_unit_code,
-    measure_conditions1.condition_measurement_unit_code,
-    measure_conditions1.condition_measurement_unit_qualifier_code,
-    measure_conditions1.action_code,
-    measure_conditions1.certificate_type_code,
-    measure_conditions1.certificate_code,
-    measure_conditions1.oid,
-    measure_conditions1.operation,
-    measure_conditions1.operation_date,
-    measure_conditions1.added_by_id,
-    measure_conditions1.added_at,
-    measure_conditions1."national",
-    measure_conditions1.status,
-    measure_conditions1.workbasket_id,
-    measure_conditions1.workbasket_sequence_number,
-    measure_conditions1.original_measure_condition_code
-   FROM public.measure_conditions_oplog measure_conditions1
-  WHERE ((measure_conditions1.oid IN ( SELECT max(measure_conditions2.oid) AS max
-           FROM public.measure_conditions_oplog measure_conditions2
-          WHERE (measure_conditions1.measure_condition_sid = measure_conditions2.measure_condition_sid))) AND ((measure_conditions1.operation)::text <> 'D'::text));
 
 
 --
@@ -4736,46 +6633,6 @@ ALTER SEQUENCE public.measure_partial_temporary_stops_oid_seq OWNED BY public.me
 
 
 --
--- Name: measure_type_descriptions_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measure_type_descriptions_oplog (
-    measure_type_id character varying(3),
-    language_id character varying(5),
-    description text,
-    created_at timestamp without time zone,
-    "national" boolean,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: measure_type_descriptions; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measure_type_descriptions AS
- SELECT measure_type_descriptions1.measure_type_id,
-    measure_type_descriptions1.language_id,
-    measure_type_descriptions1.description,
-    measure_type_descriptions1."national",
-    measure_type_descriptions1.oid,
-    measure_type_descriptions1.operation,
-    measure_type_descriptions1.operation_date,
-    measure_type_descriptions1.status,
-    measure_type_descriptions1.workbasket_id,
-    measure_type_descriptions1.workbasket_sequence_number
-   FROM public.measure_type_descriptions_oplog measure_type_descriptions1
-  WHERE ((measure_type_descriptions1.oid IN ( SELECT max(measure_type_descriptions2.oid) AS max
-           FROM public.measure_type_descriptions_oplog measure_type_descriptions2
-          WHERE ((measure_type_descriptions1.measure_type_id)::text = (measure_type_descriptions2.measure_type_id)::text))) AND ((measure_type_descriptions1.operation)::text <> 'D'::text));
-
-
---
 -- Name: measure_type_descriptions_oid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -4908,62 +6765,6 @@ CREATE SEQUENCE public.measure_type_series_oid_seq
 --
 
 ALTER SEQUENCE public.measure_type_series_oid_seq OWNED BY public.measure_type_series_oplog.oid;
-
-
---
--- Name: measure_types_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measure_types_oplog (
-    measure_type_id character varying(3),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    trade_movement_code integer,
-    priority_code integer,
-    measure_component_applicable_code integer,
-    origin_dest_code integer,
-    order_number_capture_code integer,
-    measure_explosion_level integer,
-    measure_type_series_id character varying(255),
-    created_at timestamp without time zone,
-    "national" boolean,
-    measure_type_acronym character varying(3),
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: measure_types; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measure_types AS
- SELECT measure_types1.measure_type_id,
-    measure_types1.validity_start_date,
-    measure_types1.validity_end_date,
-    measure_types1.trade_movement_code,
-    measure_types1.priority_code,
-    measure_types1.measure_component_applicable_code,
-    measure_types1.origin_dest_code,
-    measure_types1.order_number_capture_code,
-    measure_types1.measure_explosion_level,
-    measure_types1.measure_type_series_id,
-    measure_types1."national",
-    measure_types1.measure_type_acronym,
-    measure_types1.oid,
-    measure_types1.operation,
-    measure_types1.operation_date,
-    measure_types1.status,
-    measure_types1.workbasket_id,
-    measure_types1.workbasket_sequence_number
-   FROM public.measure_types_oplog measure_types1
-  WHERE ((measure_types1.oid IN ( SELECT max(measure_types2.oid) AS max
-           FROM public.measure_types_oplog measure_types2
-          WHERE ((measure_types1.measure_type_id)::text = (measure_types2.measure_type_id)::text))) AND ((measure_types1.operation)::text <> 'D'::text));
 
 
 --
@@ -5301,100 +7102,6 @@ CREATE SEQUENCE public.measurements_oid_seq
 --
 
 ALTER SEQUENCE public.measurements_oid_seq OWNED BY public.measurements_oplog.oid;
-
-
---
--- Name: measures_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.measures_oplog (
-    measure_sid integer,
-    measure_type_id character varying(3),
-    geographical_area_id character varying(255),
-    goods_nomenclature_item_id character varying(10),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    measure_generating_regulation_role integer,
-    measure_generating_regulation_id character varying(255),
-    justification_regulation_role integer,
-    justification_regulation_id character varying(255),
-    stopped_flag boolean,
-    geographical_area_sid integer,
-    goods_nomenclature_sid integer,
-    ordernumber character varying(255),
-    additional_code_type_id text,
-    additional_code_id character varying(3),
-    additional_code_sid integer,
-    reduction_indicator integer,
-    export_refund_nomenclature_sid integer,
-    created_at timestamp without time zone,
-    "national" boolean,
-    tariff_measure_number character varying(10),
-    invalidated_by integer,
-    invalidated_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    added_by_id integer,
-    added_at timestamp without time zone,
-    status text,
-    last_status_change_at timestamp without time zone,
-    last_update_by_id integer,
-    updated_at timestamp without time zone,
-    workbasket_id integer,
-    searchable_data jsonb DEFAULT '{}'::jsonb,
-    searchable_data_updated_at timestamp without time zone,
-    workbasket_sequence_number integer,
-    original_measure_sid text
-);
-
-
---
--- Name: measures; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.measures AS
- SELECT measures1.measure_sid,
-    measures1.measure_type_id,
-    measures1.geographical_area_id,
-    measures1.goods_nomenclature_item_id,
-    measures1.validity_start_date,
-    measures1.validity_end_date,
-    measures1.measure_generating_regulation_role,
-    measures1.measure_generating_regulation_id,
-    measures1.justification_regulation_role,
-    measures1.justification_regulation_id,
-    measures1.stopped_flag,
-    measures1.geographical_area_sid,
-    measures1.goods_nomenclature_sid,
-    measures1.ordernumber,
-    measures1.additional_code_type_id,
-    measures1.additional_code_id,
-    measures1.additional_code_sid,
-    measures1.reduction_indicator,
-    measures1.export_refund_nomenclature_sid,
-    measures1."national",
-    measures1.tariff_measure_number,
-    measures1.invalidated_by,
-    measures1.invalidated_at,
-    measures1.oid,
-    measures1.operation,
-    measures1.operation_date,
-    measures1.added_by_id,
-    measures1.added_at,
-    measures1.status,
-    measures1.last_status_change_at,
-    measures1.last_update_by_id,
-    measures1.workbasket_id,
-    measures1.searchable_data,
-    measures1.searchable_data_updated_at,
-    measures1.workbasket_sequence_number,
-    measures1.original_measure_sid,
-    measures1.updated_at
-   FROM public.measures_oplog measures1
-  WHERE ((measures1.oid IN ( SELECT max(measures2.oid) AS max
-           FROM public.measures_oplog measures2
-          WHERE (measures1.measure_sid = measures2.measure_sid))) AND ((measures1.operation)::text <> 'D'::text));
 
 
 --
@@ -5744,80 +7451,6 @@ CREATE SEQUENCE public.meursing_table_plans_oid_seq
 --
 
 ALTER SEQUENCE public.meursing_table_plans_oid_seq OWNED BY public.meursing_table_plans_oplog.oid;
-
-
---
--- Name: modification_regulations_oplog; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.modification_regulations_oplog (
-    modification_regulation_role integer,
-    modification_regulation_id character varying(255),
-    validity_start_date timestamp without time zone,
-    validity_end_date timestamp without time zone,
-    published_date date,
-    officialjournal_number character varying(255),
-    officialjournal_page integer,
-    base_regulation_role integer,
-    base_regulation_id character varying(255),
-    replacement_indicator integer,
-    stopped_flag boolean,
-    information_text text,
-    approved_flag boolean,
-    explicit_abrogation_regulation_role integer,
-    explicit_abrogation_regulation_id character varying(8),
-    effective_end_date timestamp without time zone,
-    complete_abrogation_regulation_role integer,
-    complete_abrogation_regulation_id character varying(8),
-    created_at timestamp without time zone,
-    oid integer NOT NULL,
-    operation character varying(1) DEFAULT 'C'::character varying,
-    operation_date timestamp without time zone,
-    added_by_id integer,
-    added_at timestamp without time zone,
-    "national" boolean,
-    status text,
-    workbasket_id integer,
-    workbasket_sequence_number integer
-);
-
-
---
--- Name: modification_regulations; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.modification_regulations AS
- SELECT modification_regulations1.modification_regulation_role,
-    modification_regulations1.modification_regulation_id,
-    modification_regulations1.validity_start_date,
-    modification_regulations1.validity_end_date,
-    modification_regulations1.published_date,
-    modification_regulations1.officialjournal_number,
-    modification_regulations1.officialjournal_page,
-    modification_regulations1.base_regulation_role,
-    modification_regulations1.base_regulation_id,
-    modification_regulations1.replacement_indicator,
-    modification_regulations1.stopped_flag,
-    modification_regulations1.information_text,
-    modification_regulations1.approved_flag,
-    modification_regulations1.explicit_abrogation_regulation_role,
-    modification_regulations1.explicit_abrogation_regulation_id,
-    modification_regulations1.effective_end_date,
-    modification_regulations1.complete_abrogation_regulation_role,
-    modification_regulations1.complete_abrogation_regulation_id,
-    modification_regulations1.oid,
-    modification_regulations1.operation,
-    modification_regulations1.operation_date,
-    modification_regulations1.added_by_id,
-    modification_regulations1.added_at,
-    modification_regulations1."national",
-    modification_regulations1.status,
-    modification_regulations1.workbasket_id,
-    modification_regulations1.workbasket_sequence_number
-   FROM public.modification_regulations_oplog modification_regulations1
-  WHERE ((modification_regulations1.oid IN ( SELECT max(modification_regulations2.oid) AS max
-           FROM public.modification_regulations_oplog modification_regulations2
-          WHERE (((modification_regulations1.modification_regulation_id)::text = (modification_regulations2.modification_regulation_id)::text) AND (modification_regulations1.modification_regulation_role = modification_regulations2.modification_regulation_role)))) AND ((modification_regulations1.operation)::text <> 'D'::text));
 
 
 --
@@ -9002,6 +10635,30 @@ ALTER TABLE ONLY public.xml_export_files ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: staging_category_association_goods_nomenclatures staging_category_association_goods_nomenclatures_pkey; Type: CONSTRAINT; Schema: ml; Owner: -
+--
+
+ALTER TABLE ONLY ml.staging_category_association_goods_nomenclatures
+    ADD CONSTRAINT staging_category_association_goods_nomenclatures_pkey PRIMARY KEY (staging_category_association_goods_nomenclatures_sid);
+
+
+--
+-- Name: staging_phases staging_phases_pkey; Type: CONSTRAINT; Schema: ml; Owner: -
+--
+
+ALTER TABLE ONLY ml.staging_phases
+    ADD CONSTRAINT staging_phases_pkey PRIMARY KEY (staging_phase_sid);
+
+
+--
+-- Name: staging_relation_types staging_relation_type_id; Type: CONSTRAINT; Schema: ml; Owner: -
+--
+
+ALTER TABLE ONLY ml.staging_relation_types
+    ADD CONSTRAINT staging_relation_type_id PRIMARY KEY (staging_relation_type_id);
+
+
+--
 -- Name: additional_code_description_periods_oplog additional_code_description_periods_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10079,6 +11736,27 @@ ALTER TABLE ONLY public.workbaskets
 
 ALTER TABLE ONLY public.xml_export_files
     ADD CONSTRAINT xml_export_files_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: extended_trade_agreement_information_fta_name_idx; Type: INDEX; Schema: ml; Owner: -
+--
+
+CREATE UNIQUE INDEX extended_trade_agreement_information_fta_name_idx ON ml.extended_trade_agreement_information USING btree (fta_name varchar_ops);
+
+
+--
+-- Name: ml_regulation_titles_regulation_id_idx; Type: INDEX; Schema: ml; Owner: -
+--
+
+CREATE INDEX ml_regulation_titles_regulation_id_idx ON ml.ml_regulation_titles USING btree (regulation_id);
+
+
+--
+-- Name: staging_relation_type_id_index; Type: INDEX; Schema: ml; Owner: -
+--
+
+CREATE INDEX staging_relation_type_id_index ON ml.staging_relation_types USING btree (staging_relation_type_id);
 
 
 --
@@ -12438,6 +14116,14 @@ CREATE INDEX user_id ON public.rollbacks USING btree (user_id);
 --
 
 CREATE UNIQUE INDEX xml_export_files_envelope_id_index ON public.xml_export_files USING btree (envelope_id);
+
+
+--
+-- Name: reassign_owned; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER reassign_owned ON ddl_command_end
+   EXECUTE PROCEDURE public.reassign_owned();
 
 
 --
