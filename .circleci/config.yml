@@ -14,7 +14,7 @@ jobs: # a collection of steps
           REDIS_URL: redis://localhost:6379
           RAILS_ENV: test
           GOVUK_APP_DOMAIN: test
-      - image: circleci/postgres:9.5-alpine # database image
+      - image: circleci/postgres:9.6-alpine # database image
         environment: # environment variables for database
           POSTGRES_USER: circleci-tariffs-management
           POSTGRES_PASSWORD: ""
@@ -40,6 +40,10 @@ jobs: # a collection of steps
       - run:
           name: Install PostgreSQL CLI utilities
           command: sudo apt-get install postgresql-client
+
+      - run:
+          name: Install OpenSSL
+          command: sudo apt-get -y install libcurl3
 
       - run:
           name: Bundle Install
