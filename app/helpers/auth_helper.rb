@@ -68,6 +68,8 @@ module AuthHelper
   end
 
   def audit_session(user_info, action)
-    SessionAudit.create(user_id: user_info.id, uid: user_info.uid, name: user_info.name, email: user_info.email, action: action)
+    SessionAudit.unrestrict_primary_key
+    id = SessionAudit.last ? SessionAudit.last.id + 1 : 1
+    SessionAudit.create(id: id, user_id: user_info.id, uid: user_info.uid, name: user_info.name, email: user_info.email, action: action)
   end
 end
