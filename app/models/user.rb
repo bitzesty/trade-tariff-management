@@ -39,7 +39,6 @@ class User < Sequel::Model
     else
       Rails.logger.debug "user does not exist in system"
       Rails.logger.debug user_params_from_auth(auth)
-      User.unrestrict_primary_key
       user = create(user_params_from_auth(auth))
     end
 
