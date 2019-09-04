@@ -40,6 +40,8 @@ module CrossCheckHelper
       "workbaskets/shared/steps/review_and_submit/edit_nomenclatures"
     elsif workbasket.type == 'create_footnote'
       "workbaskets/shared/steps/review_and_submit/create_footnote"
+    elsif workbasket.type == 'edit_footnote'
+      "workbaskets/shared/steps/review_and_submit/edit_footnote"
     end
   end
 
